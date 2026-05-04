@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<!-- ═══════════════════════════════════════════════════════
+     DOCH — Mis Primeros Pasos
+     Fase 1: Arquitectura y Autenticación
+     Versión: 1.0.0
+     Firebase: doch-platform-e0ac4
+     Repo: github.com/SoyYodaSoyYo/doch-app
+════════════════════════════════════════════════════════ -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0d0d1a">
+<meta name="description" content="DOCH — Mis Primeros Pasos. La herramienta de crianza personalizada para tu familia.">
+<title>DOCH — Mis Primeros Pasos</title>
+
+<!-- PWA -->
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./assets/icon-192.png">
+
+<!-- Firebase 10 compat -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<!-- Tailwind CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Fuentes: Syne (display) + Archivo (body) — continuidad con Eva -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Archivo:ital,wght@0,400;0,600;0,700;0,900;1,700&display=swap" rel="stylesheet">
+
+<style>
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+    --pink:    #ff2d78;
+    --purple:  #7c3aed;
+    --pink-dk: #c8005f;
+    --purple-dk: #5b21b6;
+    --bg:      #0d0d1a;
+    --bg2:     #13131f;
+    --bg3:     #1a1a2e;
+    --glass:   rgba(255,255,255,0.05);
+    --border:  rgba(255,255,255,0.10);
+    --text:    #f0eeff;
+    --muted:   rgba(240,238,255,0.50);
+    --error:   #ff4e6a;
+    --success: #22d3a0;
+}
+
+html, body {
+    margin: 0; padding: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Archivo', sans-serif;
+    overflow-x: hidden;
+}
+
+/* ── FONDO ANIMADO ── */
+body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(124,58,237,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 80%, rgba(255,45,120,0.14) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(13,13,26,0) 0%, var(--bg) 100%);
+    pointer-events: none;
+}
+
+/* ── TIPOGRAFÍA ── */
+.font-display { font-family: 'Syne', sans-serif; font-weight: 800; }
+.font-bold-it { font-family: 'Archivo', sans-serif; font-weight: 700; font-style: italic; }
+
+/* ── PANTALLAS ── */
+.screen {
+    display: none;
+    position: relative; z-index: 1;
+    min-height: 100vh;
+}
+.screen.active { display: flex; }
+
+/* ══════════════════════════════════
+   PANTALLA: LOADING
+══════════════════════════════════ */
+#screen-loading {
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.loader-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 3rem;
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: pulse-logo 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse-logo {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.7; transform: scale(0.97); }
+}
+
+.loader-dots {
+    display: flex; gap: 8px;
+}
+.loader-dots span {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--pink);
+    animation: bounce-dot 1.2s ease-in-out infinite;
+}
+.loader-dots span:nth-child(2) { animation-delay: 0.2s; background: color-mix(in srgb, var(--pink) 50%, var(--purple)); }
+.loader-dots span:nth-child(3) { animation-delay: 0.4s; background: var(--purple); }
+
+@keyframes bounce-dot {
+    0%, 100% { transform: translateY(0); opacity: 0.4; }
+    50%       { transform: translateY(-8px); opacity: 1; }
+}
+
+/* ══════════════════════════════════
+   PANTALLA: AUTH (login / registro)
+══════════════════════════════════ */
+#screen-auth {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 0 40px 0;
+    overflow-y: auto;
+}
+
+.auth-header {
+    width: 100%;
+    padding: 48px 24px 32px;
+    text-align: center;
+    position: relative;
+}
+
+.auth-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 2.8rem;
+    background: linear-gradient(135deg, var(--pink) 0%, var(--purple) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+.auth-tagline {
+    font-size: 0.85rem;
+    color: var(--muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+/* Card de auth */
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Tabs login / registro */
+.auth-tabs {
+    display: flex;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 4px;
+    margin-bottom: 24px;
+    gap: 4px;
+}
+
+.auth-tab {
+    flex: 1;
+    padding: 11px;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Archivo', sans-serif;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.auth-tab.active {
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    color: white;
+    box-shadow: 0 0 16px rgba(255,45,120,0.35);
+}
+
+/* Formulario */
+.form-panel { display: none; }
+.form-panel.active { display: flex; flex-direction: column; gap: 14px; }
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+}
+
+.form-input {
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'Archivo', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+}
+
+.form-input::placeholder { color: rgba(240,238,255,0.25); }
+
+.form-input:focus {
+    border-color: var(--pink);
+    box-shadow: 0 0 0 3px rgba(255,45,120,0.12);
+}
+
+.form-input.error {
+    border-color: var(--error);
+    box-shadow: 0 0 0 3px rgba(255,78,106,0.12);
+}
+
+/* Botón principal */
+.btn-primary {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    border: none;
+    border-bottom: 3px solid var(--pink-dk);
+    border-radius: 14px;
+    color: white;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: 0 4px 20px rgba(255,45,120,0.30);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(255,45,120,0.40); }
+.btn-primary:active { transform: translateY(1px); border-bottom-width: 1px; }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.btn-primary .btn-spinner {
+    display: none;
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto;
+}
+
+.btn-primary.loading .btn-text { display: none; }
+.btn-primary.loading .btn-spinner { display: block; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Divisor */
+.divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 4px 0;
+}
+.divider::before, .divider::after {
+    content: ''; flex: 1;
+    height: 1px; background: var(--border);
+}
+.divider span {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* Botón Google */
+.btn-google {
+    width: 100%;
+    padding: 14px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    color: var(--text);
+    font-family: 'Archivo', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+
+.btn-google:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(255,255,255,0.2);
+    transform: translateY(-1px);
+}
+.btn-google:active { transform: translateY(0); }
+
+.google-icon {
+    width: 20px; height: 20px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23EA4335' d='M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z'/%3E%3Cpath fill='%234285F4' d='M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z'/%3E%3Cpath fill='%23FBBC05' d='M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z'/%3E%3Cpath fill='%2334A853' d='M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z'/%3E%3C/svg%3E") center/contain no-repeat;
+    flex-shrink: 0;
+}
+
+/* Mensaje de error */
+.form-error {
+    background: rgba(255,78,106,0.10);
+    border: 1px solid rgba(255,78,106,0.30);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 0.82rem;
+    color: var(--error);
+    font-weight: 600;
+    display: none;
+    animation: shake 0.4s ease;
+}
+.form-error.show { display: block; }
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25%       { transform: translateX(-6px); }
+    75%       { transform: translateX(6px); }
+}
+
+/* Link olvidé contraseña */
+.forgot-link {
+    text-align: right;
+    margin-top: -6px;
+}
+.forgot-link a {
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+.forgot-link a:hover { color: var(--pink); }
+
+/* Términos */
+.terms-text {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-top: 8px;
+}
+.terms-text a {
+    color: var(--pink);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* ══════════════════════════════════
+   PANTALLA: HOME PLACEHOLDER
+   (mientras se construye Fase 2-3)
+══════════════════════════════════ */
+#screen-home {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+    text-align: center;
+    gap: 20px;
+}
+
+.home-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 2.4rem;
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.home-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px 24px;
+    max-width: 380px;
+    width: 100%;
+}
+
+.home-avatar {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem;
+    margin: 0 auto 16px;
+    box-shadow: 0 0 24px rgba(255,45,120,0.3);
+}
+
+.home-welcome {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--text);
+    margin-bottom: 6px;
+}
+
+.home-email {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 20px;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(34,211,160,0.10);
+    border: 1px solid rgba(34,211,160,0.25);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--success);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 20px;
+}
+
+.status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--success);
+    animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.7); }
+}
+
+.phase-info {
+    background: rgba(255,45,120,0.06);
+    border: 1px solid rgba(255,45,120,0.15);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.phase-info strong {
+    color: var(--pink);
+    font-weight: 700;
+}
+
+.btn-logout {
+    width: 100%;
+    padding: 13px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--muted);
+    font-family: 'Archivo', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.btn-logout:hover {
+    background: rgba(255,78,106,0.08);
+    border-color: rgba(255,78,106,0.3);
+    color: var(--error);
+}
+
+/* ══════════════════════════════════
+   TOAST
+══════════════════════════════════ */
+#toasts {
+    position: fixed;
+    top: 16px; right: 16px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+    width: min(300px, calc(100vw - 32px));
+}
+
+.toast {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--pink);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    animation: slide-in 0.3s cubic-bezier(0.17,0.89,0.32,1.28);
+    backdrop-filter: blur(16px);
+}
+
+.toast.success { border-left-color: var(--success); }
+.toast.error   { border-left-color: var(--error); color: var(--error); }
+.toast.out     { animation: slide-out 0.25s ease-in forwards; }
+
+@keyframes slide-in  { from { transform: translateX(110%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes slide-out { from { transform: translateX(0); opacity: 1; } to { transform: translateX(110%); opacity: 0; } }
+
+/* ══════════════════════════════════
+   MODAL — Reset password
+══════════════════════════════════ */
+#modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+#modal-overlay.show { display: flex; }
+
+.modal-box {
+    background: var(--bg2);
+    border: 1px solid rgba(255,45,120,0.3);
+    border-radius: 20px;
+    padding: 28px 24px;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(255,45,120,0.15);
+    animation: modal-in 0.3s cubic-bezier(0.17,0.89,0.32,1.28);
+}
+
+@keyframes modal-in { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.modal-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    color: var(--pink);
+    margin-bottom: 8px;
+}
+
+.modal-body {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-modal-cancel {
+    flex: 1; padding: 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--muted);
+    font-family: 'Archivo', sans-serif;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-modal-cancel:hover { background: var(--glass); }
+
+.btn-modal-confirm {
+    flex: 1; padding: 12px;
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: 0 0 16px rgba(255,45,120,0.3);
+}
+.btn-modal-confirm:hover { transform: translateY(-1px); }
+
+/* ══════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════ */
+@media (max-width: 380px) {
+    .auth-logo { font-size: 2.2rem; }
+    .auth-header { padding: 36px 20px 24px; }
+}
+
+@media (min-height: 800px) {
+    .auth-header { padding: 64px 24px 40px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── TOASTS ── -->
+<div id="toasts"></div>
+
+<!-- ── MODAL RESET PASSWORD ── -->
+<div id="modal-overlay">
+    <div class="modal-box">
+        <div style="font-size:2rem;margin-bottom:12px">🔑</div>
+        <div class="modal-title">Recuperar contraseña</div>
+        <div class="modal-body">Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.</div>
+        <div class="form-field" style="margin-bottom:16px">
+            <input type="email" id="reset-email" class="form-input" placeholder="tu@correo.com">
+        </div>
+        <div id="reset-error" class="form-error"></div>
+        <div id="reset-success" style="display:none;background:rgba(34,211,160,0.10);border:1px solid rgba(34,211,160,0.25);border-radius:10px;padding:12px 14px;font-size:0.82rem;color:var(--success);font-weight:600;margin-bottom:12px">
+            ✅ Correo enviado. Revisa tu bandeja de entrada.
+        </div>
+        <div class="modal-actions">
+            <button class="btn-modal-cancel" onclick="DOCH.closeResetModal()">Cancelar</button>
+            <button class="btn-modal-confirm" onclick="DOCH.sendResetEmail()">
+                <span class="btn-text">Enviar</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     PANTALLA: LOADING
+══════════════════════════════════════════════════ -->
+<div id="screen-loading" class="screen active">
+    <div class="loader-logo">DOCH</div>
+    <div class="loader-dots">
+        <span></span><span></span><span></span>
+    </div>
+    <div style="font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;font-weight:600;margin-top:8px">
+        Conectando...
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     PANTALLA: AUTH
+══════════════════════════════════════════════════ -->
+<div id="screen-auth" class="screen">
+
+    <div class="auth-header">
+        <div class="auth-logo">DOCH</div>
+        <div class="auth-tagline">Mis Primeros Pasos</div>
+    </div>
+
+    <div class="auth-card">
+
+        <!-- TABS -->
+        <div class="auth-tabs">
+            <button class="auth-tab active" id="tab-login" onclick="DOCH.switchTab('login')">
+                Entrar
+            </button>
+            <button class="auth-tab" id="tab-register" onclick="DOCH.switchTab('register')">
+                Crear cuenta
+            </button>
+        </div>
+
+        <!-- ── FORMULARIO LOGIN ── -->
+        <div id="panel-login" class="form-panel active">
+
+            <div id="login-error" class="form-error"></div>
+
+            <div class="form-field">
+                <label class="form-label">Correo electrónico</label>
+                <input type="email" id="login-email" class="form-input"
+                    placeholder="tu@correo.com"
+                    autocomplete="email"
+                    onkeydown="if(event.key==='Enter')DOCH.login()">
+            </div>
+
+            <div class="form-field">
+                <label class="form-label">Contraseña</label>
+                <input type="password" id="login-pass" class="form-input"
+                    placeholder="••••••••"
+                    autocomplete="current-password"
+                    onkeydown="if(event.key==='Enter')DOCH.login()">
+            </div>
+
+            <div class="forgot-link">
+                <a href="#" onclick="DOCH.openResetModal();return false;">¿Olvidaste tu contraseña?</a>
+            </div>
+
+            <button class="btn-primary" id="btn-login" onclick="DOCH.login()">
+                <div class="btn-spinner"></div>
+                <span class="btn-text">Entrar</span>
+            </button>
+
+            <div class="divider"><span>o</span></div>
+
+            <button class="btn-google" id="btn-google-login" onclick="DOCH.loginGoogle()">
+                <div class="google-icon"></div>
+                Continuar con Google
+            </button>
+
+            <div class="terms-text">
+                Al continuar aceptas nuestros
+                <a href="#" onclick="return false">Términos de uso</a> y
+                <a href="#" onclick="return false">Política de privacidad</a>
+            </div>
+
+        </div>
+
+        <!-- ── FORMULARIO REGISTRO ── -->
+        <div id="panel-register" class="form-panel">
+
+            <div id="register-error" class="form-error"></div>
+
+            <div class="form-field">
+                <label class="form-label">Tu nombre</label>
+                <input type="text" id="reg-name" class="form-input"
+                    placeholder="Mamá, Papá..."
+                    autocomplete="name"
+                    onkeydown="if(event.key==='Enter')document.getElementById('reg-email').focus()">
+            </div>
+
+            <div class="form-field">
+                <label class="form-label">Correo electrónico</label>
+                <input type="email" id="reg-email" class="form-input"
+                    placeholder="tu@correo.com"
+                    autocomplete="email"
+                    onkeydown="if(event.key==='Enter')document.getElementById('reg-pass').focus()">
+            </div>
+
+            <div class="form-field">
+                <label class="form-label">Contraseña</label>
+                <input type="password" id="reg-pass" class="form-input"
+                    placeholder="Mínimo 6 caracteres"
+                    autocomplete="new-password"
+                    onkeydown="if(event.key==='Enter')document.getElementById('reg-pass2').focus()">
+            </div>
+
+            <div class="form-field">
+                <label class="form-label">Confirmar contraseña</label>
+                <input type="password" id="reg-pass2" class="form-input"
+                    placeholder="Repite tu contraseña"
+                    autocomplete="new-password"
+                    onkeydown="if(event.key==='Enter')DOCH.register()">
+            </div>
+
+            <button class="btn-primary" id="btn-register" onclick="DOCH.register()">
+                <div class="btn-spinner"></div>
+                <span class="btn-text">Crear mi cuenta</span>
+            </button>
+
+            <div class="divider"><span>o</span></div>
+
+            <button class="btn-google" id="btn-google-reg" onclick="DOCH.loginGoogle()">
+                <div class="google-icon"></div>
+                Continuar con Google
+            </button>
+
+            <div class="terms-text">
+                Al crear una cuenta aceptas nuestros
+                <a href="#" onclick="return false">Términos de uso</a> y
+                <a href="#" onclick="return false">Política de privacidad</a>.<br>
+                <span style="color:rgba(240,238,255,0.35)">Los datos de tus hijos son tuyos. DOCH solo provee la tecnología.</span>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     PANTALLA: HOME (placeholder Fase 1)
+     Se reemplaza en Fase 2 con el onboarding real
+══════════════════════════════════════════════════ -->
+<div id="screen-home" class="screen">
+    <div class="home-logo">DOCH</div>
+
+    <div class="home-card">
+        <div class="home-avatar">👋</div>
+        <div class="home-welcome" id="home-welcome-text">¡Hola!</div>
+        <div class="home-email" id="home-email-text"></div>
+
+        <div class="status-badge">
+            <div class="status-dot"></div>
+            Firebase conectado
+        </div>
+
+        <div class="phase-info">
+            <strong>Fase 1 completada ✅</strong><br>
+            Autenticación lista. Tu cuenta está creada y conectada a Firebase.<br><br>
+            <strong>Próximo paso:</strong> Fase 2 — Constructor de Mundo (Onboarding).
+        </div>
+
+        <button class="btn-logout" onclick="DOCH.logout()">
+            Cerrar sesión
+        </button>
+    </div>
+
+    <div style="font-size:0.72rem;color:rgba(240,238,255,0.2);text-transform:uppercase;letter-spacing:0.12em;font-weight:600">
+        DOCH v1.0 — Fase 1
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════ -->
+<script>
+/* ── CONFIG FIREBASE ── */
+var FIREBASE_CONFIG = {
+    apiKey:            'AIzaSyCKk_A-rUvRUxNLm5bul49-oA2S4S8RYpo',
+    authDomain:        'doch-platform-e0ac4.firebaseapp.com',
+    projectId:         'doch-platform-e0ac4',
+    storageBucket:     'doch-platform-e0ac4.firebasestorage.app',
+    messagingSenderId: '175084087977',
+    appId:             '1:175084087977:web:ec50da24b53af913f917b8',
+    measurementId:     'G-KQX0VDWT2S'
+};
+
+/* ══════════════════════════════════════════
+   DOCH — OBJETO PRINCIPAL
+══════════════════════════════════════════ */
+var DOCH = {
+
+    _db:   null,
+    _auth: null,
+    _user: null,
+
+    /* ── INIT ── */
+    init: function() {
+        var self = this;
+        try {
+            var app = firebase.apps.length
+                ? firebase.app()
+                : firebase.initializeApp(FIREBASE_CONFIG);
+
+            this._db   = firebase.firestore(app);
+            this._auth = firebase.auth(app);
+
+            /* ── Observer de auth: determina qué pantalla mostrar ── */
+            this._auth.onAuthStateChanged(function(user) {
+                if (user) {
+                    self._user = user;
+                    self._onUserLoggedIn(user);
+                } else {
+                    self._user = null;
+                    self._showScreen('auth');
+                }
+            });
+
+        } catch(e) {
+            console.error('Firebase init error:', e);
+            self._showScreen('auth');
+            self._toast('Error al conectar con Firebase', 'error');
+        }
+    },
+
+    /* ── ROUTER: qué mostrar cuando hay sesión ── */
+    _onUserLoggedIn: function(user) {
+        var self = this;
+
+        /* Verificar si la familia ya tiene datos en Firestore */
+        this._db
+            .collection('families')
+            .doc(user.uid)
+            .get()
+            .then(function(snap) {
+                if (snap.exists && snap.data().setupComplete) {
+                    /* Familia configurada → ir a la app */
+                    self._showHome(user);
+                } else {
+                    /* Sin configurar → ir a onboarding (Fase 2) */
+                    /* Por ahora mostramos home con aviso de fase */
+                    self._showHome(user);
+                }
+            })
+            .catch(function(e) {
+                console.error('Firestore error:', e);
+                /* Si falla Firestore, igual mostramos la pantalla */
+                self._showHome(user);
+            });
+    },
+
+    /* ── PANTALLA HOME ── */
+    _showHome: function(user) {
+        var name = user.displayName
+            ? user.displayName.split(' ')[0]
+            : 'de nuevo';
+
+        var el = document.getElementById('home-welcome-text');
+        var em = document.getElementById('home-email-text');
+        if (el) el.textContent = '¡Hola, ' + name + '!';
+        if (em) em.textContent = user.email || '';
+
+        this._showScreen('home');
+    },
+
+    /* ══════════════════════
+       AUTH: EMAIL + PASS
+    ══════════════════════ */
+    login: function() {
+        var self = this;
+        var email = document.getElementById('login-email').value.trim();
+        var pass  = document.getElementById('login-pass').value;
+
+        this._clearErrors('login');
+
+        if (!email) { return this._showError('login', 'Ingresa tu correo electrónico'); }
+        if (!pass)  { return this._showError('login', 'Ingresa tu contraseña'); }
+
+        this._setLoading('btn-login', true);
+
+        this._auth
+            .signInWithEmailAndPassword(email, pass)
+            .catch(function(e) {
+                self._setLoading('btn-login', false);
+                self._showError('login', self._authError(e.code));
+            });
+    },
+
+    register: function() {
+        var self = this;
+        var name  = document.getElementById('reg-name').value.trim();
+        var email = document.getElementById('reg-email').value.trim();
+        var pass  = document.getElementById('reg-pass').value;
+        var pass2 = document.getElementById('reg-pass2').value;
+
+        this._clearErrors('register');
+
+        if (!name)          { return this._showError('register', 'Ingresa tu nombre'); }
+        if (!email)         { return this._showError('register', 'Ingresa tu correo electrónico'); }
+        if (pass.length < 6){ return this._showError('register', 'La contraseña debe tener al menos 6 caracteres'); }
+        if (pass !== pass2) { return this._showError('register', 'Las contraseñas no coinciden'); }
+
+        this._setLoading('btn-register', true);
+
+        this._auth
+            .createUserWithEmailAndPassword(email, pass)
+            .then(function(cred) {
+                /* Guardar nombre en el perfil de Auth */
+                return cred.user.updateProfile({ displayName: name })
+                    .then(function() {
+                        /* Crear documento inicial de la familia en Firestore */
+                        return self._db.collection('families').doc(cred.user.uid).set({
+                            uid:           cred.user.uid,
+                            email:         email,
+                            displayName:   name,
+                            createdAt:     firebase.firestore.FieldValue.serverTimestamp(),
+                            plan:          'explorer',
+                            planActivatedAt: null,
+                            childCount:    0,
+                            lang:          'es',
+                            setupComplete: false,
+                            lastLogin:     firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    });
+            })
+            .then(function() {
+                self._toast('¡Cuenta creada! Bienvenido a DOCH 🎉', 'success');
+            })
+            .catch(function(e) {
+                self._setLoading('btn-register', false);
+                self._showError('register', self._authError(e.code));
+            });
+    },
+
+    /* ══════════════════════
+       AUTH: GOOGLE
+    ══════════════════════ */
+    loginGoogle: function() {
+        var self = this;
+        var provider = new firebase.auth.GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
+
+        this._auth
+            .signInWithPopup(provider)
+            .then(function(result) {
+                var user = result.user;
+                var isNew = result.additionalUserInfo && result.additionalUserInfo.isNewUser;
+
+                if (isNew) {
+                    /* Nuevo usuario Google → crear documento en Firestore */
+                    return self._db.collection('families').doc(user.uid).set({
+                        uid:           user.uid,
+                        email:         user.email,
+                        displayName:   user.displayName || '',
+                        createdAt:     firebase.firestore.FieldValue.serverTimestamp(),
+                        plan:          'explorer',
+                        planActivatedAt: null,
+                        childCount:    0,
+                        lang:          'es',
+                        setupComplete: false,
+                        lastLogin:     firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } else {
+                    /* Usuario existente → actualizar lastLogin */
+                    return self._db.collection('families').doc(user.uid).update({
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+            })
+            .catch(function(e) {
+                if (e.code !== 'auth/popup-closed-by-user') {
+                    self._toast(self._authError(e.code), 'error');
+                }
+            });
+    },
+
+    /* ══════════════════════
+       AUTH: LOGOUT
+    ══════════════════════ */
+    logout: function() {
+        var self = this;
+        this._auth.signOut().then(function() {
+            self._toast('Hasta pronto 👋');
+        });
+    },
+
+    /* ══════════════════════
+       RESET PASSWORD
+    ══════════════════════ */
+    openResetModal: function() {
+        document.getElementById('modal-overlay').classList.add('show');
+        document.getElementById('reset-error').classList.remove('show');
+        document.getElementById('reset-success').style.display = 'none';
+        var email = document.getElementById('login-email').value;
+        document.getElementById('reset-email').value = email || '';
+    },
+
+    closeResetModal: function() {
+        document.getElementById('modal-overlay').classList.remove('show');
+    },
+
+    sendResetEmail: function() {
+        var self = this;
+        var email = document.getElementById('reset-email').value.trim();
+        var errEl = document.getElementById('reset-error');
+        var sucEl = document.getElementById('reset-success');
+
+        errEl.classList.remove('show');
+        sucEl.style.display = 'none';
+
+        if (!email) {
+            errEl.textContent = 'Ingresa tu correo electrónico';
+            errEl.classList.add('show');
+            return;
+        }
+
+        this._auth.sendPasswordResetEmail(email)
+            .then(function() {
+                sucEl.style.display = 'block';
+                setTimeout(function() { self.closeResetModal(); }, 3000);
+            })
+            .catch(function(e) {
+                errEl.textContent = self._authError(e.code);
+                errEl.classList.add('show');
+            });
+    },
+
+    /* ══════════════════════
+       SWITCH TAB
+    ══════════════════════ */
+    switchTab: function(tab) {
+        document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+        document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+        document.getElementById('panel-login').classList.toggle('active', tab === 'login');
+        document.getElementById('panel-register').classList.toggle('active', tab === 'register');
+        this._clearErrors('login');
+        this._clearErrors('register');
+    },
+
+    /* ══════════════════════
+       HELPERS UI
+    ══════════════════════ */
+    _showScreen: function(name) {
+        document.querySelectorAll('.screen').forEach(function(s) {
+            s.classList.remove('active');
+        });
+        var target = document.getElementById('screen-' + name);
+        if (target) target.classList.add('active');
+    },
+
+    _setLoading: function(btnId, loading) {
+        var btn = document.getElementById(btnId);
+        if (!btn) return;
+        btn.classList.toggle('loading', loading);
+        btn.disabled = loading;
+    },
+
+    _showError: function(form, msg) {
+        var el = document.getElementById(form + '-error');
+        if (el) {
+            el.textContent = msg;
+            el.classList.add('show');
+            /* Shake animation restart */
+            el.style.animation = 'none';
+            el.offsetHeight;
+            el.style.animation = '';
+        }
+    },
+
+    _clearErrors: function(form) {
+        var el = document.getElementById(form + '-error');
+        if (el) el.classList.remove('show');
+    },
+
+    _toast: function(msg, type) {
+        type = type || 'normal';
+        var box = document.getElementById('toasts');
+        var el  = document.createElement('div');
+        el.className = 'toast' + (type === 'success' ? ' success' : type === 'error' ? ' error' : '');
+        el.textContent = msg;
+        box.appendChild(el);
+        setTimeout(function() {
+            el.classList.add('out');
+            setTimeout(function() { el.remove(); }, 280);
+        }, 3500);
+    },
+
+    /* ══════════════════════
+       MENSAJES DE ERROR AUTH
+    ══════════════════════ */
+    _authError: function(code) {
+        var messages = {
+            'auth/user-not-found':        'No encontramos una cuenta con ese correo',
+            'auth/wrong-password':        'Contraseña incorrecta',
+            'auth/email-already-in-use':  'Ya existe una cuenta con ese correo',
+            'auth/invalid-email':         'El correo no es válido',
+            'auth/weak-password':         'La contraseña es muy débil (mínimo 6 caracteres)',
+            'auth/network-request-failed':'Sin conexión. Verifica tu internet',
+            'auth/too-many-requests':     'Demasiados intentos. Espera unos minutos',
+            'auth/popup-blocked':         'El popup fue bloqueado. Permite popups para este sitio',
+            'auth/invalid-credential':    'Correo o contraseña incorrectos',
+            'auth/user-disabled':         'Esta cuenta ha sido deshabilitada',
+        };
+        return messages[code] || 'Error inesperado. Intenta de nuevo';
+    }
+
+};
+
+/* ── ARRANCAR ── */
+document.addEventListener('DOMContentLoaded', function() { DOCH.init(); });
+</script>
+
+</body>
+</html>
