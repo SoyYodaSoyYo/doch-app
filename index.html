@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<!-- DOCH Mis Primeros Pasos - Fase 3: Motor del Juego - v3.0.0 -->
+<!-- DOCH Mis Primeros Pasos - Fase 3 v2: Vibrante + Config Completa -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0d0d1a">
@@ -13,180 +13,267 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Archivo:ital,wght@0,400;0,600;0,700;0,900;1,700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-:root{--pink:#ff2d78;--purple:#7c3aed;--pink-dk:#c8005f;--bg:#0d0d1a;--bg2:#13131f;--glass:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.10);--text:#f0eeff;--muted:rgba(240,238,255,0.50);--error:#ff4e6a;--success:#22d3a0;--warn:#fbbf24;}
-html{margin:0;padding:0;min-height:100vh;background:#000;overflow-x:hidden;}body{margin:0 auto;padding:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Archivo',sans-serif;overflow-x:hidden;max-width:600px;position:relative;}
-body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(124,58,237,.18) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 80%,rgba(255,45,120,.14) 0%,transparent 55%);pointer-events:none;}
+:root{
+  --pink:#ff2d78;--purple:#7c3aed;--pink-dk:#c8005f;--purple-dk:#5b21b6;
+  --bg:#0d0d1a;--bg2:#13131f;--bg3:#1a1a2e;
+  --glass:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.12);
+  --text:#f0eeff;--muted:rgba(240,238,255,0.55);
+  --error:#ff4e6a;--success:#22d3a0;--warn:#fbbf24;
+  --neon-pink:0 0 20px rgba(255,45,120,0.8);
+  --neon-purple:0 0 20px rgba(124,58,237,0.8);
+}
+html{margin:0;padding:0;min-height:100vh;background:#000;overflow-x:hidden;}
+body{margin:0 auto;padding:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Archivo',sans-serif;overflow-x:hidden;max-width:480px;position:relative;}
+body::before{content:'';position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%,rgba(124,58,237,.25) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 80%,rgba(255,45,120,.20) 0%,transparent 55%),
+    radial-gradient(ellipse 40% 40% at 50% 50%,rgba(255,0,127,.05) 0%,transparent 70%);
+  pointer-events:none;}
 .screen{display:none;position:relative;z-index:1;min-height:100vh;}
 .screen.active{display:flex;}
 
-/* LOADING */
+/* ── LOADING ── */
 #screen-loading{align-items:center;justify-content:center;flex-direction:column;gap:24px;}
-.loader-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:3rem;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:pulse-logo 1.8s ease-in-out infinite;}
-@keyframes pulse-logo{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.7;transform:scale(.97);}}
+.loader-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:3rem;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:pulse-logo 1.8s ease-in-out infinite;
+  filter:drop-shadow(0 0 20px rgba(255,45,120,0.5));}
+@keyframes pulse-logo{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.7;transform:scale(.96);}}
 .loader-dots{display:flex;gap:8px;}
-.loader-dots span{width:8px;height:8px;border-radius:50%;background:var(--pink);animation:bounce-dot 1.2s ease-in-out infinite;}
-.loader-dots span:nth-child(2){animation-delay:.2s;}.loader-dots span:nth-child(3){animation-delay:.4s;background:var(--purple);}
+.loader-dots span{width:8px;height:8px;border-radius:50%;background:var(--pink);animation:bounce-dot 1.2s ease-in-out infinite;box-shadow:0 0 10px var(--pink);}
+.loader-dots span:nth-child(2){animation-delay:.2s;background:color-mix(in srgb,var(--pink) 50%,var(--purple));box-shadow:0 0 10px var(--purple);}
+.loader-dots span:nth-child(3){animation-delay:.4s;background:var(--purple);box-shadow:0 0 10px var(--purple);}
 @keyframes bounce-dot{0%,100%{transform:translateY(0);opacity:.4;}50%{transform:translateY(-8px);opacity:1;}}
 
-/* AUTH */
+/* ── AUTH ── */
 #screen-auth{flex-direction:column;align-items:center;justify-content:flex-start;padding:0 0 40px;overflow-y:auto;}
-.auth-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:2.8rem;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.02em;line-height:1;margin-bottom:6px;}
+.auth-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:2.8rem;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  letter-spacing:-.02em;line-height:1;margin-bottom:6px;
+  filter:drop-shadow(0 0 16px rgba(255,45,120,0.4));}
 .auth-tagline{font-size:.85rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.12em;}
 .auth-card{width:100%;max-width:420px;margin:0 auto;padding:0 20px;}
 .auth-tabs{display:flex;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:4px;margin-bottom:24px;gap:4px;}
 .auth-tab{flex:1;padding:11px;border-radius:10px;border:none;background:transparent;color:var(--muted);font-family:'Archivo',sans-serif;font-weight:700;font-style:italic;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;transition:all .2s;}
-.auth-tab.active{background:linear-gradient(135deg,var(--pink),var(--purple));color:white;box-shadow:0 0 16px rgba(255,45,120,.35);}
+.auth-tab.active{background:linear-gradient(135deg,var(--pink),var(--purple));color:white;box-shadow:0 0 20px rgba(255,45,120,.4);}
 .form-panel{display:none;}.form-panel.active{display:flex;flex-direction:column;gap:14px;}
 .form-field{display:flex;flex-direction:column;gap:6px;}
 .form-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
-.form-input{width:100%;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'Archivo',sans-serif;font-size:.95rem;outline:none;transition:border-color .2s;-webkit-appearance:none;}
-.form-input::placeholder{color:rgba(240,238,255,.25);}
-.form-input:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,45,120,.12);}
-.btn-primary{width:100%;padding:15px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-bottom:3px solid var(--pink-dk);border-radius:14px;color:white;font-family:'Archivo',sans-serif;font-weight:700;font-style:italic;font-size:.95rem;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;transition:all .15s;box-shadow:0 4px 20px rgba(255,45,120,.30);}
-.btn-primary:hover{transform:translateY(-1px);}.btn-primary:active{transform:translateY(1px);}
-.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.form-input{width:100%;padding:14px 16px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'Archivo',sans-serif;font-size:.95rem;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;}
+.form-input::placeholder{color:rgba(240,238,255,.2);}
+.form-input:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,45,120,.15),inset 0 0 20px rgba(255,45,120,.05);}
+.btn-primary{width:100%;padding:15px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-bottom:3px solid var(--pink-dk);border-radius:14px;color:white;font-family:'Archivo',sans-serif;font-weight:700;font-style:italic;font-size:.95rem;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;transition:all .15s;box-shadow:0 4px 24px rgba(255,45,120,.4);}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 32px rgba(255,45,120,.5);}
+.btn-primary:active{transform:translateY(1px);border-bottom-width:1px;}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;}
 .btn-primary .btn-spinner{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto;}
 .btn-primary.loading .btn-text{display:none;}.btn-primary.loading .btn-spinner{display:block;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .divider{display:flex;align-items:center;gap:12px;margin:4px 0;}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
 .divider span{font-size:.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.1em;}
-.btn-google{width:100%;padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;color:var(--text);font-family:'Archivo',sans-serif;font-weight:600;font-size:.9rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;}
-.btn-google:hover{background:rgba(255,255,255,.07);transform:translateY(-1px);}
+.btn-google{width:100%;padding:14px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:14px;color:var(--text);font-family:'Archivo',sans-serif;font-weight:600;font-size:.9rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;}
+.btn-google:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.2);transform:translateY(-1px);}
 .google-icon{width:20px;height:20px;flex-shrink:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23EA4335' d='M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z'/%3E%3Cpath fill='%234285F4' d='M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z'/%3E%3Cpath fill='%23FBBC05' d='M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z'/%3E%3Cpath fill='%2334A853' d='M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z'/%3E%3C/svg%3E") center/contain no-repeat;}
-.form-error{background:rgba(255,78,106,.10);border:1px solid rgba(255,78,106,.30);border-radius:10px;padding:12px 14px;font-size:.82rem;color:var(--error);font-weight:600;display:none;}
+.form-error{background:rgba(255,78,106,.10);border:1px solid rgba(255,78,106,.3);border-radius:10px;padding:12px 14px;font-size:.82rem;color:var(--error);font-weight:600;display:none;}
 .form-error.show{display:block;}
 .forgot-link{text-align:right;margin-top:-6px;}
-.forgot-link a{font-size:.78rem;color:var(--muted);text-decoration:none;font-weight:600;}
+.forgot-link a{font-size:.78rem;color:var(--muted);text-decoration:none;font-weight:600;transition:color .2s;}
 .forgot-link a:hover{color:var(--pink);}
 .terms-text{text-align:center;font-size:.75rem;color:var(--muted);line-height:1.6;margin-top:8px;}
 .terms-text a{color:var(--pink);text-decoration:none;font-weight:600;}
 
-/* ONBOARDING */
+/* ── ONBOARDING ── */
 #screen-onboarding{flex-direction:column;align-items:stretch;overflow-y:auto;}
-.ob-header{position:sticky;top:0;z-index:50;background:rgba(13,13,26,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:16px 20px 12px;}
+.ob-header{position:sticky;top:0;z-index:50;background:rgba(13,13,26,.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,45,120,.2);padding:14px 20px 12px;}
 .ob-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .ob-step-label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-weight:700;}
 .ob-progress-track{height:4px;background:var(--border);border-radius:999px;margin-top:10px;overflow:hidden;}
-.ob-progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--pink),var(--purple));transition:width .5s cubic-bezier(.4,0,.2,1);}
-.ob-step{display:none;flex-direction:column;padding:24px 20px 40px;max-width:520px;margin:0 auto;width:100%;}
+.ob-progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--pink),var(--purple));transition:width .5s cubic-bezier(.4,0,.2,1);box-shadow:0 0 8px var(--pink);}
+.ob-step{display:none;flex-direction:column;padding:24px 20px 40px;max-width:480px;margin:0 auto;width:100%;}
 .ob-step.active{display:flex;}
-.ob-step-title{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;line-height:1.2;}
+.ob-step-title{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;line-height:1.2;filter:drop-shadow(0 0 10px rgba(255,45,120,0.3));}
 .ob-step-sub{font-size:.88rem;color:var(--muted);line-height:1.6;margin-bottom:28px;}
-.ob-field-card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:16px;}
+.ob-field-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:20px;margin-bottom:16px;backdrop-filter:blur(10px);}
 .ob-field-name{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:4px;}
-.ob-field-why{font-size:.78rem;color:rgba(255,45,120,.9);font-weight:600;line-height:1.5;margin-bottom:12px;padding:8px 12px;background:rgba(255,45,120,.06);border-radius:8px;border-left:2px solid var(--pink);}
+.ob-field-why{font-size:.78rem;color:rgba(255,120,180,.9);font-weight:600;line-height:1.5;margin-bottom:12px;padding:8px 12px;background:rgba(255,45,120,.08);border-radius:8px;border-left:2px solid var(--pink);}
 .ob-field-why strong{color:var(--pink);}
-.ob-input{width:100%;padding:13px 16px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'Archivo',sans-serif;font-size:.95rem;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+.ob-input{width:100%;padding:13px 16px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'Archivo',sans-serif;font-size:.95rem;outline:none;transition:border-color .2s;-webkit-appearance:none;}
 .ob-input::placeholder{color:rgba(240,238,255,.2);}
-.ob-input:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,45,120,.10);}
+.ob-input:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,45,120,.12);}
 .ob-examples{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
-.ob-example{padding:5px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:999px;font-size:.75rem;color:var(--muted);cursor:pointer;transition:all .2s;}
-.ob-example:hover{background:rgba(255,45,120,.15);border-color:rgba(255,45,120,.4);color:var(--pink);}
+.ob-example{padding:5px 12px;background:rgba(255,45,120,.08);border:1px solid rgba(255,45,120,.2);border-radius:999px;font-size:.75rem;color:rgba(255,150,200,.9);cursor:pointer;transition:all .2s;}
+.ob-example:hover{background:rgba(255,45,120,.2);border-color:var(--pink);color:white;}
 .color-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:8px;}
 .color-swatch{width:100%;aspect-ratio:1;border-radius:12px;cursor:pointer;border:3px solid transparent;transition:all .2s;position:relative;}
-.color-swatch.selected::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:1rem;text-shadow:0 0 6px rgba(0,0,0,.5);}
-.color-swatch.selected{border-color:white;transform:scale(1.08);box-shadow:0 0 16px rgba(255,255,255,.3);}
+.color-swatch.selected::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:1rem;text-shadow:0 0 6px rgba(0,0,0,.8);}
+.color-swatch.selected{border-color:white;transform:scale(1.1);box-shadow:0 0 20px rgba(255,255,255,.4);}
 .bg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;}
 .bg-preset{aspect-ratio:16/9;border-radius:12px;cursor:pointer;border:3px solid transparent;transition:all .2s;position:relative;overflow:hidden;display:flex;align-items:flex-end;}
-.bg-preset.selected{border-color:white;box-shadow:0 0 16px rgba(255,255,255,.3);}
-.bg-preset-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:white;padding:4px 8px;background:rgba(0,0,0,.5);width:100%;text-align:center;}
-.bg-upload-btn{aspect-ratio:16/9;border-radius:12px;cursor:pointer;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:all .2s;background:rgba(255,255,255,.03);}
-.bg-upload-btn:hover{border-color:var(--pink);background:rgba(255,45,120,.06);}
+.bg-preset.selected{border-color:white;box-shadow:0 0 20px rgba(255,255,255,.4);}
+.bg-preset-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:white;padding:4px 8px;background:rgba(0,0,0,.6);width:100%;text-align:center;}
+.bg-upload-btn{aspect-ratio:16/9;border-radius:12px;cursor:pointer;border:2px dashed rgba(255,45,120,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:all .2s;background:rgba(255,45,120,.04);}
+.bg-upload-btn:hover{border-color:var(--pink);background:rgba(255,45,120,.10);}
 .bg-upload-btn span{font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.08em;}
 .bg-preview{aspect-ratio:16/9;border-radius:12px;border:3px solid var(--pink);object-fit:cover;width:100%;display:none;}
 .bg-restriction{font-size:.72rem;color:var(--muted);margin-top:8px;text-align:center;line-height:1.5;}
 .finance-row-ob{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.finance-color-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
-.finance-pct-input{width:72px;padding:8px 10px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Archivo',sans-serif;font-size:.9rem;font-weight:700;text-align:center;outline:none;-webkit-appearance:none;}
+.finance-color-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;box-shadow:0 0 6px currentColor;}
+.finance-pct-input{width:72px;padding:8px 10px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Archivo',sans-serif;font-size:.9rem;font-weight:700;text-align:center;outline:none;-webkit-appearance:none;}
 .finance-pct-input:focus{border-color:var(--pink);}
 .finance-total{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:10px;margin-top:4px;font-weight:700;font-size:.88rem;}
-.finance-total.ok{background:rgba(34,211,160,.10);color:var(--success);border:1px solid rgba(34,211,160,.25);}
-.finance-total.err{background:rgba(255,78,106,.10);color:var(--error);border:1px solid rgba(255,78,106,.25);}
-.mission-card-ob{display:flex;align-items:center;gap:12px;padding:14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;transition:all .2s;}
-.mission-card-ob.active-m{border-color:rgba(255,45,120,.35);background:rgba(255,45,120,.06);}
+.finance-total.ok{background:rgba(34,211,160,.10);color:var(--success);border:1px solid rgba(34,211,160,.3);}
+.finance-total.err{background:rgba(255,78,106,.10);color:var(--error);border:1px solid rgba(255,78,106,.3);}
+.mission-card-ob{display:flex;align-items:center;gap:12px;padding:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;margin-bottom:8px;transition:all .2s;}
+.mission-card-ob.active-m{border-color:rgba(255,45,120,.4);background:rgba(255,45,120,.08);box-shadow:inset 0 0 20px rgba(255,45,120,.06);}
 .mission-toggle{width:44px;height:24px;border-radius:999px;border:none;cursor:pointer;position:relative;transition:all .25s;flex-shrink:0;}
-.mission-toggle.on{background:linear-gradient(135deg,var(--pink),var(--purple));}
+.mission-toggle.on{background:linear-gradient(135deg,var(--pink),var(--purple));box-shadow:0 0 12px rgba(255,45,120,.5);}
 .mission-toggle.off{background:rgba(255,255,255,.15);}
-.mission-toggle::after{content:'';position:absolute;top:3px;width:18px;height:18px;border-radius:50%;background:white;transition:left .25s;box-shadow:0 1px 4px rgba(0,0,0,.3);}
+.mission-toggle::after{content:'';position:absolute;top:3px;width:18px;height:18px;border-radius:50%;background:white;transition:left .25s;box-shadow:0 1px 4px rgba(0,0,0,.4);}
 .mission-toggle.on::after{left:23px;}.mission-toggle.off::after{left:3px;}
 .ob-nav{display:flex;gap:12px;margin-top:28px;}
-.btn-ob-back{flex:1;padding:14px;background:transparent;border:1px solid var(--border);border-radius:14px;color:var(--muted);font-family:'Archivo',sans-serif;font-weight:700;font-style:italic;font-size:.88rem;text-transform:uppercase;cursor:pointer;transition:all .2s;}
-.btn-ob-back:hover{background:var(--glass);}
-.btn-ob-next{flex:2;padding:14px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-bottom:3px solid var(--pink-dk);border-radius:14px;color:white;font-family:'Archivo',sans-serif;font-weight:700;font-style:italic;font-size:.95rem;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;transition:all .15s;box-shadow:0 4px 20px rgba(255,45,120,.30);}
-.btn-ob-next:hover{transform:translateY(-1px);}.btn-ob-next:active{transform:translateY(1px);}
-.btn-ob-next:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.btn-ob-back{flex:1;padding:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:14px;color:var(--muted);font-family:'Archivo',sans-serif;font-weight:700;font-style:italic;font-size:.88rem;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.btn-ob-back:hover{background:rgba(255,255,255,.09);}
+.btn-ob-next{flex:2;padding:14px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-bottom:3px solid var(--pink-dk);border-radius:14px;color:white;font-family:'Archivo',sans-serif;font-weight:700;font-style:italic;font-size:.95rem;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;transition:all .15s;box-shadow:0 4px 24px rgba(255,45,120,.4);}
+.btn-ob-next:hover{transform:translateY(-1px);box-shadow:0 6px 32px rgba(255,45,120,.5);}
+.btn-ob-next:active{transform:translateY(1px);border-bottom-width:1px;}
+.btn-ob-next:disabled{opacity:.35;cursor:not-allowed;transform:none;}
 .btn-ob-next .btn-spinner{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto;}
 .btn-ob-next.loading .btn-text{display:none;}.btn-ob-next.loading .btn-spinner{display:block;}
-.disclaimer-box{background:rgba(251,191,36,.06);border:2px solid rgba(251,191,36,.35);border-radius:16px;padding:20px;margin-bottom:20px;}
+.disclaimer-box{background:rgba(251,191,36,.06);border:2px solid rgba(251,191,36,.3);border-radius:16px;padding:20px;margin-bottom:20px;}
 .disclaimer-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:var(--warn);margin-bottom:10px;}
-.disclaimer-text{font-size:.82rem;color:rgba(251,191,36,.85);line-height:1.7;}
+.disclaimer-text{font-size:.82rem;color:rgba(251,191,36,.8);line-height:1.7;}
 .disclaimer-check{display:flex;align-items:flex-start;gap:10px;margin-top:14px;cursor:pointer;}
 .disclaimer-check input{margin-top:2px;accent-color:var(--warn);width:16px;height:16px;flex-shrink:0;}
 .disclaimer-check span{font-size:.82rem;color:rgba(251,191,36,.9);font-weight:600;line-height:1.5;}
-.summary-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07);}
 .summary-row:last-child{border-bottom:none;}
 .summary-key{font-size:.78rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.08em;}
 .summary-val{font-size:.88rem;font-weight:700;color:var(--text);}
 .theme-preview{border-radius:16px;padding:20px;display:flex;align-items:center;gap:14px;overflow:hidden;min-height:90px;}
-.theme-preview-name{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:white;}
+.theme-preview-name{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:white;text-shadow:0 0 20px rgba(255,255,255,.5);}
 .theme-preview-sub{font-size:.78rem;color:rgba(255,255,255,.7);font-weight:600;}
 
-/* GAME */
-#screen-game{flex-direction:column;align-items:stretch;overflow:hidden;height:100svh;max-width:600px;margin:0 auto;width:100%;}
-.marquee-wrap{background:linear-gradient(90deg,rgba(180,0,90,.95),rgba(100,0,60,.95));overflow:hidden;white-space:nowrap;padding:8px 0;box-shadow:0 0 18px rgba(255,0,127,.6);position:sticky;top:0;z-index:50;border-bottom:1px solid rgba(255,0,127,.4);}
-.marquee-inner{display:inline-block;animation:marquee 22s linear infinite;font-family:'Syne',sans-serif;font-weight:800;text-transform:uppercase;font-size:1rem;padding-left:100%;letter-spacing:.05em;}
-@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-250%)}}
-.game-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(13,13,26,.80);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
-.game-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.pts-badge{display:flex;align-items:center;gap:6px;background:rgba(255,45,120,.12);border:1px solid rgba(255,45,120,.3);border-radius:999px;padding:5px 12px;}
-.pts-num{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--pink);}
-.pts-label{font-size:.65rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
-.game-content{flex:1;overflow-y:auto;padding:12px 14px 16px;-webkit-overflow-scrolling:touch;}
-.game-tabs{flex-shrink:0;z-index:50;background:rgba(13,13,26,.95);backdrop-filter:blur(16px);border-top:1px solid var(--border);padding:8px 12px calc(8px + env(safe-area-inset-bottom));display:flex;gap:6px;}
-.tab-btn{flex:1;padding:10px 4px;border-radius:10px;font-family:'Archivo',sans-serif;font-style:italic;text-transform:uppercase;font-size:10px;font-weight:700;cursor:pointer;transition:all .2s;opacity:.5;background:none;border:none;color:var(--text);letter-spacing:.04em;}
-.tab-btn.active{background:linear-gradient(135deg,var(--pink),var(--purple));color:white;opacity:1;box-shadow:0 0 14px rgba(255,45,120,.4);}
-.task-card{background:rgba(10,0,25,.80);border:1px solid rgba(255,255,255,.12);border-left:4px solid rgba(255,255,255,.2);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;margin-bottom:10px;backdrop-filter:blur(12px);transition:all .3s;}
-.task-card.done{border-left-color:var(--pink);background:rgba(120,0,60,.55);animation:pulse-glow 2s infinite alternate;}
-@keyframes pulse-glow{from{box-shadow:inset 0 0 8px rgba(255,0,127,.08);}to{box-shadow:inset 0 0 22px rgba(255,0,127,.28);}}
-.seg{height:7px;flex:1;border-radius:4px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);transition:all .3s;}
-.seg.on{background:var(--pink);border-color:var(--pink);box-shadow:0 0 7px var(--pink);}
-.btn-m{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);font-size:20px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;user-select:none;-webkit-user-select:none;}
-.btn-p{width:40px;height:40px;border-radius:10px;background:var(--pink);border:none;border-bottom:4px solid var(--pink-dk);color:#fff;font-size:22px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px rgba(255,0,127,.5);transition:all .12s;user-select:none;-webkit-user-select:none;}
-.btn-p.off{background:#444;border-bottom-color:#222;box-shadow:none;opacity:.4;}
-.btn-m:active,.btn-p:active{transform:scale(.85);}
-.prog-track{width:100%;height:9px;background:rgba(0,0,0,.6);border-radius:999px;overflow:hidden;border:1px solid rgba(255,255,255,.1);}
-.prog-fill{height:100%;border-radius:999px;transition:width .9s;}
-.glass-card{background:rgba(10,0,20,.75);border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:18px;padding:16px;margin-bottom:12px;}
+/* ════════════════════════════════
+   GAME — VIBRANTE
+════════════════════════════════ */
+#screen-game{flex-direction:column;align-items:stretch;overflow:hidden;height:100svh;}
+
+/* Marquee neón */
+.marquee-wrap{background:linear-gradient(90deg,#1a0030,#2d0060,#1a0030);overflow:hidden;white-space:nowrap;padding:7px 0;border-bottom:2px solid var(--pink);box-shadow:0 0 20px rgba(255,0,127,.6),0 2px 40px rgba(255,0,127,.3);position:relative;flex-shrink:0;}
+.marquee-wrap::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,45,120,.08),transparent);animation:shimmer 3s linear infinite;}
+@keyframes shimmer{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+.marquee-inner{display:inline-block;animation:marquee 20s linear infinite;font-family:'Syne',sans-serif;font-weight:800;text-transform:uppercase;font-size:.85rem;padding-left:100%;letter-spacing:.08em;color:rgba(255,180,220,.9);text-shadow:0 0 10px var(--pink);}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+
+/* Header vibrante */
+.game-header{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:linear-gradient(180deg,rgba(13,0,30,.95) 0%,rgba(10,0,25,.85) 100%);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,45,120,.2);flex-shrink:0;}
+.game-title{font-family:'Syne',sans-serif;font-weight:800;font-size:.95rem;background:linear-gradient(135deg,var(--pink),#ff9ecc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px rgba(255,45,120,0.4));}
+.pts-badge{display:flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(255,45,120,.2),rgba(124,58,237,.2));border:1px solid rgba(255,45,120,.4);border-radius:999px;padding:5px 14px;box-shadow:0 0 14px rgba(255,45,120,.25),inset 0 0 20px rgba(255,45,120,.05);}
+.pts-num{font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem;color:var(--pink);text-shadow:0 0 12px rgba(255,45,120,.7);}
+.pts-label{font-size:.62rem;color:rgba(255,150,200,.8);font-weight:700;text-transform:uppercase;letter-spacing:.1em;}
+
+/* Content */
+.game-content{flex:1;overflow-y:auto;padding:10px 12px 12px;-webkit-overflow-scrolling:touch;min-height:0;}
+
+/* Tabs neon */
+.game-tabs{flex-shrink:0;background:linear-gradient(180deg,rgba(10,0,25,.98),rgba(15,0,35,.99));border-top:1px solid rgba(255,45,120,.25);padding:6px 10px calc(6px + env(safe-area-inset-bottom));display:flex;gap:5px;box-shadow:0 -4px 30px rgba(255,0,127,.15);}
+.tab-btn{flex:1;padding:9px 4px;border-radius:10px;font-family:'Archivo',sans-serif;font-style:italic;text-transform:uppercase;font-size:9.5px;font-weight:700;cursor:pointer;transition:all .2s;opacity:.45;background:transparent;border:1px solid transparent;color:var(--text);letter-spacing:.04em;line-height:1.3;}
+.tab-btn.active{background:linear-gradient(135deg,var(--pink),var(--purple));color:white;opacity:1;box-shadow:0 0 18px rgba(255,45,120,.5),inset 0 0 20px rgba(255,255,255,.05);border-color:transparent;}
+.tab-btn:hover:not(.active){opacity:.7;border-color:rgba(255,45,120,.2);}
+
+/* ── TASK CARDS VIBRANTES ── */
+.task-card{background:linear-gradient(135deg,rgba(15,0,35,.9),rgba(8,0,20,.95));border:1px solid rgba(255,255,255,.1);border-left:4px solid rgba(255,45,120,.3);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;margin-bottom:10px;backdrop-filter:blur(12px);transition:all .3s;position:relative;overflow:hidden;}
+.task-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,45,120,.4),transparent);opacity:0;transition:opacity .3s;}
+.task-card.done{border-left-color:var(--pink);background:linear-gradient(135deg,rgba(120,0,60,.5),rgba(60,0,80,.6));box-shadow:0 0 20px rgba(255,0,127,.15),inset 0 0 30px rgba(255,0,127,.08);animation:pulse-glow 2.5s infinite alternate;}
+.task-card.done::before{opacity:1;}
+@keyframes pulse-glow{from{box-shadow:0 0 10px rgba(255,0,127,.1),inset 0 0 20px rgba(255,0,127,.05);}to{box-shadow:0 0 28px rgba(255,0,127,.3),inset 0 0 40px rgba(255,0,127,.12);}}
+.seg{height:7px;flex:1;border-radius:4px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);transition:all .35s;}
+.seg.on{background:linear-gradient(90deg,var(--pink),rgba(255,100,180,.8));border-color:var(--pink);box-shadow:0 0 8px var(--pink);}
+.btn-m{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);font-size:20px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;user-select:none;-webkit-user-select:none;}
+.btn-m:hover{background:rgba(255,255,255,.14);color:white;}
+.btn-p{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-bottom:3px solid var(--pink-dk);color:#fff;font-size:22px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 16px rgba(255,0,127,.5);transition:all .12s;user-select:none;-webkit-user-select:none;}
+.btn-p.off{background:rgba(80,80,80,.6);border-bottom-color:rgba(40,40,40,.8);box-shadow:none;opacity:.4;}
+.btn-m:active,.btn-p:active{transform:scale(.83);}
+
+/* Barras de progreso */
+.prog-track{width:100%;height:8px;background:rgba(0,0,0,.5);border-radius:999px;overflow:hidden;border:1px solid rgba(255,255,255,.08);}
+.prog-fill{height:100%;border-radius:999px;transition:width 1s cubic-bezier(.4,0,.2,1);box-shadow:0 0 8px currentColor;}
+
+/* Glass cards */
+.glass-card{background:linear-gradient(135deg,rgba(15,0,35,.85),rgba(8,0,20,.9));border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 4px 24px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.05);}
+
+/* Medallas */
 .medal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px;}
-.medal-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border-radius:12px;cursor:pointer;transition:all .2s;}
-.medal-item.earned{background:rgba(255,45,120,.12);border:1px solid rgba(255,45,120,.3);}
-.medal-item.locked{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);opacity:.5;}
+.medal-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px;border-radius:12px;cursor:pointer;transition:all .2s;border:1px solid transparent;}
+.medal-item.earned{background:linear-gradient(135deg,rgba(255,45,120,.15),rgba(124,58,237,.15));border-color:rgba(255,45,120,.35);box-shadow:0 0 14px rgba(255,45,120,.15);}
+.medal-item.earned .medal-icon{animation:medal-pulse 2s ease-in-out infinite;}
+@keyframes medal-pulse{0%,100%{filter:drop-shadow(0 0 4px rgba(255,45,120,.5));}50%{filter:drop-shadow(0 0 12px rgba(255,45,120,.9));}}
+.medal-item.locked{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.06);opacity:.45;}
 .medal-icon{font-size:1.6rem;}
-.medal-label{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;text-align:center;color:var(--muted);line-height:1.2;}
-.reward-card{background:rgba(10,0,25,.80);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(12px);border-radius:14px;padding:14px 16px;margin-bottom:10px;}
-.finance-row-disp{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07);}
+.medal-label{font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;text-align:center;color:var(--muted);line-height:1.2;}
+
+/* Reward cards */
+.reward-card{background:linear-gradient(135deg,rgba(15,0,35,.85),rgba(8,0,20,.9));border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(12px);border-radius:16px;padding:14px 16px;margin-bottom:10px;position:relative;overflow:hidden;}
+.reward-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,45,120,.4),transparent);}
+
+/* Finance display */
+.finance-row-disp{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06);}
 .finance-row-disp:last-child{border-bottom:none;}
-.btn-historia{width:100%;text-align:left;background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.1);border-radius:16px;padding:16px 18px;margin-bottom:12px;color:var(--text);cursor:pointer;font-size:.88rem;line-height:1.6;font-family:'Archivo',sans-serif;transition:all .2s;display:flex;align-items:flex-start;gap:12px;}
-.btn-historia:hover{background:rgba(255,45,120,.15);border-color:rgba(255,45,120,.6);}
-.diario-textarea{width:100%;min-height:110px;padding:14px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.15);border-radius:16px;color:var(--text);font-family:'Archivo',sans-serif;font-size:.95rem;line-height:1.7;resize:none;outline:none;-webkit-appearance:none;}
-.diario-textarea:focus{border-color:rgba(255,45,120,.6);}
-.diario-textarea::placeholder{color:rgba(255,255,255,.3);}
-.hist-row{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;border-radius:13px;margin-bottom:9px;background:rgba(10,0,25,.80);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(10px);cursor:pointer;}
-#toasts{position:fixed;top:60px;right:12px;z-index:300;display:flex;flex-direction:column;gap:9px;pointer-events:none;width:min(290px,calc(100vw - 24px));}
-.toast{background:rgba(10,0,20,.92);border:1px solid rgba(255,255,255,.15);border-left:4px solid var(--pink);border-radius:13px;padding:13px 15px;backdrop-filter:blur(18px);animation:tIn .38s cubic-bezier(.17,.89,.32,1.28);}
+
+/* Historia */
+.btn-historia{width:100%;text-align:left;background:linear-gradient(135deg,rgba(15,0,35,.8),rgba(8,0,20,.9));border:2px solid rgba(255,255,255,.1);border-radius:16px;padding:16px 18px;margin-bottom:12px;color:var(--text);cursor:pointer;font-size:.88rem;line-height:1.6;font-family:'Archivo',sans-serif;transition:all .2s;display:flex;align-items:flex-start;gap:12px;position:relative;overflow:hidden;}
+.btn-historia:hover{background:linear-gradient(135deg,rgba(255,45,120,.2),rgba(124,58,237,.2));border-color:var(--pink);box-shadow:0 0 20px rgba(255,45,120,.2);}
+
+/* Diario */
+.diario-textarea{width:100%;min-height:110px;padding:14px;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.12);border-radius:16px;color:var(--text);font-family:'Archivo',sans-serif;font-size:.95rem;line-height:1.7;resize:none;outline:none;transition:all .2s;-webkit-appearance:none;}
+.diario-textarea:focus{border-color:rgba(255,45,120,.6);background:rgba(255,45,120,.05);box-shadow:0 0 20px rgba(255,45,120,.1);}
+.diario-textarea::placeholder{color:rgba(255,255,255,.25);}
+
+/* Historial rows */
+.hist-row{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;border-radius:13px;margin-bottom:8px;background:linear-gradient(135deg,rgba(15,0,35,.8),rgba(8,0,20,.9));border:1px solid rgba(255,255,255,.08);cursor:pointer;transition:all .2s;}
+.hist-row:hover{border-color:rgba(255,45,120,.3);box-shadow:0 0 14px rgba(255,45,120,.1);}
+
+/* Config edit cards */
+.edit-card{background:linear-gradient(135deg,rgba(20,0,40,.9),rgba(10,0,25,.95));border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px;margin-bottom:10px;}
+.edit-card-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px;}
+.edit-input{width:100%;padding:10px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:var(--text);font-family:'Archivo',sans-serif;font-size:.88rem;outline:none;transition:border-color .2s;-webkit-appearance:none;margin-bottom:6px;}
+.edit-input:focus{border-color:var(--pink);}
+.edit-input-sm{width:70px;padding:8px 10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:var(--text);font-family:'Archivo',sans-serif;font-size:.85rem;font-weight:700;text-align:center;outline:none;-webkit-appearance:none;}
+.edit-input-sm:focus{border-color:var(--pink);}
+.btn-save-edit{padding:10px 18px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-radius:10px;color:white;font-family:'Archivo',sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.8rem;cursor:pointer;box-shadow:0 0 14px rgba(255,45,120,.3);transition:all .2s;}
+.btn-save-edit:hover{transform:translateY(-1px);box-shadow:0 0 20px rgba(255,45,120,.5);}
+.section-title-game{font-family:'Syne',sans-serif;font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:18px 0 10px;padding-left:2px;}
+
+/* Toast */
+#toasts{position:fixed;top:12px;right:12px;left:12px;max-width:400px;margin:0 auto;z-index:9000;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+.toast{background:linear-gradient(135deg,rgba(15,0,35,.97),rgba(8,0,20,.98));border:1px solid rgba(255,45,120,.3);border-left:4px solid var(--pink);border-radius:14px;padding:13px 16px;backdrop-filter:blur(20px);animation:tIn .38s cubic-bezier(.17,.89,.32,1.28);box-shadow:0 4px 24px rgba(0,0,0,.4),0 0 20px rgba(255,45,120,.15);}
 .toast.out{animation:tOut .3s ease-in forwards;}
-.toast.perfect{border-left-color:#facc15;}.toast.reward{border-left-color:#22d3ee;}.toast.bad{border-left-color:#f87171;}
-@keyframes tIn{from{transform:translateX(108%);opacity:0}to{transform:translateX(0);opacity:1}}
-@keyframes tOut{from{transform:translateX(0);opacity:1}to{transform:translateX(108%);opacity:0}}
-#fx-canvas{position:fixed;inset:0;pointer-events:none;z-index:900;}
-#sync-bar{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:60;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.12em;padding:5px 14px;border-radius:999px;transition:all .3s;white-space:nowrap;pointer-events:none;}
-.sb-ok{background:rgba(0,180,60,.25);color:#00ff70;border:1px solid rgba(0,220,80,.4);}
-.sb-busy{background:rgba(255,200,0,.2);color:#ffc800;border:1px solid rgba(255,200,0,.4);}
-.sb-err{background:rgba(255,60,60,.2);color:#ff6060;border:1px solid rgba(255,80,80,.4);}
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:800;align-items:center;justify-content:center;padding:20px;}
+.toast.perfect{border-left-color:#facc15;box-shadow:0 4px 24px rgba(0,0,0,.4),0 0 20px rgba(251,191,36,.25);}
+.toast.reward{border-left-color:#22d3ee;box-shadow:0 4px 24px rgba(0,0,0,.4),0 0 20px rgba(34,211,238,.2);}
+.toast.bad{border-left-color:#f87171;}
+@keyframes tIn{from{transform:translateY(-20px) scale(.9);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+@keyframes tOut{from{transform:translateY(0);opacity:1}to{transform:translateY(-20px) scale(.9);opacity:0}}
+
+/* FX Canvas */
+#fx-canvas{position:fixed;inset:0;pointer-events:none;z-index:8000;}
+
+/* Sync bar */
+#sync-bar{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);z-index:500;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.12em;padding:5px 14px;border-radius:999px;transition:all .3s;white-space:nowrap;pointer-events:none;backdrop-filter:blur(10px);}
+.sb-ok{background:rgba(0,180,60,.2);color:#00ff70;border:1px solid rgba(0,220,80,.35);}
+.sb-busy{background:rgba(255,200,0,.15);color:#ffc800;border:1px solid rgba(255,200,0,.3);}
+.sb-err{background:rgba(255,60,60,.15);color:#ff6060;border:1px solid rgba(255,80,80,.3);}
+
+/* Modals */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);z-index:8500;align-items:center;justify-content:center;padding:20px;}
 .modal-overlay.show{display:flex;}
-.modal-box{background:rgba(15,0,30,.96);border:1px solid rgba(255,45,120,.4);border-radius:22px;padding:28px 24px;max-width:320px;width:90%;text-align:center;box-shadow:0 0 40px rgba(255,45,120,.2);}
+.modal-box{background:linear-gradient(135deg,rgba(20,0,40,.98),rgba(10,0,25,.99));border:1px solid rgba(255,45,120,.35);border-radius:22px;padding:28px 24px;max-width:320px;width:90%;text-align:center;box-shadow:0 0 50px rgba(255,45,120,.2),inset 0 1px 0 rgba(255,255,255,.05);}
+
+/* Racha display */
+.racha-card{display:flex;justify-content:space-around;align-items:center;padding:16px;background:linear-gradient(135deg,rgba(255,45,120,.08),rgba(124,58,237,.08));border:1px solid rgba(255,45,120,.2);border-radius:16px;margin-top:14px;box-shadow:0 0 20px rgba(255,45,120,.08);}
 </style>
 </head>
 <body>
@@ -201,8 +288,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
     <div style="font-family:'Syne',sans-serif;font-size:1.1rem;color:var(--pink);margin-bottom:8px">¿Reiniciar el día?</div>
     <div style="font-size:.85rem;color:rgba(255,255,255,.7);margin-bottom:22px;line-height:1.5">Se guardarán los puntos de hoy y se reiniciarán las misiones.</div>
     <div style="display:flex;gap:12px">
-      <button onclick="GAME.cancelReset()" style="flex:1;padding:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:12px;color:#fff;font-family:'Archivo',sans-serif;font-style:italic;text-transform:uppercase;font-size:11px;cursor:pointer">Cancelar</button>
-      <button onclick="GAME.confirmReset()" style="flex:1;padding:14px;background:var(--pink);border:none;border-bottom:4px solid var(--pink-dk);border-radius:12px;color:#fff;font-family:'Archivo',sans-serif;font-style:italic;text-transform:uppercase;font-size:11px;cursor:pointer">Reiniciar</button>
+      <button onclick="GAME.cancelReset()" style="flex:1;padding:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;color:#fff;font-family:'Archivo',sans-serif;font-style:italic;text-transform:uppercase;font-size:11px;cursor:pointer">Cancelar</button>
+      <button onclick="GAME.confirmReset()" style="flex:1;padding:14px;background:var(--pink);border:none;border-bottom:3px solid var(--pink-dk);border-radius:12px;color:#fff;font-family:'Archivo',sans-serif;font-style:italic;text-transform:uppercase;font-size:11px;cursor:pointer;box-shadow:0 0 20px rgba(255,45,120,.4)">Reiniciar</button>
     </div>
   </div>
 </div>
@@ -212,8 +299,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
     <div style="font-family:'Syne',sans-serif;font-size:1.1rem;color:#f87171;margin-bottom:8px">¿Reiniciar TODO?</div>
     <div style="font-size:.85rem;color:rgba(255,255,255,.7);margin-bottom:22px;line-height:1.5">Se borrarán <strong>todos</strong> los puntos, historial y medallas. No se puede deshacer.</div>
     <div style="display:flex;gap:12px">
-      <button onclick="GAME.cancelResetAll()" style="flex:1;padding:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:12px;color:#fff;font-family:'Archivo',sans-serif;font-style:italic;text-transform:uppercase;font-size:11px;cursor:pointer">Cancelar</button>
-      <button onclick="GAME.confirmResetAll()" style="flex:1;padding:14px;background:#f87171;border:none;border-bottom:4px solid #b91c1c;border-radius:12px;color:#fff;font-family:'Archivo',sans-serif;font-style:italic;text-transform:uppercase;font-size:11px;cursor:pointer">Borrar todo</button>
+      <button onclick="GAME.cancelResetAll()" style="flex:1;padding:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;color:#fff;font-family:'Archivo',sans-serif;font-style:italic;text-transform:uppercase;font-size:11px;cursor:pointer">Cancelar</button>
+      <button onclick="GAME.confirmResetAll()" style="flex:1;padding:14px;background:#f87171;border:none;border-bottom:3px solid #b91c1c;border-radius:12px;color:#fff;font-family:'Archivo',sans-serif;font-style:italic;text-transform:uppercase;font-size:11px;cursor:pointer">Borrar todo</button>
     </div>
   </div>
 </div>
@@ -236,7 +323,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
 <div id="screen-loading" class="screen active">
   <div class="loader-logo">DOCH</div>
   <div class="loader-dots"><span></span><span></span><span></span></div>
-  <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-weight:600;margin-top:8px">Conectando...</div>
+  <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-weight:600;margin-top:8px;text-shadow:0 0 10px rgba(255,45,120,.4)">Conectando...</div>
 </div>
 
 <!-- AUTH -->
@@ -273,7 +360,6 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
     </div>
   </div>
 </div>
-
 <!-- ONBOARDING -->
 <div id="screen-onboarding" class="screen">
   <div class="ob-header">
@@ -284,7 +370,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
     <div class="ob-progress-track"><div class="ob-progress-fill" id="ob-progress" style="width:25%"></div></div>
   </div>
   <div class="ob-step active" id="ob-step-1">
-    <div style="margin-bottom:28px">
+    <div style="margin-bottom:24px">
       <div class="ob-step-title">¿Quién es el protagonista? 🌟</div>
       <div class="ob-step-sub">Configura la identidad del mundo. Todo puede editarse después en Configuración.</div>
     </div>
@@ -303,7 +389,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
     </div>
     <div class="ob-field-card">
       <div class="ob-field-name">Título de su mundo</div>
-      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> "El Mundo de la Aventurera Valentina" genera identidad y un rol propio desde el primer día.</div>
+      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> "El Mundo de la Aventurera Valentina" le da identidad y un rol propio desde el primer día.</div>
       <input type="text" class="ob-input" id="ob-child-title" placeholder="Aventurera, Explorador, Campeona..." maxlength="30">
       <div class="ob-examples">
         <span class="ob-example" onclick="OB.fillInput('ob-child-title',this)">Aventurera</span>
@@ -316,12 +402,12 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
     </div>
     <div class="ob-field-card">
       <div class="ob-field-name">Color principal</div>
-      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> El color define la energía visual — botones, medallas, barras de progreso.</div>
+      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> El color define la energía visual — botones, medallas, glows. Elige uno que represente a tu hijo/a.</div>
       <div class="color-grid" id="color-grid"></div>
     </div>
     <div class="ob-field-card">
       <div class="ob-field-name">Fondo de la app</div>
-      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> Esta imagen aparecerá como fondo en la app de tu hijo/a en todos los dispositivos. Usa un preset o sube algo especial — una foto familiar o el personaje favorito.</div>
+      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> Esta imagen aparecerá como fondo en la app de tu hijo/a en todos los dispositivos. Elige un preset o sube algo especial — una foto familiar o el personaje favorito.</div>
       <div class="bg-grid" id="bg-grid"></div>
       <div style="margin-top:10px">
         <div class="bg-upload-btn" id="bg-upload-btn" onclick="document.getElementById('bg-file-input').click()">
@@ -337,7 +423,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
     </div>
   </div>
   <div class="ob-step" id="ob-step-2">
-    <div style="margin-bottom:28px">
+    <div style="margin-bottom:24px">
       <div class="ob-step-title">El valor del esfuerzo 💰</div>
       <div class="ob-step-sub">Cada punto ganado tiene un valor real en dinero. Primera lección de educación financiera.</div>
     </div>
@@ -354,14 +440,13 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
         <span class="ob-example" onclick="OB.fillCurrency('€','Euros')">🇪🇺 Euros</span>
         <span class="ob-example" onclick="OB.fillCurrency('S/','Soles')">🇵🇪 Soles</span>
         <span class="ob-example" onclick="OB.fillCurrency('$','Pesos MX')">🇲🇽 Pesos MX</span>
-        <span class="ob-example" onclick="OB.fillCurrency('$','Pesos CO')">🇨🇴 Pesos CO</span>
       </div>
     </div>
     <div class="ob-field-card">
       <div class="ob-field-name">¿Cuánto vale 1 punto?</div>
       <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> Este número conecta el esfuerzo con la realidad. Ajústalo cuando quieras.</div>
       <div style="display:flex;align-items:center;gap:10px">
-        <span id="ob-currency-preview" style="font-size:1rem;font-weight:700;color:var(--pink);flex-shrink:0">$</span>
+        <span id="ob-currency-preview" style="font-size:1rem;font-weight:700;color:var(--pink);flex-shrink:0;text-shadow:0 0 10px var(--pink)">$</span>
         <input type="number" class="ob-input" id="ob-point-value" placeholder="10" min="1" max="99999" value="10" oninput="OB.updateCurrencyPreview()">
         <span style="font-size:.82rem;color:var(--muted);flex-shrink:0">por punto</span>
       </div>
@@ -385,7 +470,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
     </div>
   </div>
   <div class="ob-step" id="ob-step-3">
-    <div style="margin-bottom:28px">
+    <div style="margin-bottom:24px">
       <div class="ob-step-title">Las misiones del día 🎯</div>
       <div class="ob-step-sub">Activa las misiones de la rutina. Todas son editables desde Configuración.</div>
     </div>
@@ -399,7 +484,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
     </div>
   </div>
   <div class="ob-step" id="ob-step-4">
-    <div style="margin-bottom:28px">
+    <div style="margin-bottom:24px">
       <div class="ob-step-title">Casi listo, arquitecto 🏗️</div>
       <div class="ob-step-sub">Revisa el resumen y acepta el compromiso parental.</div>
     </div>
@@ -422,7 +507,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
       <div class="disclaimer-title">⚠️ Compromiso Parental</div>
       <div class="disclaimer-text">
         <strong style="color:var(--warn)">DOCH es una herramienta, no un terapeuta.</strong> No reemplaza orientación clínica, psicológica ni pedagógica.<br><br>
-        Como padre/madre/tutor eres el único responsable del uso en tu hogar, el contenido de las misiones e historias, las recompensas prometidas y la supervisión del acceso de tu hijo/a.<br><br>
+        Como padre/madre/tutor eres el único responsable del uso en tu hogar, el contenido de las misiones e historias, las recompensas prometidas y la supervisión del acceso.<br><br>
         <strong style="color:var(--warn)">Los datos de tu familia son tuyos.</strong> DOCH nunca los compartirá ni venderá.
       </div>
       <label class="disclaimer-check">
@@ -441,11 +526,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
 
 <!-- GAME -->
 <div id="screen-game" class="screen">
-  <div class="marquee-wrap"><div class="marquee-inner" id="marquee-text">DOCH · Mis Primeros Pasos · Cada misión cuenta · ¡Tú puedes! · </div></div>
+  <div class="marquee-wrap"><div class="marquee-inner" id="marquee-text">DOCH · Mis Primeros Pasos · Cada misión cuenta · ¡Tú puedes! · Sigue adelante · </div></div>
   <div class="game-header">
     <div>
       <div class="game-title" id="game-app-title">DOCH</div>
-      <div style="font-size:.68rem;color:var(--muted);font-weight:600" id="game-date-label"></div>
+      <div style="font-size:.65rem;color:var(--muted);font-weight:600;margin-top:1px" id="game-date-label"></div>
     </div>
     <div class="pts-badge"><div class="pts-num" id="total-pts">0</div><div class="pts-label">pts</div></div>
   </div>
@@ -453,7 +538,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
   <div class="game-tabs">
     <button class="tab-btn active" id="tab-tasks" onclick="GAME.tab('tasks')">🎯<br>Misiones</button>
     <button class="tab-btn" id="tab-rewards" onclick="GAME.tab('rewards')">🎁<br>Premios</button>
-    <button class="tab-btn" id="tab-historia" onclick="GAME.tab('historia')">📖<br>Mi Espacio</button>
+    <button class="tab-btn" id="tab-historia" onclick="GAME.tab('historia')">📖<br>Espacio</button>
     <button class="tab-btn" id="tab-rules" onclick="GAME.tab('rules')">📋<br>Reglas</button>
   </div>
 </div>
@@ -501,40 +586,46 @@ var MEDALLAS_BASE=[
 ];
 
 var HISTORIAS_BASE=[
-  {titulo:'La tarea que no quería hacer',emoji:'📚',intro:'Era viernes por la tarde y el sol brillaba afuera. Tenía tarea de matemáticas — sumas difíciles. Sus amigas la llamaron para ir al parque. "Después la hago", pensó. Pero cuando volvió estaba muy cansada y la tarea seguía ahí, sin hacer.',opciones:[{texto:'Hago la tarea antes de salir a jugar',valor:'bueno',feedback:'⭐ ¡Decisión de campeona! Primero lo importante, después el descanso.',leccion:'Cumplir las responsabilidades primero nos deja disfrutar el tiempo libre sin culpa.'},{texto:'Salgo a jugar y la hago después',valor:'neutro',feedback:'😕 El "después" no siempre llega. La tarea sin hacer pesa más que el juego.',leccion:'Dejar las tareas para después hace que se acumulen y cuesten más.'}]},
-  {titulo:'El vaso roto',emoji:'🥛',intro:'Estaba jugando en la cocina y sin querer tiró un vaso que se rompió. Nadie la vio. Podía dejar los pedazos ahí y hacerse que no sabía nada.',opciones:[{texto:'Le digo a mamá o papá que rompí el vaso',valor:'bueno',feedback:'💎 ¡Eso es valentía real! Decir la verdad cuando nadie nos vio es el acto más honesto.',leccion:'La honestidad vale más cuando nadie nos está mirando.'},{texto:'Escondo los pedazos y no digo nada',valor:'malo',feedback:'😔 Esconder el error no lo borra. Siempre es mejor decir la verdad antes de que otros lo descubran.',leccion:'Admitir nuestros errores nos hace más confiables y nos libera por dentro.'}]},
-  {titulo:'El juguete ajeno',emoji:'🚗',intro:'Encontró el juguete favorito de su hermano en el piso. Ella quería jugar con él pero él no estaba para pedirle permiso.',opciones:[{texto:'Espero y le pido permiso cuando llegue',valor:'bueno',feedback:'🌟 ¡Perfecto! Respetar las cosas ajenas es una de las formas más bonitas de querer a alguien.',leccion:'Pedir permiso antes de usar algo de otra persona demuestra respeto y cariño.'},{texto:'Lo tomo prestado, total ya lo devuelvo',valor:'neutro',feedback:'🤔 Aunque lo devuelvas, él no supo que lo usaste. El permiso es importante aunque parezca pequeño.',leccion:'Usar cosas ajenas sin permiso puede romper la confianza, aunque tengamos buenas intenciones.'}]},
-  {titulo:'La amiga que está sola',emoji:'🫂',intro:'En el recreo vio que Camila estaba sola en un rincón mirando al suelo. Sus otras amigas la llamaban para jugar.',opciones:[{texto:'Me acerco a Camila para ver si está bien',valor:'bueno',feedback:'💝 Eso es empatía pura. Ver a alguien que necesita ayuda y actuar es un superpoder.',leccion:'Notar cuando alguien está triste y acercarse hace una diferencia enorme en su día.'},{texto:'Me voy a jugar con mis amigas',valor:'neutro',feedback:'😕 Es normal querer jugar, pero Camila necesitaba que alguien la viera.',leccion:'Un pequeño gesto de atención puede cambiar completamente el día de alguien.'}]},
-  {titulo:'Los dulces de la despensa',emoji:'🍬',intro:'Encontró una bolsa de dulces en la despensa. Nadie estaba en casa. Le dijeron que no comiera dulces antes de comer.',opciones:[{texto:'No como los dulces y espero hasta después de comer',valor:'bueno',feedback:'⭐ ¡Fuerza de voluntad increíble! Respetar las reglas aunque nadie te vea es ser íntegra.',leccion:'Cumplir las reglas cuando nadie nos mira es la prueba más real de nuestro carácter.'},{texto:'Como uno solo, nadie se va a dar cuenta',valor:'malo',feedback:'😔 "Solo uno" muchas veces se convierte en varios. Y la culpa de saber que desobedeciste pesa.',leccion:'Las reglas no son solo para cuando nos ven. Son para ayudarnos a tomar buenas decisiones.'}]},
-  {titulo:'El dibujo que no salió bien',emoji:'🎨',intro:'Trabajó mucho en su dibujo para el colegio pero no quedó como esperaba. Su amiga dijo que el suyo era mejor. Tuvo ganas de copiar partes del dibujo de su amiga.',opciones:[{texto:'Entrego mi dibujo aunque no sea perfecto',valor:'bueno',feedback:'💪 ¡Valiente! Lo que hiciste con tus propias manos vale mucho más que cualquier copia perfecta.',leccion:'Nuestro esfuerzo propio siempre vale más que copiarlo de otros, aunque no sea perfecto.'},{texto:'Copio algunas partes del dibujo de mi amiga',valor:'malo',feedback:'😔 Copiar puede parecer una solución rápida, pero el resultado no es tuyo.',leccion:'La honestidad en el trabajo propio construye confianza y orgullo real.'}]},
-  {titulo:'El secreto de una amiga',emoji:'🤫',intro:'Una amiga le contó un secreto muy personal y le pidió que no se lo dijera a nadie. Al rato, otras amigas le preguntaron qué le pasaba.',opciones:[{texto:'Les digo que es un secreto y no cuento nada',valor:'bueno',feedback:'💎 ¡Eso es ser una amiga de verdad! Guardar un secreto es uno de los actos de lealtad más importantes.',leccion:'Guardar los secretos que nos confían construye amistades reales y duraderas.'},{texto:'Cuento el secreto porque no es para tanto',valor:'malo',feedback:'😔 Para ella sí era importante. Contar secretos rompe la confianza y es muy difícil repararla.',leccion:'La confianza se gana con el tiempo y se puede perder en segundos.'}]},
-  {titulo:'La fila del recreo',emoji:'🧃',intro:'Había una fila larga para comprar jugo. Llegó tarde pero vio un espacio en el medio donde podía meterse sin que nadie lo notara mucho.',opciones:[{texto:'Me pongo al final de la fila como todos',valor:'bueno',feedback:'⭐ ¡Justo y correcto! Respetar el orden hace que todo funcione mejor para todos.',leccion:'Respetar las filas y los turnos es una forma de respetar a las personas que llegaron antes.'},{texto:'Me meto en el espacio del medio',valor:'malo',feedback:'😕 Meterse en la fila es injusto con quienes esperaron.',leccion:'Hacer trampa en cosas pequeñas también cuenta. El respeto se practica en cada detalle.'}]},
-  {titulo:'El regalo de la abuela',emoji:'🎁',intro:'La abuela le regaló un suéter muy feo. La abuela preguntó: "¿Te gustó?" No sabía qué decir.',opciones:[{texto:'Le digo que me gusta el gesto aunque no sea mi favorito',valor:'bueno',feedback:'💝 ¡Muy bien! Puedes ser honesta con amor. Agradecer el gesto sin herir a quien te quiere es sabiduría.',leccion:'Podemos ser honestos y amables al mismo tiempo.'},{texto:'Le digo que me encanta aunque no sea verdad',valor:'neutro',feedback:'🤔 A veces las mentiras piadosas protegen sentimientos. Pero también podemos encontrar formas honestas de agradecer.',leccion:'Agradecer el gesto siempre es verdadero.'}]},
-  {titulo:'Pedir ayuda',emoji:'🆘',intro:'Tenía un problema de matemáticas muy difícil. Llevaba mucho tiempo intentándolo sola y se sentía frustrada. Le daba vergüenza preguntar.',opciones:[{texto:'Pido ayuda a mamá, papá o a la profe',valor:'bueno',feedback:'💪 ¡Pedir ayuda es una fortaleza, no una debilidad! Los más sabios siempre saben cuándo necesitan apoyo.',leccion:'Pedir ayuda cuando la necesitamos es señal de inteligencia y valentía.'},{texto:'Sigo intentando sola aunque me frustre',valor:'neutro',feedback:'🤔 La perseverancia es buena, pero saber cuándo pedir ayuda también es una habilidad importante.',leccion:'Hay momentos para intentarlo solo y momentos para pedir apoyo.'}]},
-  {titulo:'El error en el juego',emoji:'⚽',intro:'Jugando con amigos, ganó pero en secreto movió una pieza sin querer con el pie. Nadie la vio.',opciones:[{texto:'Digo la verdad: moví la pieza sin querer',valor:'bueno',feedback:'💎 ¡Eso es jugar limpio de verdad! Decir la verdad aunque signifique no ganar es la mayor victoria.',leccion:'Jugar limpio y decir la verdad es siempre más importante que ganar.'},{texto:'No digo nada, fue sin querer y nadie me vio',valor:'malo',feedback:'😔 Una victoria que no fue justa no se siente igual que ganar de verdad.',leccion:'Una victoria que no fue justa no nos hace sentir bien.'}]},
-  {titulo:'Compartir el juguete nuevo',emoji:'🎀',intro:'Recibió un juguete nuevo precioso. Su prima lo vio y preguntó: "¿puedo jugar un ratito?"',opciones:[{texto:'Le presto el juguete y jugamos juntas',valor:'bueno',feedback:'🌟 ¡Compartir hace todo más grande! Jugaron juntas y fue el doble de divertido.',leccion:'Compartir lo que más queremos hace que todo sea infinitamente más divertido.'},{texto:'Le digo que no, es muy nuevo y puede romperlo',valor:'neutro',feedback:'😕 Es normal querer cuidarlo. Pero las cosas más lindas se disfrutan más cuando las compartimos.',leccion:'Las cosas que más queremos se disfrutan más cuando las compartimos.'}]}
+  {titulo:'La tarea que no quería hacer',emoji:'📚',intro:'Era viernes por la tarde y el sol brillaba afuera. Tenía tarea de matemáticas difícil. Sus amigas la llamaron para ir al parque. "Después la hago", pensó. Pero cuando volvió estaba muy cansada.',opciones:[{texto:'Hago la tarea antes de salir a jugar',valor:'bueno',feedback:'⭐ ¡Decisión de campeona! Primero lo importante, después el descanso.',leccion:'Cumplir las responsabilidades primero nos deja disfrutar sin culpa.'},{texto:'Salgo a jugar y la hago después',valor:'neutro',feedback:'😕 El "después" no siempre llega. La tarea sin hacer pesa más que el juego.',leccion:'Dejar las tareas para después hace que se acumulen y cuesten más.'}]},
+  {titulo:'El vaso roto',emoji:'🥛',intro:'Estaba jugando en la cocina y sin querer tiró un vaso que se rompió. Nadie la vio. Podía dejar los pedazos ahí y hacerse que no sabía nada.',opciones:[{texto:'Le digo a mamá o papá que rompí el vaso',valor:'bueno',feedback:'💎 ¡Eso es valentía real! Decir la verdad cuando nadie nos vio es el acto más honesto.',leccion:'La honestidad vale más cuando nadie nos está mirando.'},{texto:'Escondo los pedazos y no digo nada',valor:'malo',feedback:'😔 Esconder el error no lo borra. Siempre es mejor decir la verdad.',leccion:'Admitir nuestros errores nos hace más confiables.'}]},
+  {titulo:'El juguete ajeno',emoji:'🚗',intro:'Encontró el juguete favorito de su hermano en el piso. Ella quería jugar pero él no estaba para pedirle permiso.',opciones:[{texto:'Espero y le pido permiso cuando llegue',valor:'bueno',feedback:'🌟 ¡Perfecto! Respetar las cosas ajenas es una forma de querer a alguien.',leccion:'Pedir permiso antes de usar algo ajeno demuestra respeto y cariño.'},{texto:'Lo tomo prestado, total ya lo devuelvo',valor:'neutro',feedback:'🤔 Aunque lo devuelvas, él no supo que lo usaste. El permiso es importante.',leccion:'Usar cosas ajenas sin permiso puede romper la confianza.'}]},
+  {titulo:'La amiga que está sola',emoji:'🫂',intro:'En el recreo vio que Camila estaba sola en un rincón mirando al suelo. Sus otras amigas la llamaban para jugar.',opciones:[{texto:'Me acerco a Camila para ver si está bien',valor:'bueno',feedback:'💝 Eso es empatía pura. Notar a alguien que necesita ayuda es un superpoder.',leccion:'Acercarse a alguien triste puede cambiar completamente su día.'},{texto:'Me voy a jugar con mis amigas',valor:'neutro',feedback:'😕 Camila necesitaba que alguien la viera.',leccion:'Un pequeño gesto de atención puede cambiar el día de alguien.'}]},
+  {titulo:'Los dulces de la despensa',emoji:'🍬',intro:'Encontró una bolsa de dulces en la despensa. Nadie estaba en casa. Le dijeron que no comiera dulces antes de comer.',opciones:[{texto:'No como los dulces y espero hasta después de comer',valor:'bueno',feedback:'⭐ ¡Fuerza de voluntad increíble! Respetar las reglas aunque nadie te vea.',leccion:'Cumplir las reglas cuando nadie nos mira es la prueba más real de nuestro carácter.'},{texto:'Como uno solo, nadie se va a dar cuenta',valor:'malo',feedback:'😔 "Solo uno" muchas veces se convierte en varios.',leccion:'Las reglas son para ayudarnos a tomar buenas decisiones.'}]},
+  {titulo:'El dibujo que no salió bien',emoji:'🎨',intro:'Trabajó mucho en su dibujo para el colegio pero no quedó como esperaba. Su amiga dijo que el suyo era mejor.',opciones:[{texto:'Entrego mi dibujo aunque no sea perfecto',valor:'bueno',feedback:'💪 ¡Valiente! Lo que hiciste con tus manos vale más que cualquier copia perfecta.',leccion:'Nuestro esfuerzo propio vale más que copiarlo de otros.'},{texto:'Copio algunas partes del dibujo de mi amiga',valor:'malo',feedback:'😔 Copiar puede parecer rápido, pero el resultado no es tuyo.',leccion:'La honestidad en el trabajo propio construye confianza y orgullo real.'}]},
+  {titulo:'El secreto de una amiga',emoji:'🤫',intro:'Una amiga le contó un secreto muy personal y le pidió que no se lo dijera a nadie. Al rato, otras amigas le preguntaron qué le pasaba.',opciones:[{texto:'Les digo que es un secreto y no cuento nada',valor:'bueno',feedback:'💎 ¡Eso es ser una amiga de verdad! Guardar un secreto es lealtad.',leccion:'Guardar los secretos que nos confían construye amistades reales.'},{texto:'Cuento el secreto porque no es para tanto',valor:'malo',feedback:'😔 Para ella sí era importante. Contar secretos rompe la confianza.',leccion:'La confianza se gana con el tiempo y se pierde en segundos.'}]},
+  {titulo:'La fila del recreo',emoji:'🧃',intro:'Había una fila larga para comprar jugo. Llegó tarde pero vio un espacio en el medio donde podía meterse.',opciones:[{texto:'Me pongo al final de la fila como todos',valor:'bueno',feedback:'⭐ ¡Justo y correcto! Respetar el orden hace que todo funcione mejor.',leccion:'Respetar las filas es una forma de respetar a las personas que llegaron antes.'},{texto:'Me meto en el espacio del medio',valor:'malo',feedback:'😕 Meterse en la fila es injusto con quienes esperaron.',leccion:'El respeto se practica en cada detalle.'}]},
+  {titulo:'El regalo de la abuela',emoji:'🎁',intro:'La abuela le regaló un suéter que no era de su estilo. La abuela preguntó: "¿Te gustó?"',opciones:[{texto:'Le digo que me gusta el gesto aunque no sea mi favorito',valor:'bueno',feedback:'💝 Puedes ser honesta con amor. Agradecer el gesto sin herir es sabiduría.',leccion:'Podemos ser honestos y amables al mismo tiempo.'},{texto:'Le digo que me encanta aunque no sea verdad',valor:'neutro',feedback:'🤔 A veces protegemos sentimientos. Pero podemos encontrar formas honestas de agradecer.',leccion:'Agradecer el gesto siempre es verdadero.'}]},
+  {titulo:'Pedir ayuda',emoji:'🆘',intro:'Tenía un problema de matemáticas muy difícil. Llevaba mucho tiempo intentándolo sola y se sentía frustrada. Le daba vergüenza preguntar.',opciones:[{texto:'Pido ayuda a mamá, papá o a la profe',valor:'bueno',feedback:'💪 Pedir ayuda es una fortaleza, no una debilidad.',leccion:'Pedir ayuda cuando la necesitamos es señal de inteligencia y valentía.'},{texto:'Sigo intentando sola aunque me frustre',valor:'neutro',feedback:'🤔 La perseverancia es buena, pero saber cuándo pedir ayuda también es importante.',leccion:'Hay momentos para intentarlo solo y momentos para pedir apoyo.'}]},
+  {titulo:'El error en el juego',emoji:'⚽',intro:'Jugando con amigos, ganó pero en secreto movió una pieza sin querer con el pie. Nadie la vio.',opciones:[{texto:'Digo la verdad: moví la pieza sin querer',valor:'bueno',feedback:'💎 ¡Eso es jugar limpio! Decir la verdad aunque signifique no ganar es la mayor victoria.',leccion:'Jugar limpio y decir la verdad es siempre más importante que ganar.'},{texto:'No digo nada, fue sin querer y nadie me vio',valor:'malo',feedback:'😔 Una victoria que no fue justa no se siente bien.',leccion:'Una victoria que no fue justa no nos hace sentir bien.'}]},
+  {titulo:'Compartir el juguete nuevo',emoji:'🎀',intro:'Recibió un juguete nuevo precioso. Su prima lo vio y preguntó: "¿puedo jugar un ratito?"',opciones:[{texto:'Le presto el juguete y jugamos juntas',valor:'bueno',feedback:'🌟 ¡Compartir hace todo más grande! Fue el doble de divertido.',leccion:'Compartir lo que más queremos hace que todo sea más divertido.'},{texto:'Le digo que no, es muy nuevo y puede romperlo',valor:'neutro',feedback:'😕 Las cosas más lindas se disfrutan más cuando las compartimos.',leccion:'Las cosas que más queremos se disfrutan más cuando las compartimos.'}]}
 ];
 
 /* FX */
 var FX=(function(){
-  var cv,ctx2d,parts=[],cols=['#ff2d78','#7c3aed','#facc15','#22d3a0','#fff'];
-  function loop(){requestAnimationFrame(loop);if(!ctx2d)return;ctx2d.clearRect(0,0,cv.width,cv.height);parts=parts.filter(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=0.4;p.life-=0.018;p.spin+=p.sp;if(p.life<=0)return false;ctx2d.save();ctx2d.globalAlpha=p.life;ctx2d.translate(p.x,p.y);ctx2d.rotate(p.spin*Math.PI/180);ctx2d.fillStyle=p.col;ctx2d.fillRect(-p.sz/2,-p.sz/2,p.sz,p.sz);ctx2d.restore();return true;});}
-  return{init:function(){cv=document.getElementById('fx-canvas');if(!cv)return;ctx2d=cv.getContext('2d');function r(){cv.width=innerWidth;cv.height=innerHeight;}r();window.addEventListener('resize',r);loop();},burst:function(){for(var i=0;i<160;i++)parts.push({x:innerWidth/2,y:innerHeight/2,vx:(Math.random()-.5)*26,vy:(Math.random()-1)*26-4,sz:Math.random()*8+4,col:cols[Math.floor(Math.random()*cols.length)],life:1,spin:Math.random()*360,sp:(Math.random()-.5)*10});}};
+  var cv,ctx2,parts=[],cols=['#ff2d78','#7c3aed','#facc15','#22d3a0','#ff9ecc','#a78bfa'];
+  function loop(){requestAnimationFrame(loop);if(!ctx2)return;ctx2.clearRect(0,0,cv.width,cv.height);parts=parts.filter(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=0.35;p.life-=0.016;p.spin+=p.sp;if(p.life<=0)return false;ctx2.save();ctx2.globalAlpha=p.life;ctx2.translate(p.x,p.y);ctx2.rotate(p.spin*Math.PI/180);ctx2.fillStyle=p.col;ctx2.shadowColor=p.col;ctx2.shadowBlur=6;ctx2.fillRect(-p.sz/2,-p.sz/2,p.sz,p.sz);ctx2.restore();return true;});}
+  return{init:function(){cv=document.getElementById('fx-canvas');if(!cv)return;ctx2=cv.getContext('2d');function r(){cv.width=window.innerWidth;cv.height=window.innerHeight;}r();window.addEventListener('resize',r);loop();},burst:function(){for(var i=0;i<180;i++)parts.push({x:window.innerWidth/2,y:window.innerHeight*0.4,vx:(Math.random()-.5)*28,vy:(Math.random()-1)*28-5,sz:Math.random()*9+3,col:cols[Math.floor(Math.random()*cols.length)],life:1,spin:Math.random()*360,sp:(Math.random()-.5)*12});}};
 })();
 
 /* SFX */
 var SFX=(function(){
   var ctx=null;
   function ac(){if(!ctx)try{ctx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}return ctx;}
-  function tone(freq,dur,type,vol){var a=ac();if(!a)return;var o=a.createOscillator();var g=a.createGain();o.connect(g);g.connect(a.destination);o.type=type||'sine';o.frequency.value=freq;g.gain.setValueAtTime(vol||0.15,a.currentTime);g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+dur);o.start();o.stop(a.currentTime+dur);}
-  return{coin:function(){tone(880,.1,'sine',.12);setTimeout(function(){tone(1320,.15,'sine',.10);},80);},perfect:function(){[523,659,784,1047].forEach(function(f,i){setTimeout(function(){tone(f,.2,'sine',.12);},i*80);});},win:function(){[440,554,659,880].forEach(function(f,i){setTimeout(function(){tone(f,.25,'sine',.12);},i*100);});},error:function(){tone(200,.3,'sawtooth',.08);},unlock:function(){tone(660,.15,'sine',.10);setTimeout(function(){tone(990,.2,'sine',.12);},120);}};
+  function tone(freq,dur,type,vol){var a=ac();if(!a)return;var o=a.createOscillator();var g=a.createGain();o.connect(g);g.connect(a.destination);o.type=type||'sine';o.frequency.value=freq;g.gain.setValueAtTime(vol||0.12,a.currentTime);g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+dur);o.start();o.stop(a.currentTime+dur);}
+  return{
+    coin:function(){tone(880,.08,'sine',.1);setTimeout(function(){tone(1320,.12,'sine',.08);},70);},
+    perfect:function(){[523,659,784,1047].forEach(function(f,i){setTimeout(function(){tone(f,.18,'sine',.1);},i*75);});},
+    win:function(){[440,554,659,880].forEach(function(f,i){setTimeout(function(){tone(f,.22,'sine',.1);},i*90);});},
+    error:function(){tone(180,.25,'sawtooth',.06);},
+    unlock:function(){tone(660,.12,'sine',.09);setTimeout(function(){tone(990,.18,'sine',.1);},100);}
+  };
 })();
 
 function showToast(title,msg,type){
   type=type||'normal';var box=document.getElementById('toasts');var el=document.createElement('div');
   el.className='toast'+(type==='perfect'?' perfect':type==='reward'?' reward':type==='bad'?' bad':'');
-  el.innerHTML='<div style="font-family:\'Syne\',sans-serif;font-size:14px;margin-bottom:2px;font-weight:800">'+title+'</div>'+(msg?'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;opacity:.8">'+msg+'</div>':'');
-  box.appendChild(el);setTimeout(function(){el.classList.add('out');setTimeout(function(){el.remove();},320);},3600);
+  el.innerHTML='<div style="font-family:\'Syne\',sans-serif;font-size:13px;margin-bottom:2px;font-weight:800;color:'+(type==='bad'?'#f87171':type==='perfect'?'#facc15':type==='reward'?'#22d3ee':'var(--pink)')+'">'+title+'</div>'+(msg?'<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;opacity:.8;color:rgba(240,238,255,.7)">'+msg+'</div>':'');
+  box.appendChild(el);setTimeout(function(){el.classList.add('out');setTimeout(function(){el.remove();},320);},3800);
 }
 function syncBar(cls,txt){var b=document.getElementById('sync-bar');if(b){b.className=cls;b.textContent=txt;}}
 function emptyGameData(){return{total:0,today:{date:'',points:{},totalDay:0,basePoints:0,perfectDay:false},week:{id:'',pts:0,claimed:[]},month:{id:'',pts:0,claimed:[]},history:[],historialMeses:[],activeTab:'tasks',lastSync:0,historiaLeida:'',historiaEleccion:null,diario:[],racha:0,rachaMax:0,medallas:[],hiddenTasks:[]};}
@@ -543,14 +634,12 @@ function emptyGameData(){return{total:0,today:{date:'',points:{},totalDay:0,base
 var DOCH={
   _db:null,_auth:null,_user:null,
   init:function(){
-    var self=this;
-    try{var app=firebase.apps.length?firebase.app():firebase.initializeApp(FIREBASE_CONFIG);this._db=firebase.firestore(app);this._auth=firebase.auth(app);
+    var self=this;try{var app=firebase.apps.length?firebase.app():firebase.initializeApp(FIREBASE_CONFIG);this._db=firebase.firestore(app);this._auth=firebase.auth(app);
       this._auth.onAuthStateChanged(function(user){if(user){self._user=user;self._onLogin(user);}else{self._user=null;self._show('auth');}});
     }catch(e){console.error(e);this._show('auth');}
   },
   _onLogin:function(user){
-    var self=this;
-    this._db.collection('families').doc(user.uid).get().then(function(snap){
+    var self=this;this._db.collection('families').doc(user.uid).get().then(function(snap){
       if(!snap.exists||!snap.data().setupComplete){OB.init(user);self._show('onboarding');}
       else{var fam=snap.data();self._db.collection('families').doc(user.uid).collection('children').doc(fam.activeChildId).get().then(function(cs){if(cs.exists){GAME.init(user,self._db,cs.data(),fam);self._show('game');}else{OB.init(user);self._show('onboarding');}}).catch(function(){OB.init(user);self._show('onboarding');});}
     }).catch(function(){OB.init(user);self._show('onboarding');});
@@ -579,7 +668,7 @@ var DOCH={
   _load:function(id,v){var b=document.getElementById(id);if(!b)return;b.classList.toggle('loading',v);b.disabled=v;},
   _err:function(f,msg){var el=document.getElementById(f+'-error');if(el){el.textContent=msg;el.classList.add('show');}},
   _clearErr:function(f){var el=document.getElementById(f+'-error');if(el)el.classList.remove('show');},
-  _authMsg:function(code){var m={'auth/user-not-found':'No encontramos una cuenta con ese correo','auth/wrong-password':'Contraseña incorrecta','auth/email-already-in-use':'Ya existe una cuenta con ese correo','auth/invalid-email':'Correo no válido','auth/weak-password':'Mínimo 6 caracteres','auth/network-request-failed':'Sin conexión','auth/too-many-requests':'Demasiados intentos. Espera un poco','auth/popup-blocked':'Permite popups para este sitio','auth/invalid-credential':'Correo o contraseña incorrectos'};return m[code]||'Error inesperado. Intenta de nuevo';}
+  _authMsg:function(code){var m={'auth/user-not-found':'No encontramos una cuenta con ese correo','auth/wrong-password':'Contraseña incorrecta','auth/email-already-in-use':'Ya existe una cuenta con ese correo','auth/invalid-email':'Correo no válido','auth/weak-password':'Mínimo 6 caracteres','auth/network-request-failed':'Sin conexión','auth/too-many-requests':'Demasiados intentos','auth/popup-blocked':'Permite popups','auth/invalid-credential':'Correo o contraseña incorrectos'};return m[code]||'Error inesperado';}
 };
 
 /* ONBOARDING */
@@ -600,15 +689,15 @@ var OB={
   fillInput:function(id,el){var inp=document.getElementById(id);if(inp)inp.value=el.textContent.trim();if(id==='ob-point-value')this.updateCurrencyPreview();},
   fillCurrency:function(sym,name){document.getElementById('ob-currency-symbol').value=sym;document.getElementById('ob-currency-name').value=name;this.updateCurrencyPreview();},
   updateCurrencyPreview:function(){var s=document.getElementById('ob-currency-symbol');var e=document.getElementById('ob-currency-preview');if(s&&e)e.textContent=s.value||'$';},
-  _buildColors:function(){var self=this;var grid=document.getElementById('color-grid');if(!grid)return;grid.innerHTML='';COLORS.forEach(function(c){var sw=document.createElement('div');sw.className='color-swatch'+(c.hex===self._data.color?' selected':'');sw.style.background=c.hex;sw.title=c.name;sw.onclick=function(){self._data.color=c.hex;document.querySelectorAll('.color-swatch').forEach(function(s){s.classList.remove('selected');});sw.classList.add('selected');};grid.appendChild(sw);});},
+  _buildColors:function(){var self=this;var grid=document.getElementById('color-grid');if(!grid)return;grid.innerHTML='';COLORS.forEach(function(c){var sw=document.createElement('div');sw.className='color-swatch'+(c.hex===self._data.color?' selected':'');sw.style.background=c.hex;sw.style.boxShadow='0 0 10px '+c.hex+'66';sw.title=c.name;sw.onclick=function(){self._data.color=c.hex;document.querySelectorAll('.color-swatch').forEach(function(s){s.classList.remove('selected');});sw.classList.add('selected');};grid.appendChild(sw);});},
   _buildBgs:function(){var self=this;var grid=document.getElementById('bg-grid');if(!grid)return;grid.innerHTML='';BG_PRESETS.forEach(function(p){var div=document.createElement('div');div.className='bg-preset'+(self._data.bg.id===p.id?' selected':'');div.style.background=p.bg;div.innerHTML='<span class="bg-preset-label">'+p.label+'</span>';div.onclick=function(){self._data.bg={type:'preset',id:p.id,value:p.bg};self._data.bgBase64=null;document.querySelectorAll('.bg-preset').forEach(function(s){s.classList.remove('selected');});div.classList.add('selected');document.getElementById('bg-preview-img').style.display='none';document.getElementById('bg-upload-btn').style.display='flex';};grid.appendChild(div);});},
   handleBgUpload:function(input){var self=this;var file=input.files[0];if(!file)return;if(file.size>2*1024*1024){showToast('La imagen no puede superar 2MB','','bad');return;}var reader=new FileReader();reader.onload=function(e){var img=new Image();img.onload=function(){var canvas=document.createElement('canvas');var maxW=800;var ratio=Math.min(maxW/img.width,maxW/img.height,1);canvas.width=img.width*ratio;canvas.height=img.height*ratio;canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);var b64=canvas.toDataURL('image/jpeg',0.70);self._data.bgBase64=b64;self._data.bg={type:'custom',id:'custom',value:b64};document.querySelectorAll('.bg-preset').forEach(function(s){s.classList.remove('selected');});var prev=document.getElementById('bg-preview-img');prev.src=b64;prev.style.display='block';document.getElementById('bg-upload-btn').style.display='none';showToast('Imagen optimizada ✅','','reward');};img.src=e.target.result;};reader.readAsDataURL(file);},
-  _buildFinance:function(){var self=this;var container=document.getElementById('finance-rows');if(!container)return;container.innerHTML='';this._data.finance.forEach(function(f,i){var row=document.createElement('div');row.className='finance-row-ob';row.style.cssText='display:flex;align-items:center;gap:10px;margin-bottom:10px;';row.innerHTML='<div class="finance-color-dot" style="background:'+f.color+'"></div><div style="flex:1"><div style="font-weight:700;font-size:.88rem">'+f.label+'</div><div style="font-size:.72rem;color:var(--muted)">'+f.desc+'</div></div><input type="number" class="finance-pct-input" data-idx="'+i+'" value="'+f.pct+'" min="0" max="100"><span style="font-size:.85rem;font-weight:700;color:var(--muted)">%</span>';container.appendChild(row);});container.addEventListener('input',function(e){if(e.target.classList.contains('finance-pct-input')){self._data.finance[parseInt(e.target.dataset.idx)].pct=Number(e.target.value)||0;self._updateFinanceTotal();}});this._updateFinanceTotal();},
+  _buildFinance:function(){var self=this;var container=document.getElementById('finance-rows');if(!container)return;container.innerHTML='';this._data.finance.forEach(function(f,i){var row=document.createElement('div');row.className='finance-row-ob';row.style.cssText='display:flex;align-items:center;gap:10px;margin-bottom:10px;';row.innerHTML='<div class="finance-color-dot" style="background:'+f.color+';box-shadow:0 0 8px '+f.color+'"></div><div style="flex:1"><div style="font-weight:700;font-size:.88rem">'+f.label+'</div><div style="font-size:.72rem;color:var(--muted)">'+f.desc+'</div></div><input type="number" class="finance-pct-input" data-idx="'+i+'" value="'+f.pct+'" min="0" max="100"><span style="font-size:.85rem;font-weight:700;color:var(--muted)">%</span>';container.appendChild(row);});container.addEventListener('input',function(e){if(e.target.classList.contains('finance-pct-input')){self._data.finance[parseInt(e.target.dataset.idx)].pct=Number(e.target.value)||0;self._updateFinanceTotal();}});this._updateFinanceTotal();},
   _updateFinanceTotal:function(){var sum=this._data.finance.reduce(function(s,f){return s+Number(f.pct);},0);var el=document.getElementById('finance-sum');var box=document.getElementById('finance-total');if(el)el.textContent=sum+'%';if(box)box.className='finance-total '+(sum===100?'ok':'err');},
   _buildMissions:function(){var self=this;var list=document.getElementById('missions-list');if(!list)return;list.innerHTML='';this._data.tasks.forEach(function(t,i){var card=document.createElement('div');card.className='mission-card-ob'+(t.active?' active-m':'');card.innerHTML='<div style="font-size:1.4rem;flex-shrink:0;width:36px;text-align:center">'+t.icon+'</div><div style="flex:1"><div style="font-weight:700;font-size:.88rem;margin-bottom:2px">'+t.label+'</div><div style="font-size:.72rem;color:var(--muted);font-weight:600">'+t.pts+' pts · máx '+t.limit+' por día</div></div><button class="mission-toggle '+(t.active?'on':'off')+'" onclick="OB.toggleM('+i+',this,event)"></button>';list.appendChild(card);});},
   toggleM:function(idx,btn,e){e.stopPropagation();this._data.tasks[idx].active=!this._data.tasks[idx].active;btn.className='mission-toggle '+(this._data.tasks[idx].active?'on':'off');btn.closest('.mission-card-ob').className='mission-card-ob'+(this._data.tasks[idx].active?' active-m':'');},
   checkDisclaimer:function(){var checked=document.getElementById('disclaimer-check').checked;var btn=document.getElementById('btn-create-world');if(btn)btn.disabled=!checked;},
-  _buildSummary:function(){var d=this._data;document.getElementById('sum-name').textContent=d.childName||'—';document.getElementById('sum-title').textContent=d.childTitle||'—';document.getElementById('sum-currency').textContent=(d.currencySymbol||'$')+' '+d.currencyName;document.getElementById('sum-point').textContent=(d.currencySymbol||'$')+d.pointValue+' por punto';document.getElementById('sum-missions').textContent=d.tasks.filter(function(t){return t.active;}).length+' de '+d.tasks.length+' activas';document.getElementById('sum-bg').textContent=d.bg.type==='custom'?'Imagen personalizada':d.bg.id.charAt(0).toUpperCase()+d.bg.id.slice(1);var pn=document.getElementById('preview-app-name');var ps=document.getElementById('preview-app-sub');if(pn)pn.textContent='El mundo de '+d.childName;if(ps)ps.textContent=d.childTitle||'Tu app personalizada';var pb=document.getElementById('theme-preview-box');if(pb){pb.style.background=d.bg.type==='custom'?'url('+d.bgBase64+') center/cover':d.bg.value;pb.style.boxShadow='0 0 30px '+d.color+'44';}},
+  _buildSummary:function(){var d=this._data;document.getElementById('sum-name').textContent=d.childName||'—';document.getElementById('sum-title').textContent=d.childTitle||'—';document.getElementById('sum-currency').textContent=(d.currencySymbol||'$')+' '+d.currencyName;document.getElementById('sum-point').textContent=(d.currencySymbol||'$')+d.pointValue+' por punto';document.getElementById('sum-missions').textContent=d.tasks.filter(function(t){return t.active;}).length+' de '+d.tasks.length+' activas';document.getElementById('sum-bg').textContent=d.bg.type==='custom'?'Imagen personalizada':d.bg.id.charAt(0).toUpperCase()+d.bg.id.slice(1);var pn=document.getElementById('preview-app-name');var ps=document.getElementById('preview-app-sub');if(pn)pn.textContent='El mundo de '+d.childName;if(ps)ps.textContent=d.childTitle||'Tu app personalizada';var pb=document.getElementById('theme-preview-box');if(pb){pb.style.background=d.bg.type==='custom'?'url('+d.bgBase64+') center/cover':d.bg.value;pb.style.boxShadow='0 0 40px '+d.color+'66';}},
   createWorld:function(){
     if(!this._validate(4))return;var self=this;var d=this._data;var uid=this._user.uid;var db=DOCH._db;
     var btn=document.getElementById('btn-create-world');if(btn){btn.classList.add('loading');btn.disabled=true;}
@@ -617,14 +706,15 @@ var OB={
     var batch=db.batch();
     batch.update(db.collection('families').doc(uid),{setupComplete:true,childCount:1,activeChildId:childId,timezone:tz,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
     batch.set(db.collection('families').doc(uid).collection('children').doc(childId),childData);
-    batch.commit().then(function(){showToast('¡El mundo de '+d.childName+' está listo! 🌟','','reward');setTimeout(function(){GAME.init(self._user,db,childData,{timezone:tz});DOCH._show('game');},1200);}).catch(function(e){console.error(e);if(btn){btn.classList.remove('loading');btn.disabled=false;}showToast('Error al guardar. Intenta de nuevo.','','bad');});
+    batch.commit().then(function(){showToast('¡El mundo de '+d.childName+' está listo! 🌟','','reward');FX.burst();setTimeout(function(){GAME.init(self._user,db,childData,{timezone:tz});DOCH._show('game');},1400);}).catch(function(e){console.error(e);if(btn){btn.classList.remove('loading');btn.disabled=false;}showToast('Error al guardar. Intenta de nuevo.','','bad');});
   }
 };
 
-/* GAME ENGINE */
+/* GAME */
 var GAME={
-  d:null,_child:null,_family:null,_user:null,_db:null,_ref:null,_saveTimer:null,_pendingSaves:0,_unsub:null,_engCollapsed:false,
-  TZ:'America/Santiago',TASKS:[],WEEKLY:[],MONTHLY:[],FINANCE:[],MEDALLAS:[],HISTORIAS:[],POINT_VALUE:10,
+  d:null,_child:null,_family:null,_user:null,_db:null,_ref:null,
+  _saveTimer:null,_pendingSaves:0,_unsub:null,_engCollapsed:false,
+  TZ:'America/Santiago',TASKS:[],WEEKLY:[],MONTHLY:[],FINANCE:[],POINT_VALUE:10,
 
   init:function(user,db,childData,famData){
     var self=this;this._user=user;this._db=db;this._child=childData;this._family=famData;
@@ -634,7 +724,6 @@ var GAME={
     this.WEEKLY=childData.weeklyPrizes||[{label:'Premio Semanal 1',pts:100},{label:'Premio Semanal 2',pts:180}];
     this.MONTHLY=childData.monthlyPrizes||[{label:'Premio Mensual 1',pts:400},{label:'Premio Mensual 2',pts:800}];
     this.FINANCE=childData.finance||DEFAULT_FINANCE;
-    this.MEDALLAS=MEDALLAS_BASE;this.HISTORIAS=HISTORIAS_BASE;
     this._applyTheme();this._updateHeader();FX.init();this._loadLocal();this._checkResets();this.d.activeTab='tasks';this._render();
     try{
       var ref=db.collection('families').doc(user.uid).collection('children').doc(childData.childId);this._ref=ref;
@@ -642,14 +731,17 @@ var GAME={
         if(snap.exists&&snap.data().gameData){var cloud=snap.data().gameData;if((cloud.lastSyncMs||0)>(self.d.lastSync||0)){self.d=Object.assign(emptyGameData(),cloud);}}
         self._checkResets();self._saveLocal();self._render();syncBar('sb-ok','☁️ Sincronizado');
         self._unsub=ref.onSnapshot(function(snap){if(self._pendingSaves>0){self._pendingSaves--;return;}if(!snap.exists||!snap.data().gameData)return;var cloud=snap.data().gameData;if((cloud.lastSyncMs||0)>=(self.d.lastSync||0)){self.d=Object.assign(emptyGameData(),cloud);self._checkResets();self._saveLocal();self._render();syncBar('sb-ok','☁️ Sincronizado');}});
-      }).catch(function(e){console.error(e);syncBar('sb-ok','☁️ Local');});
+      }).catch(function(){syncBar('sb-ok','☁️ Local');});
     }catch(e){console.error(e);}
     setInterval(function(){if(GAME._checkResets()){GAME._saveLocal();GAME._cloudSave();GAME._render();}},60000);
   },
 
   _applyTheme:function(){
     var c=this._child;if(!c||!c.theme)return;
-    var pink=c.theme.primaryColor||'#ff2d78';document.documentElement.style.setProperty('--pink',pink);document.documentElement.style.setProperty('--pink-dk',pink+'cc');
+    var pink=c.theme.primaryColor||'#ff2d78';
+    document.documentElement.style.setProperty('--pink',pink);
+    document.documentElement.style.setProperty('--pink-dk',pink+'cc');
+    document.documentElement.style.setProperty('--neon-pink','0 0 20px '+pink+'cc');
     if(c.theme.bgType==='custom'&&c.theme.bgBase64){document.body.style.backgroundImage='url('+c.theme.bgBase64+')';document.body.style.backgroundSize='cover';document.body.style.backgroundPosition='center top';document.body.style.backgroundRepeat='no-repeat';document.body.style.backgroundAttachment='fixed';}
     else if(c.theme.bgValue){document.body.style.background=c.theme.bgValue;}
   },
@@ -657,7 +749,8 @@ var GAME={
   _updateHeader:function(){
     var c=this._child;if(!c)return;
     var title=document.getElementById('game-app-title');if(title)title.textContent='El mundo de '+c.name;
-    var marquee=document.getElementById('marquee-text');if(marquee)marquee.textContent='DOCH · El mundo de '+c.name+' · ¡Sigue adelante '+c.name+'! · Cada misión cuenta · ¡Tú puedes! · ';
+    var marquee=document.getElementById('marquee-text');
+    if(marquee)marquee.textContent='DOCH ✦ El mundo de '+c.name+' ✦ ¡Sigue adelante '+c.name+'! ✦ Cada misión cuenta ✦ ¡Tú puedes! ✦ ';
   },
 
   _hoy:function(){return new Date().toLocaleDateString('en-CA',{timeZone:this.TZ});},
@@ -665,43 +758,33 @@ var GAME={
   _mesLabel:function(){var s=new Date().toLocaleDateString('es',{timeZone:this.TZ,month:'long',year:'numeric'});return s.charAt(0).toUpperCase()+s.slice(1);},
   _semanaId:function(){var now=new Date(new Date().toLocaleString('en-US',{timeZone:this.TZ}));var dow=now.getDay();var diff=dow===6?0:(dow+1);var sab=new Date(now);sab.setDate(now.getDate()-diff);return sab.toLocaleDateString('en-CA',{timeZone:this.TZ});},
   _esSabado:function(){return new Date(new Date().toLocaleString('en-US',{timeZone:this.TZ})).getDay()===6;},
-
-  _localKey:function(){return'doch_game_'+(this._child&&this._child.childId||'default');},
+  _localKey:function(){return'doch_v3_'+(this._child&&this._child.childId||'default');},
   _loadLocal:function(){try{var raw=localStorage.getItem(this._localKey());if(raw)this.d=Object.assign(emptyGameData(),JSON.parse(raw));else this.d=emptyGameData();}catch(e){this.d=emptyGameData();}},
   _saveLocal:function(){this.d.lastSync=Date.now();try{localStorage.setItem(this._localKey(),JSON.stringify(this.d));}catch(e){}},
   _save:function(){this._saveLocal();this._cloudSave();this._render();},
   _cloudSave:function(){
     if(!this._ref)return;var self=this;clearTimeout(this._saveTimer);syncBar('sb-busy','⏳ Guardando...');
-    this._saveTimer=setTimeout(function(){try{self._pendingSaves++;self._ref.update({gameData:Object.assign({},self.d,{lastSyncMs:Date.now()})}).then(function(){syncBar('sb-ok','☁️ Guardado');}).catch(function(){self._pendingSaves=Math.max(0,self._pendingSaves-1);syncBar('sb-err','❌ Error');});}catch(e){syncBar('sb-err','❌ Error');}},700);
+    this._saveTimer=setTimeout(function(){try{self._pendingSaves++;self._ref.update({gameData:Object.assign({},self.d,{lastSyncMs:Date.now()})}).then(function(){syncBar('sb-ok','☁️ Guardado');}).catch(function(){self._pendingSaves=Math.max(0,self._pendingSaves-1);syncBar('sb-err','❌ Error');});}catch(e){syncBar('sb-err','❌ Error');}},800);
   },
-
   _checkResets:function(){
     var h=this._hoy();var m=this._mes();var s=this._semanaId();var changed=false;
-    if(this.d.today.date!==h){
-      if(this.d.today.date){this.d.history.push(JSON.parse(JSON.stringify(this.d.today)));if(this.d.history.length>180)this.d.history=this.d.history.slice(-180);if(this.d.today.totalDay>0){this.d.racha=(this.d.racha||0)+1;if(this.d.racha>(this.d.rachaMax||0))this.d.rachaMax=this.d.racha;}else{this.d.racha=0;}}
-      this.d.today={date:h,points:{},totalDay:0,basePoints:0,perfectDay:false};if(this.d.historiaLeida!==h){this.d.historiaLeida='';this.d.historiaEleccion=null;}changed=true;
-    }
+    if(this.d.today.date!==h){if(this.d.today.date){this.d.history.push(JSON.parse(JSON.stringify(this.d.today)));if(this.d.history.length>180)this.d.history=this.d.history.slice(-180);if(this.d.today.totalDay>0){this.d.racha=(this.d.racha||0)+1;if(this.d.racha>(this.d.rachaMax||0))this.d.rachaMax=this.d.racha;}else{this.d.racha=0;}}this.d.today={date:h,points:{},totalDay:0,basePoints:0,perfectDay:false};if(this.d.historiaLeida!==h){this.d.historiaLeida='';this.d.historiaEleccion=null;}changed=true;}
     if(!this.d.week||this.d.week.id!==s){this.d.week={id:s,pts:0,claimed:[]};changed=true;}
-    if(!this.d.month||this.d.month.id!==m){
-      if(this.d.month&&this.d.month.id&&this.d.month.pts>0){if(!this.d.historialMeses)this.d.historialMeses=[];var anioActual=new Date().getFullYear();this.d.historialMeses=this.d.historialMeses.filter(function(hm){return hm.id.slice(0,4)>=String(anioActual-1);});var yaExiste=this.d.historialMeses.some(function(hm){return hm.id===GAME.d.month.id;});if(!yaExiste)this.d.historialMeses.push({id:this.d.month.id,pts:this.d.month.pts,claimed:this.d.month.claimed.slice()});}
-      this.d.month={id:m,pts:0,claimed:[]};changed=true;
-    }
+    if(!this.d.month||this.d.month.id!==m){if(this.d.month&&this.d.month.id&&this.d.month.pts>0){if(!this.d.historialMeses)this.d.historialMeses=[];var anioActual=new Date().getFullYear();this.d.historialMeses=this.d.historialMeses.filter(function(hm){return hm.id.slice(0,4)>=String(anioActual-1);});var yaExiste=this.d.historialMeses.some(function(hm){return hm.id===GAME.d.month.id;});if(!yaExiste)this.d.historialMeses.push({id:this.d.month.id,pts:this.d.month.pts,claimed:this.d.month.claimed.slice()});}this.d.month={id:m,pts:0,claimed:[]};changed=true;}
     return changed;
   },
-
   _checkMilestones:function(){
     var self=this;var d=this.d;
     var baseTasks=this.TASKS.filter(function(t){return(d.hiddenTasks||[]).indexOf(t.id)===-1;});
     var maxBase=baseTasks.reduce(function(s,t){return s+t.pts*t.limit;},0);
-    if(d.today.basePoints>=maxBase&&maxBase>0&&!d.today.perfectDay){d.today.perfectDay=true;d.total+=20;d.today.totalDay+=20;d.week.pts+=20;d.month.pts+=20;FX.burst();SFX.perfect();showToast('¡DÍA PERFECTO! 🌟','¡Completaste todo! +20 Puntos','perfect');}
-    var wClaimed=[];this.WEEKLY.forEach(function(g,i){var alcanza=d.week.pts>=g.pts;if(alcanza){wClaimed.push(i);if(d.week.claimed.indexOf(i)===-1){if(self._esSabado()){FX.burst();SFX.win();showToast('¡PREMIO DESBLOQUEADO! 🎁',g.label,'reward');}else{showToast('¡META SEMANAL! 🌟',g.label+' — listo para el sábado','reward');}}}});d.week.claimed=wClaimed;
-    var mClaimed=[];this.MONTHLY.forEach(function(g,i){var alcanza=d.month.pts>=g.pts;if(alcanza){mClaimed.push(i);if(d.month.claimed.indexOf(i)===-1){FX.burst();SFX.win();showToast('¡PREMIO DEL MES! 🎁',g.label,'reward');}}});d.month.claimed=mClaimed;
-    var nuevas=[];this.MEDALLAS.forEach(function(m){if(m.check(d))nuevas.push(m.id);});
+    if(d.today.basePoints>=maxBase&&maxBase>0&&!d.today.perfectDay){d.today.perfectDay=true;d.total+=20;d.today.totalDay+=20;d.week.pts+=20;d.month.pts+=20;FX.burst();SFX.perfect();showToast('🌟 ¡DÍA PERFECTO!','+20 Puntos Bonus','perfect');}
+    var wClaimed=[];this.WEEKLY.forEach(function(g,i){if(d.week.pts>=g.pts){wClaimed.push(i);if(d.week.claimed.indexOf(i)===-1){if(self._esSabado()){FX.burst();SFX.win();showToast('🎁 ¡PREMIO SEMANAL!',g.label,'reward');}else{showToast('🎯 Meta semanal alcanzada',g.label+' — listo el sábado','reward');}}}});d.week.claimed=wClaimed;
+    var mClaimed=[];this.MONTHLY.forEach(function(g,i){if(d.month.pts>=g.pts){mClaimed.push(i);if(d.month.claimed.indexOf(i)===-1){FX.burst();SFX.win();showToast('🎁 ¡PREMIO DEL MES!',g.label,'reward');}}});d.month.claimed=mClaimed;
+    var nuevas=[];MEDALLAS_BASE.forEach(function(m){if(m.check(d))nuevas.push(m.id);});
     var ganadas=nuevas.filter(function(id){return d.medallas.indexOf(id)===-1;});
-    ganadas.forEach(function(id){var m=self.MEDALLAS.find(function(x){return x.id===id;});if(m){SFX.unlock();FX.burst();showToast(m.icon+' '+m.label,m.desc,'reward');}});
+    ganadas.forEach(function(id){var m=MEDALLAS_BASE.find(function(x){return x.id===id;});if(m){SFX.unlock();showToast(m.icon+' '+m.label,m.desc,'reward');}});
     d.medallas=nuevas;
   },
-
   tap:function(taskId,dir){
     var task=this.TASKS.find(function(t){return t.id===taskId;});if(!task)return;
     var cur=this.d.today.points[taskId]||0;if(dir>0&&cur>=task.limit)return;if(dir<0&&cur<=0)return;
@@ -709,22 +792,14 @@ var GAME={
     this.d.total=Math.max(0,this.d.total+delta);this.d.today.totalDay=Math.max(0,this.d.today.totalDay+delta);this.d.today.basePoints=Math.max(0,this.d.today.basePoints+delta);this.d.week.pts=Math.max(0,this.d.week.pts+delta);this.d.month.pts=Math.max(0,this.d.month.pts+delta);
     if(dir>0)SFX.coin();else SFX.error();this._checkMilestones();this._save();
   },
-
-  bonus:function(pts){SFX.unlock();if(pts>0){SFX.coin();showToast('¡BONO EXTRA!','+'+pts+' Puntos');}else{SFX.error();showToast('PENALIZACIÓN',pts+' Puntos','bad');}this.d.total+=pts;this.d.today.totalDay+=pts;this.d.week.pts=Math.max(0,this.d.week.pts+pts);this.d.month.pts=Math.max(0,this.d.month.pts+pts);this._checkMilestones();this._save();},
-
-  elegirHistoria:function(val,feedback,leccion){
-    if(this.d.historiaEleccion)return;this.d.historiaEleccion={val:val,feedback:feedback,leccion:leccion};this.d.historiaLeida=this._hoy();this.d.total+=2;this.d.today.totalDay+=2;this.d.week.pts+=2;this.d.month.pts+=2;SFX.coin();showToast('Historia completada ✨','+2 puntos','reward');this._checkMilestones();this._save();
-  },
-
+  bonus:function(pts){if(pts>0){SFX.coin();showToast('¡BONO EXTRA! ✨','+'+pts+' Puntos','reward');}else{SFX.error();showToast('PENALIZACIÓN',pts+' Puntos','bad');}this.d.total=Math.max(0,this.d.total+pts);this.d.today.totalDay=Math.max(0,this.d.today.totalDay+pts);this.d.week.pts=Math.max(0,this.d.week.pts+pts);this.d.month.pts=Math.max(0,this.d.month.pts+pts);this._checkMilestones();this._save();},
+  elegirHistoria:function(val,feedback,leccion){if(this.d.historiaEleccion)return;this.d.historiaEleccion={val:val,feedback:feedback,leccion:leccion};this.d.historiaLeida=this._hoy();this.d.total+=2;this.d.today.totalDay+=2;this.d.week.pts+=2;this.d.month.pts+=2;SFX.coin();showToast('Historia completada ✨','+2 puntos','reward');this._checkMilestones();this._save();},
   guardarDiario:function(){var inp=document.getElementById('diario-input');if(!inp)return;var txt=inp.value.trim();if(!txt)return;if(!this.d.diario)this.d.diario=[];this.d.diario.unshift({fecha:this._hoy(),texto:txt});if(this.d.diario.length>90)this.d.diario=this.d.diario.slice(0,90);SFX.coin();showToast('Guardado en tu diario 📖','');this._save();},
-
-  showMedalla:function(idx){var ganadas=this.MEDALLAS.filter(function(m){return(GAME.d.medallas||[]).indexOf(m.id)!==-1;});var bloqueadas=this.MEDALLAS.filter(function(m){return(GAME.d.medallas||[]).indexOf(m.id)===-1;});var orden=ganadas.concat(bloqueadas);var m=orden[idx];if(!m)return;var ganada=(this.d.medallas||[]).indexOf(m.id)!==-1;showToast(m.icon+' '+m.label,ganada?m.desc:'Aún no la has ganado 💪',ganada?'reward':'normal');},
-
+  showMedalla:function(idx){var ganadas=MEDALLAS_BASE.filter(function(m){return(GAME.d.medallas||[]).indexOf(m.id)!==-1;});var bloqueadas=MEDALLAS_BASE.filter(function(m){return(GAME.d.medallas||[]).indexOf(m.id)===-1;});var orden=ganadas.concat(bloqueadas);var m=orden[idx];if(!m)return;var ganada=(this.d.medallas||[]).indexOf(m.id)!==-1;showToast(m.icon+' '+m.label,ganada?m.desc:'Aún no la has ganado 💪',ganada?'reward':'normal');},
   tab:function(t){this.d.activeTab=t;this._render();},
   goConfig:function(){this.d.activeTab='history';this._render();},
   goRules:function(){this.d.activeTab='rules';this._render();},
-  toggleEng:function(){this._engCollapsed=!this._engCollapsed;var panel=document.getElementById('eng-panel');var arrow=document.getElementById('eng-arrow');if(panel)panel.style.display=this._engCollapsed?'none':'block';if(arrow)arrow.textContent=this._engCollapsed?'▼':'▲';},
-
+  toggleEng:function(){this._engCollapsed=!this._engCollapsed;var p=document.getElementById('eng-panel');var a=document.getElementById('eng-arrow');if(p)p.style.display=this._engCollapsed?'none':'block';if(a)a.textContent=this._engCollapsed?'▼':'▲';},
   askReset:function(){document.getElementById('modal-reset').classList.add('show');},
   cancelReset:function(){document.getElementById('modal-reset').classList.remove('show');},
   confirmReset:function(){
@@ -732,25 +807,22 @@ var GAME={
     if(this.d.today.date){this.d.history.push(JSON.parse(JSON.stringify(this.d.today)));if(this.d.history.length>180)this.d.history=this.d.history.slice(-180);}
     var ptsHoy=this.d.today.totalDay;this.d.total=Math.max(0,this.d.total-ptsHoy);this.d.week.pts=Math.max(0,this.d.week.pts-ptsHoy);this.d.month.pts=Math.max(0,this.d.month.pts-ptsHoy);
     this.d.today={date:this._hoy(),points:{},totalDay:0,basePoints:0,perfectDay:false};this.d.historiaLeida='';this.d.historiaEleccion=null;
-    SFX.coin();showToast('Día Reiniciado 🔄','Misiones listas para empezar');this.d.activeTab='tasks';this._save();
+    SFX.coin();showToast('Día Reiniciado 🔄','Misiones listas');this.d.activeTab='tasks';this._save();
   },
   askResetAll:function(){document.getElementById('modal-resetall').classList.add('show');},
   cancelResetAll:function(){document.getElementById('modal-resetall').classList.remove('show');},
   confirmResetAll:function(){
     document.getElementById('modal-resetall').classList.remove('show');this.d=emptyGameData();this.d.today.date=this._hoy();this.d.week.id=this._semanaId();this.d.month.id=this._mes();
     try{localStorage.removeItem(this._localKey());}catch(e){}
-    if(this._ref){try{this._pendingSaves++;this._ref.update({gameData:Object.assign({},this.d,{lastSyncMs:Date.now()})}).then(function(){syncBar('sb-ok','☁️ Reinicio guardado');}).catch(function(){syncBar('sb-err','❌ Error');});}catch(e){}}
-    SFX.coin();showToast('¡Todo Reiniciado! 🔄','Empezando desde cero');this._render();
+    if(this._ref){try{this._pendingSaves++;this._ref.update({gameData:Object.assign({},this.d,{lastSyncMs:Date.now()})});}catch(e){}}
+    showToast('¡Todo Reiniciado! 🔄','Empezando desde cero');this._render();
   },
-
-  _round10:function(v){var resto=v%10;return resto<=5?Math.floor(v/10)*10:Math.ceil(v/10)*10;},
+  _round10:function(v){var r=v%10;return r<=5?Math.floor(v/10)*10:Math.ceil(v/10)*10;},
   _clp:function(v){var sym=this._child&&this._child.currency?this._child.currency.symbol:'$';return sym+new Intl.NumberFormat('es-CL',{minimumFractionDigits:0}).format(this._round10(v));},
-
   _render:function(){
-    var inputEl=document.getElementById('diario-input');var savedDraft=inputEl?inputEl.value:'';
+    var inp=document.getElementById('diario-input');var draft=inp?inp.value:'';
     var ptEl=document.getElementById('total-pts');if(ptEl)ptEl.textContent=this.d.total;
-    var dateEl=document.getElementById('game-date-label');
-    if(dateEl){var hoy=this._hoy();var d=new Date(hoy+'T12:00:00');dateEl.textContent=d.toLocaleDateString('es',{weekday:'long',day:'numeric',month:'long'}).replace(/^\w/,function(c){return c.toUpperCase();});}
+    var dateEl=document.getElementById('game-date-label');if(dateEl){var hoy=this._hoy();var d2=new Date(hoy+'T12:00:00');dateEl.textContent=d2.toLocaleDateString('es',{weekday:'long',day:'numeric',month:'long'}).replace(/^\w/,function(c){return c.toUpperCase();});}
     ['tasks','rewards','historia','rules','history'].forEach(function(t){var b=document.getElementById('tab-'+t);if(b)b.className='tab-btn'+(GAME.d.activeTab===t?' active':'');});
     var c=document.getElementById('content');if(!c)return;
     if(this.d.activeTab==='tasks')c.innerHTML=this._buildTasks();
@@ -758,105 +830,331 @@ var GAME={
     else if(this.d.activeTab==='historia')c.innerHTML=this._buildHistoria();
     else if(this.d.activeTab==='history')c.innerHTML=this._buildHistory();
     else if(this.d.activeTab==='rules')c.innerHTML=this._buildRules();
-    var newInput=document.getElementById('diario-input');if(newInput&&savedDraft)newInput.value=savedDraft;
+    var ni=document.getElementById('diario-input');if(ni&&draft)ni.value=draft;
     this._attachDiarioCounter();this._attachHistoryClicks();
   },
   _attachDiarioCounter:function(){var inp=document.getElementById('diario-input');var counter=document.getElementById('diario-counter');if(!inp||!counter)return;counter.textContent=inp.value.length+' / 500';inp.addEventListener('input',function(){counter.textContent=inp.value.length+' / 500';});},
   _attachHistoryClicks:function(){document.querySelectorAll('.hist-row[data-date]').forEach(function(row){row.addEventListener('click',function(){GAME.openEditDay(this.dataset.date);});});},
 
   _buildEngagement:function(){
-    var d=this.d;var self=this;var mesPts=d.month&&d.month.pts?d.month.pts:0;var hoyPts=d.today.totalDay||0;var semPts=d.week&&d.week.pts?d.week.pts:0;
+    var d=this.d;var mesPts=d.month&&d.month.pts?d.month.pts:0;var hoyPts=d.today.totalDay||0;var semPts=d.week&&d.week.pts?d.week.pts:0;
     var baseTasks=this.TASKS.filter(function(t){return(d.hiddenTasks||[]).indexOf(t.id)===-1;});
-    var maxBase=baseTasks.reduce(function(s,t){return s+t.pts*t.limit;},0);var baseHoy=d.today.basePoints||0;var pctDia=maxBase>0?Math.min(100,Math.round(baseHoy/maxBase*100)):0;
+    var maxBase=baseTasks.reduce(function(s,t){return s+t.pts*t.limit;},0);var pctDia=maxBase>0?Math.min(100,Math.round((d.today.basePoints||0)/maxBase*100)):0;
     var misionesHechas=baseTasks.filter(function(t){return(d.today.points[t.id]||0)>=t.limit;}).length;
-    var allPremios=this.WEEKLY.map(function(g){return{label:g.label,pts:g.pts,tipo:'semanal',actual:semPts};}).concat(this.MONTHLY.map(function(g){return{label:g.label,pts:g.pts,tipo:'mensual',actual:mesPts};}));
+    var allPremios=this.WEEKLY.map(function(g){return{label:g.label,pts:g.pts,actual:semPts};}).concat(this.MONTHLY.map(function(g){return{label:g.label,pts:g.pts,actual:mesPts};}));
     var next=null;allPremios.forEach(function(p){if(p.actual<p.pts&&(!next||p.pts-p.actual<next.pts-next.actual))next=p;});
     var hist7=[];var today=this._hoy();
     for(var i=6;i>=0;i--){var d2=new Date(today+'T12:00:00');d2.setDate(d2.getDate()-i);var ds=d2.toLocaleDateString('en-CA',{timeZone:this.TZ});if(ds===today){hist7.push({date:ds,pts:d.today.totalDay,isToday:true});}else{var h=d.history&&d.history.find(function(x){return x.date===ds;});hist7.push({date:ds,pts:h?h.totalDay:0,isToday:false});}}
     var maxPts=Math.max.apply(null,hist7.map(function(x){return x.pts;}));if(maxPts<1)maxPts=1;
-    var svgBars='';hist7.forEach(function(day,i){var pct=day.pts/maxPts;var h2=Math.max(4,Math.round(56*pct));var col=day.isToday?'var(--pink)':day.pts>=maxBase?'#22d3a0':day.pts>0?'var(--purple)':'rgba(255,255,255,.1)';var dayLabel=['D','L','M','Mi','J','V','S'][new Date(day.date+'T12:00:00').getDay()];svgBars+='<g><rect x="'+(i*26+4)+'" y="'+(60-h2)+'" width="18" height="'+h2+'" rx="4" fill="'+col+'"/><text x="'+(i*26+13)+'" y="76" text-anchor="middle" font-size="8" fill="rgba(255,255,255,.5)" font-family="Archivo">'+dayLabel+'</text>'+(day.pts>0?'<text x="'+(i*26+13)+'" y="'+(60-h2-4)+'" text-anchor="middle" font-size="7" fill="rgba(255,255,255,.7)">'+day.pts+'</text>':'')+'</g>';});
-    var ganadosMedallas=this.MEDALLAS.filter(function(m){return(d.medallas||[]).indexOf(m.id)!==-1;});var bloqueadosMedallas=this.MEDALLAS.filter(function(m){return(d.medallas||[]).indexOf(m.id)===-1;});var ordenMedallas=ganadosMedallas.concat(bloqueadosMedallas);
+    var svgBars='';hist7.forEach(function(day,i){var ht=Math.max(4,Math.round(54*day.pts/maxPts));var col=day.isToday?'var(--pink)':day.pts>=maxBase?'#22d3a0':day.pts>0?'var(--purple)':'rgba(255,255,255,.08)';var dayLabel=['D','L','M','Mi','J','V','S'][new Date(day.date+'T12:00:00').getDay()];svgBars+='<g><rect x="'+(i*26+4)+'" y="'+(60-ht)+'" width="18" height="'+ht+'" rx="5" fill="'+col+'" filter="url(#glow)"/><text x="'+(i*26+13)+'" y="78" text-anchor="middle" font-size="8" fill="rgba(255,255,255,.5)" font-family="Archivo">'+dayLabel+'</text>'+(day.pts>0?'<text x="'+(i*26+13)+'" y="'+(60-ht-5)+'" text-anchor="middle" font-size="7.5" fill="rgba(255,255,255,.8)" font-weight="bold">'+day.pts+'</text>':'')+'</g>';});
+    var ganadosMedallas=MEDALLAS_BASE.filter(function(m){return(d.medallas||[]).indexOf(m.id)!==-1;});var bloqueadosMedallas=MEDALLAS_BASE.filter(function(m){return(d.medallas||[]).indexOf(m.id)===-1;});var ordenMedallas=ganadosMedallas.concat(bloqueadosMedallas);
     var medalGrid=ordenMedallas.map(function(m,i){var g=(d.medallas||[]).indexOf(m.id)!==-1;return'<div class="medal-item '+(g?'earned':'locked')+'" onclick="GAME.showMedalla('+i+')"><div class="medal-icon">'+(g?m.icon:'🔒')+'</div><div class="medal-label">'+m.label+'</div></div>';}).join('');
     return '<div class="glass-card" style="margin-bottom:12px">'+
-      '<div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="GAME.toggleEng()"><div style="font-family:\'Syne\',sans-serif;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)">Panel de Progreso</div><span id="eng-arrow" style="color:var(--pink);font-weight:900">'+(this._engCollapsed?'▼':'▲')+'</span></div>'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;margin-bottom:4px" onclick="GAME.toggleEng()">'+
+        '<div style="font-family:\'Syne\',sans-serif;font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,150,200,.7)">Panel de Progreso</div>'+
+        '<span id="eng-arrow" style="color:var(--pink);font-weight:900;font-size:.9rem">'+(this._engCollapsed?'▼':'▲')+'</span>'+
+      '</div>'+
       '<div id="eng-panel" style="display:'+(this._engCollapsed?'none':'block')+'">'+
-        '<div style="text-align:center;padding:20px 0 14px;border-bottom:1px solid rgba(255,255,255,.08)"><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-weight:700;margin-bottom:4px">'+this._mesLabel()+'</div><div style="font-family:\'Syne\',sans-serif;font-size:3rem;font-weight:800;color:var(--pink);line-height:1">'+mesPts+'</div><div style="font-size:.72rem;color:var(--muted);font-weight:600">puntos este mes</div></div>'+
-        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)"><div style="text-align:center"><div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700">Hoy</div><div style="font-family:\'Syne\',sans-serif;font-size:1.6rem;font-weight:800;color:var(--pink)">'+hoyPts+'</div><div style="font-size:.65rem;color:var(--muted)">pts</div></div><div style="text-align:center"><div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700">Esta semana</div><div style="font-family:\'Syne\',sans-serif;font-size:1.6rem;font-weight:800;color:var(--purple)">'+semPts+'</div><div style="font-size:.65rem;color:var(--muted)">pts</div></div></div>'+
-        '<div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,.08)"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:.72rem;color:var(--muted);font-weight:700">Día perfecto</span><span style="font-size:.72rem;color:var(--pink);font-weight:700">'+misionesHechas+'/'+baseTasks.length+' misiones</span></div><div class="prog-track"><div class="prog-fill" style="width:'+pctDia+'%;background:linear-gradient(90deg,var(--pink),var(--purple))"></div></div>'+(d.today.perfectDay?'<div style="text-align:center;margin-top:6px;font-size:.78rem;font-weight:700;color:#facc15">🌟 ¡Día Perfecto! +20 pts bonus</div>':'')+'</div>'+
-        '<div style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)"><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:8px">Medallas ('+ganadosMedallas.length+'/'+this.MEDALLAS.length+')</div><div class="medal-grid">'+medalGrid+'</div></div>'+
-        '<div style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)"><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:8px">Últimos 7 días</div><svg viewBox="0 0 186 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:80px">'+svgBars+'</svg></div>'+
-        (next?'<div style="padding:14px 0"><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:6px">Próximo premio</div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:.85rem;font-weight:700">'+next.label+'</span><span style="font-size:.75rem;color:var(--pink);font-weight:700">'+(next.pts-next.actual)+' pts más</span></div><div class="prog-track"><div class="prog-fill" style="width:'+Math.min(100,Math.round(next.actual/next.pts*100))+'%;background:linear-gradient(90deg,var(--pink),var(--purple))"></div></div></div>':'<div style="padding:14px 0;text-align:center;font-size:.82rem;color:var(--success);font-weight:700">🎉 ¡Todos los premios alcanzados!</div>')+
+        '<div style="text-align:center;padding:18px 0 14px;border-bottom:1px solid rgba(255,255,255,.07)">'+
+          '<div style="font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.14em;font-weight:700;margin-bottom:6px">'+this._mesLabel()+'</div>'+
+          '<div style="font-size:3.2rem;font-weight:800;color:var(--pink);font-family:\'Syne\',sans-serif;line-height:1;text-shadow:0 0 20px rgba(255,45,120,.6)">'+mesPts+'</div>'+
+          '<div style="font-size:.7rem;color:var(--muted);font-weight:600;margin-top:4px">puntos este mes</div>'+
+        '</div>'+
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.07)">'+
+          '<div style="text-align:center;background:rgba(255,45,120,.08);border:1px solid rgba(255,45,120,.2);border-radius:12px;padding:12px 6px">'+
+            '<div style="font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-weight:700;margin-bottom:4px">Hoy</div>'+
+            '<div style="font-size:1.8rem;font-weight:800;color:var(--pink);font-family:\'Syne\',sans-serif;line-height:1;text-shadow:0 0 14px rgba(255,45,120,.5)">'+hoyPts+'</div>'+
+            '<div style="font-size:.62rem;color:var(--muted);margin-top:2px">pts</div>'+
+          '</div>'+
+          '<div style="text-align:center;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:12px;padding:12px 6px">'+
+            '<div style="font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-weight:700;margin-bottom:4px">Semana</div>'+
+            '<div style="font-size:1.8rem;font-weight:800;color:var(--purple);font-family:\'Syne\',sans-serif;line-height:1;text-shadow:0 0 14px rgba(124,58,237,.5)">'+semPts+'</div>'+
+            '<div style="font-size:.62rem;color:var(--muted);margin-top:2px">pts</div>'+
+          '</div>'+
+        '</div>'+
+        '<div style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,.07)">'+
+          '<div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:.7rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.1em">Día perfecto</span><span style="font-size:.7rem;color:var(--pink);font-weight:700">'+misionesHechas+'/'+baseTasks.length+' misiones</span></div>'+
+          '<div class="prog-track"><div class="prog-fill" style="width:'+pctDia+'%;background:linear-gradient(90deg,var(--pink),var(--purple));box-shadow:0 0 10px rgba(255,45,120,.5)"></div></div>'+
+          (d.today.perfectDay?'<div style="text-align:center;margin-top:8px;font-size:.82rem;font-weight:800;color:#facc15;text-shadow:0 0 12px rgba(251,191,36,.6)">🌟 ¡Día Perfecto! +20 pts bonus</div>':'')+
+        '</div>'+
+        '<div style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,.07)">'+
+          '<div style="font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-weight:700;margin-bottom:8px">Medallas ('+ganadosMedallas.length+'/'+MEDALLAS_BASE.length+')</div>'+
+          '<div class="medal-grid">'+medalGrid+'</div>'+
+        '</div>'+
+        '<div style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,.07)">'+
+          '<div style="font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-weight:700;margin-bottom:8px">Últimos 7 días</div>'+
+          '<svg viewBox="0 0 186 84" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:84px"><defs><filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>'+svgBars+'</svg>'+
+        '</div>'+
+        (next?'<div style="padding:12px 0"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:.82rem;font-weight:700">'+next.label+'</span><span style="font-size:.72rem;color:var(--pink);font-weight:700;text-shadow:0 0 8px rgba(255,45,120,.5)">'+(next.pts-next.actual)+' pts más</span></div><div class="prog-track"><div class="prog-fill" style="width:'+Math.min(100,Math.round(next.actual/next.pts*100))+'%;background:linear-gradient(90deg,var(--pink),var(--purple));box-shadow:0 0 10px rgba(255,45,120,.4)"></div></div></div>':'<div style="padding:14px 0;text-align:center;font-size:.85rem;color:var(--success);font-weight:800;text-shadow:0 0 10px rgba(34,211,160,.4)">🎉 ¡Todos los premios alcanzados!</div>')+
       '</div></div>';
   },
 
   _buildTasks:function(){
     var d=this.d;var self=this;var html=this._buildEngagement();
-    html+='<div style="font-family:\'Syne\',sans-serif;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:16px 0 10px">Misiones de Hoy</div>';
+    html+='<div class="section-title-game">✦ Misiones de Hoy</div>';
     this.TASKS.forEach(function(task){
       if((d.hiddenTasks||[]).indexOf(task.id)!==-1)return;var cur=d.today.points[task.id]||0;var done=cur>=task.limit;
-      html+='<div class="task-card'+(done?' done':'')+'"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:1.5rem">'+task.icon+'</span><div style="flex:1"><div style="font-weight:700;font-size:.9rem">'+task.label+'</div><div style="font-size:.72rem;color:var(--muted);margin-top:2px">'+task.pts+' pts × '+task.limit+' vez'+(task.limit>1?'es':'')+'</div></div><div style="font-family:\'Syne\',sans-serif;font-size:1.1rem;font-weight:800;color:var(--pink)">'+cur+'/'+task.limit+'</div></div>';
+      html+='<div class="task-card'+(done?' done':'')+'">'+
+        '<div style="display:flex;align-items:center;gap:12px">'+
+          '<span style="font-size:1.6rem;filter:'+(done?'drop-shadow(0 0 8px var(--pink))':'none')+'">'+task.icon+'</span>'+
+          '<div style="flex:1"><div style="font-weight:700;font-size:.92rem;color:'+(done?'#ff9ecc':'var(--text)')+'">'+task.label+'</div>'+
+          '<div style="font-size:.7rem;color:var(--muted);margin-top:2px">'+task.pts+' pts × '+task.limit+' vez'+(task.limit>1?'es':'')+'</div></div>'+
+          '<div style="font-size:1.05rem;font-weight:800;color:var(--pink);font-family:\'Syne\',sans-serif;text-shadow:'+(done?'0 0 12px rgba(255,45,120,.7)':'none')+'">'+cur+'/'+task.limit+'</div>'+
+        '</div>';
       if(task.limit>1){html+='<div style="display:flex;gap:4px">';for(var i=0;i<task.limit;i++)html+='<div class="seg'+(i<cur?' on':'')+'"></div>';html+='</div>';}
-      html+='<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn-m" onclick="GAME.tap(\''+task.id+'\',-1)">−</button><button class="btn-p'+(cur>=task.limit?' off':'')+'" onclick="GAME.tap(\''+task.id+'\',1)">+</button></div></div>';
+      html+='<div style="display:flex;gap:8px;justify-content:flex-end">'+
+        '<button class="btn-m" onclick="GAME.tap(\''+task.id+'\',-1)">−</button>'+
+        '<button class="btn-p'+(cur>=task.limit?' off':'')+'" onclick="GAME.tap(\''+task.id+'\',1)">+</button>'+
+      '</div></div>';
     });
-    if(d.racha>0||d.rachaMax>0){html+='<div class="glass-card" style="margin-top:16px;display:flex;justify-content:space-around;text-align:center"><div><div style="font-size:1.6rem">🔥</div><div style="font-family:\'Syne\',sans-serif;font-size:1.4rem;font-weight:800;color:var(--pink)">'+(d.racha||0)+'</div><div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Racha actual</div></div><div><div style="font-size:1.6rem">🏆</div><div style="font-family:\'Syne\',sans-serif;font-size:1.4rem;font-weight:800;color:var(--purple)">'+(d.rachaMax||0)+'</div><div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Récord</div></div></div>';}
+    if(d.racha>0||d.rachaMax>0){
+      html+='<div class="racha-card">'+
+        '<div style="text-align:center"><div style="font-size:2rem;margin-bottom:4px">🔥</div><div style="font-size:1.6rem;font-weight:800;color:var(--pink);font-family:\'Syne\',sans-serif;text-shadow:0 0 16px rgba(255,45,120,.6)">'+(d.racha||0)+'</div><div style="font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700">Racha actual</div></div>'+
+        '<div style="width:1px;background:rgba(255,255,255,.1);height:40px"></div>'+
+        '<div style="text-align:center"><div style="font-size:2rem;margin-bottom:4px">🏆</div><div style="font-size:1.6rem;font-weight:800;color:var(--purple);font-family:\'Syne\',sans-serif;text-shadow:0 0 16px rgba(124,58,237,.6)">'+(d.rachaMax||0)+'</div><div style="font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700">Récord</div></div>'+
+      '</div>';
+    }
     return html;
   },
 
   _buildRewards:function(){
-    var d=this.d;var self=this;var html='<div style="font-family:\'Syne\',sans-serif;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px">Premios Semanales</div>';
+    var d=this.d;var self=this;var html='';
     var semPts=d.week&&d.week.pts?d.week.pts:0;
-    this.WEEKLY.forEach(function(g,i){var alcanza=semPts>=g.pts;var claimed=(d.week.claimed||[]).indexOf(i)!==-1;var falta=g.pts-semPts;html+='<div class="reward-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px"><div><div style="font-weight:700;font-size:.95rem">'+g.label+'</div><div style="font-size:.75rem;color:var(--muted);margin-top:2px">'+g.pts+' puntos semanales</div></div><div style="font-size:1.5rem">'+(alcanza?'🎁':'🔒')+'</div></div><div class="prog-track" style="margin-bottom:8px"><div class="prog-fill" style="width:'+Math.min(100,Math.round(semPts/g.pts*100))+'%;background:linear-gradient(90deg,var(--pink),var(--purple))"></div></div>'+(alcanza?(self._esSabado()&&!claimed?'<button onclick="GAME.cobrarSemana('+i+')" style="width:100%;padding:12px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-bottom:3px solid var(--pink-dk);border-radius:12px;color:white;font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.85rem;cursor:pointer">¡Cobrar Premio!</button>':(claimed?'<div style="text-align:center;color:var(--success);font-weight:700;font-size:.82rem">✅ Premio cobrado esta semana</div>':'<div style="text-align:center;color:var(--warn);font-weight:700;font-size:.82rem">🎯 Meta alcanzada — se cobra el sábado</div>')):('<div style="text-align:center;color:var(--muted);font-size:.78rem">Faltan '+falta+' puntos</div>'))+'</div>';});
+    html+='<div class="section-title-game">✦ Premios Semanales</div>';
+    this.WEEKLY.forEach(function(g,i){var alcanza=semPts>=g.pts;var claimed=(d.week.claimed||[]).indexOf(i)!==-1;html+='<div class="reward-card">'+
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">'+
+        '<div><div style="font-weight:700;font-size:.95rem">'+g.label+'</div><div style="font-size:.72rem;color:var(--muted);margin-top:2px">'+g.pts+' pts semanales</div></div>'+
+        '<div style="font-size:1.6rem;'+(alcanza?'animation:medal-pulse 2s ease-in-out infinite;filter:drop-shadow(0 0 8px var(--pink))':'')+'">'+( alcanza?'🎁':'🔒')+'</div>'+
+      '</div>'+
+      '<div class="prog-track" style="margin-bottom:8px"><div class="prog-fill" style="width:'+Math.min(100,Math.round(semPts/g.pts*100))+'%;background:linear-gradient(90deg,var(--pink),var(--purple));box-shadow:0 0 10px rgba(255,45,120,.4)"></div></div>'+
+      (alcanza?(self._esSabado()&&!claimed?'<button onclick="GAME.cobrarSemana('+i+')" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-bottom:3px solid var(--pink-dk);border-radius:12px;color:white;font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.88rem;cursor:pointer;box-shadow:0 0 20px rgba(255,45,120,.4)">¡Cobrar Premio!</button>':(claimed?'<div style="text-align:center;color:var(--success);font-weight:700;font-size:.82rem;text-shadow:0 0 8px rgba(34,211,160,.4)">✅ Premio cobrado esta semana</div>':'<div style="text-align:center;color:var(--warn);font-weight:700;font-size:.82rem;text-shadow:0 0 8px rgba(251,191,36,.3)">🎯 Meta alcanzada — se cobra el sábado</div>')):('<div style="text-align:center;color:var(--muted);font-size:.78rem">Faltan '+(g.pts-semPts)+' puntos</div>'))+
+    '</div>';});
     var mesPts=d.month&&d.month.pts?d.month.pts:0;
-    html+='<div style="font-family:\'Syne\',sans-serif;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:20px 0 10px">Premios Mensuales</div>';
-    this.MONTHLY.forEach(function(g,i){var alcanza=mesPts>=g.pts;var claimed=(d.month.claimed||[]).indexOf(i)!==-1;var falta=g.pts-mesPts;html+='<div class="reward-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px"><div><div style="font-weight:700;font-size:.95rem">'+g.label+'</div><div style="font-size:.75rem;color:var(--muted);margin-top:2px">'+g.pts+' puntos del mes</div></div><div style="font-size:1.5rem">'+(alcanza?'🎁':'🔒')+'</div></div><div class="prog-track" style="margin-bottom:8px"><div class="prog-fill" style="width:'+Math.min(100,Math.round(mesPts/g.pts*100))+'%;background:linear-gradient(90deg,#facc15,#ea580c)"></div></div>'+(alcanza&&!claimed?'<div style="text-align:center;color:var(--success);font-weight:700;font-size:.82rem">🎉 ¡Premio del mes desbloqueado! Habla con mamá/papá</div>':claimed?'<div style="text-align:center;color:var(--success);font-weight:700;font-size:.82rem">✅ Premio cobrado este mes</div>':'<div style="text-align:center;color:var(--muted);font-size:.78rem">Faltan '+falta+' puntos</div>')+'</div>';});
-    html+='<div style="font-family:\'Syne\',sans-serif;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:20px 0 10px">Mis Ganancias del Mes</div>';
+    html+='<div class="section-title-game">✦ Premios Mensuales</div>';
+    this.MONTHLY.forEach(function(g,i){var alcanza=mesPts>=g.pts;var claimed=(d.month.claimed||[]).indexOf(i)!==-1;html+='<div class="reward-card">'+
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">'+
+        '<div><div style="font-weight:700;font-size:.95rem">'+g.label+'</div><div style="font-size:.72rem;color:var(--muted);margin-top:2px">'+g.pts+' pts del mes</div></div>'+
+        '<div style="font-size:1.6rem">'+( alcanza?'🎁':'🔒')+'</div>'+
+      '</div>'+
+      '<div class="prog-track" style="margin-bottom:8px"><div class="prog-fill" style="width:'+Math.min(100,Math.round(mesPts/g.pts*100))+'%;background:linear-gradient(90deg,#facc15,#ea580c);box-shadow:0 0 10px rgba(251,191,36,.4)"></div></div>'+
+      (alcanza&&!claimed?'<div style="text-align:center;color:var(--success);font-weight:800;font-size:.85rem;text-shadow:0 0 10px rgba(34,211,160,.5)">🎉 ¡Premio del mes desbloqueado! Habla con mamá/papá</div>':claimed?'<div style="text-align:center;color:var(--success);font-weight:700;font-size:.82rem">✅ Premio cobrado este mes</div>':'<div style="text-align:center;color:var(--muted);font-size:.78rem">Faltan '+(g.pts-mesPts)+' puntos</div>')+
+    '</div>';});
+    html+='<div class="section-title-game">✦ Mis Ganancias del Mes</div>';
     html+='<div class="glass-card">';var totalDinero=mesPts*this.POINT_VALUE;
-    html+='<div style="text-align:center;padding:12px 0 16px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:12px"><div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:4px">Total ganado este mes</div><div style="font-family:\'Syne\',sans-serif;font-size:2rem;font-weight:800;color:var(--pink)">'+this._clp(totalDinero)+'</div></div>';
-    this.FINANCE.forEach(function(f){var monto=totalDinero*(f.pct/100);html+='<div class="finance-row-disp"><div style="display:flex;align-items:center;gap:8px"><div style="width:10px;height:10px;border-radius:50%;background:'+f.color+'"></div><div><div style="font-weight:700;font-size:.88rem">'+f.label+'</div><div style="font-size:.68rem;color:var(--muted)">'+f.pct+'% — '+f.desc+'</div></div></div><div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:.95rem;color:'+f.color+'">'+self._clp(monto)+'</div></div>';});html+='</div>';
-    if(d.historialMeses&&d.historialMeses.length){html+='<div style="font-family:\'Syne\',sans-serif;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:20px 0 10px">Resumen del Año</div><div class="glass-card">';var totalAnual=d.historialMeses.reduce(function(s,m){return s+m.pts;},0);d.historialMeses.slice().reverse().forEach(function(m){var fecha=new Date(m.id+'-15');var label=fecha.toLocaleDateString('es',{month:'long',year:'numeric'});label=label.charAt(0).toUpperCase()+label.slice(1);html+='<div class="finance-row-disp"><span style="font-size:.85rem;font-weight:600">'+label+'</span><div style="text-align:right"><span style="font-weight:700;font-size:.88rem;color:var(--pink)">'+m.pts+' pts</span><div style="font-size:.68rem;color:var(--muted)">'+self._clp(m.pts*self.POINT_VALUE)+'</div></div></div>';});html+='<div class="finance-row-disp" style="border-top:1px solid rgba(255,255,255,.1);margin-top:8px;padding-top:12px"><span style="font-weight:700">Total anual</span><span style="font-family:\'Syne\',sans-serif;font-weight:800;color:var(--success)">'+self._clp(totalAnual*self.POINT_VALUE)+'</span></div></div>';}
+    html+='<div style="text-align:center;padding:12px 0 16px;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:12px">'+
+      '<div style="font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-weight:700;margin-bottom:6px">Total ganado este mes</div>'+
+      '<div style="font-size:2rem;font-weight:800;color:var(--pink);font-family:\'Syne\',sans-serif;text-shadow:0 0 20px rgba(255,45,120,.5)">'+this._clp(totalDinero)+'</div>'+
+    '</div>';
+    this.FINANCE.forEach(function(f){var monto=totalDinero*(f.pct/100);html+='<div class="finance-row-disp">'+
+      '<div style="display:flex;align-items:center;gap:8px">'+
+        '<div style="width:10px;height:10px;border-radius:50%;background:'+f.color+';box-shadow:0 0 6px '+f.color+'"></div>'+
+        '<div><div style="font-weight:700;font-size:.88rem">'+f.label+'</div><div style="font-size:.68rem;color:var(--muted)">'+f.pct+'% — '+f.desc+'</div></div>'+
+      '</div>'+
+      '<div style="font-weight:800;font-size:.95rem;color:'+f.color+';text-shadow:0 0 8px '+f.color+'66;font-family:\'Syne\',sans-serif">'+self._clp(monto)+'</div>'+
+    '</div>';});html+='</div>';
+    if(d.historialMeses&&d.historialMeses.length){
+      html+='<div class="section-title-game">✦ Resumen del Año</div><div class="glass-card">';var totalAnual=d.historialMeses.reduce(function(s,m){return s+m.pts;},0);
+      d.historialMeses.slice().reverse().forEach(function(m){var fecha=new Date(m.id+'-15');var label=fecha.toLocaleDateString('es',{month:'long',year:'numeric'});label=label.charAt(0).toUpperCase()+label.slice(1);html+='<div class="finance-row-disp"><span style="font-size:.85rem;font-weight:600">'+label+'</span><div style="text-align:right"><div style="font-weight:700;font-size:.88rem;color:var(--pink)">'+m.pts+' pts</div><div style="font-size:.68rem;color:var(--muted)">'+self._clp(m.pts*self.POINT_VALUE)+'</div></div></div>';});
+      html+='<div class="finance-row-disp" style="border-top:1px solid rgba(255,255,255,.08);margin-top:8px;padding-top:12px"><span style="font-weight:700">Total anual</span><span style="font-weight:800;color:var(--success);font-family:\'Syne\',sans-serif;text-shadow:0 0 10px rgba(34,211,160,.4)">'+self._clp(totalAnual*self.POINT_VALUE)+'</span></div></div>';
+    }
     return html;
   },
-  cobrarSemana:function(i){if(!this._esSabado())return;var g=this.WEEKLY[i];if(!g)return;if(this.d.week.pts<g.pts)return;if((this.d.week.claimed||[]).indexOf(i)!==-1)return;this.d.week.claimed.push(i);FX.burst();SFX.win();showToast('¡PREMIO COBRADO! 🎉',g.label,'reward');this._save();},
+  cobrarSemana:function(i){if(!this._esSabado())return;var g=this.WEEKLY[i];if(!g||this.d.week.pts<g.pts||(this.d.week.claimed||[]).indexOf(i)!==-1)return;this.d.week.claimed.push(i);FX.burst();SFX.win();showToast('🎉 ¡PREMIO COBRADO!',g.label,'reward');this._save();},
 
   _buildHistoria:function(){
-    var d=this.d;var hoy=this._hoy();var dayOfYear=Math.floor((new Date(hoy)-new Date(new Date(hoy).getFullYear(),0,0))/(1000*60*60*24));var idx=dayOfYear%this.HISTORIAS.length;var h=this.HISTORIAS[idx];var html='';
-    html+='<div style="background:linear-gradient(135deg,rgba(255,45,120,.3),rgba(124,58,237,.3));border:1px solid rgba(255,45,120,.3);border-radius:18px;padding:20px;margin-bottom:14px;text-align:center"><div style="font-size:2.5rem;margin-bottom:8px">'+h.emoji+'</div><div style="font-family:\'Syne\',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:10px">'+h.titulo+'</div><div style="font-size:.85rem;color:rgba(255,255,255,.8);line-height:1.7">'+h.intro+'</div></div>';
-    if(!d.historiaEleccion){html+='<div style="font-size:.8rem;color:var(--muted);text-align:center;margin-bottom:12px;font-weight:600">¿Qué harías tú?</div>';h.opciones.forEach(function(op,i){html+='<button class="btn-historia" onclick="GAME.elegirHistoria(\''+op.valor+'\',\''+op.feedback.replace(/'/g,"\\'").replace(/"/g,'&quot;')+'\',\''+op.leccion.replace(/'/g,"\\'").replace(/"/g,'&quot;')+'\')"><span style="font-size:1.3rem;flex-shrink:0">'+(i===0?'💙':'💜')+'</span><span>'+op.texto+'</span></button>';});}
-    else{html+='<div class="glass-card" style="border-left:4px solid var(--pink);margin-bottom:14px"><div style="font-size:.82rem;line-height:1.7;margin-bottom:12px">'+d.historiaEleccion.feedback+'</div><div style="font-size:.75rem;font-weight:700;color:var(--pink);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Lección del día</div><div style="font-size:.82rem;font-style:italic;color:rgba(255,255,255,.85)">'+d.historiaEleccion.leccion+'</div><div style="margin-top:12px;font-size:.75rem;color:var(--success);font-weight:700">✅ +2 puntos ganados</div></div>';}
-    html+='<div style="font-family:\'Syne\',sans-serif;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:20px 0 10px">Mi Diario Personal 📖</div>';
-    html+='<div class="glass-card"><div style="font-size:.78rem;color:var(--muted);margin-bottom:10px;line-height:1.5">Este es tu espacio. Escribe lo que piensas, lo que sentiste hoy. Solo lo ves tú.</div><textarea id="diario-input" class="diario-textarea" placeholder="¿Qué fue lo mejor de hoy?..." maxlength="500"></textarea><div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px"><span id="diario-counter" style="font-size:.72rem;color:var(--muted)">0 / 500</span></div><button onclick="GAME.guardarDiario()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-bottom:4px solid var(--pink-dk);border-radius:14px;color:white;font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;font-size:.92rem;text-transform:uppercase;cursor:pointer;margin-top:10px;box-shadow:0 0 18px rgba(255,45,120,.3)">Guardar en mi diario</button></div>';
-    if(d.diario&&d.diario.length){html+='<div style="font-family:\'Syne\',sans-serif;font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:16px 0 8px">Entradas anteriores</div>';d.diario.slice(0,5).forEach(function(e){var fecha=new Date(e.fecha+'T12:00:00').toLocaleDateString('es',{weekday:'short',day:'numeric',month:'short'});html+='<div style="background:rgba(10,0,25,.80);border:1px solid rgba(255,255,255,.1);border-left:3px solid var(--pink);border-radius:12px;padding:13px 15px;margin-bottom:8px"><div style="font-size:.68rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">'+fecha+'</div><div style="font-size:.85rem;line-height:1.6">'+e.texto+'</div></div>';});}
+    var d=this.d;var hoy=this._hoy();var dayOfYear=Math.floor((new Date(hoy)-new Date(new Date(hoy).getFullYear(),0,0))/(1000*60*60*24));var idx=dayOfYear%HISTORIAS_BASE.length;var h=HISTORIAS_BASE[idx];var html='';
+    html+='<div style="background:linear-gradient(135deg,rgba(255,45,120,.2),rgba(124,58,237,.25));border:1px solid rgba(255,45,120,.35);border-radius:20px;padding:20px;margin-bottom:14px;text-align:center;box-shadow:0 0 30px rgba(255,45,120,.12)">'+
+      '<div style="font-size:2.8rem;margin-bottom:10px;filter:drop-shadow(0 0 10px rgba(255,45,120,.5))">'+h.emoji+'</div>'+
+      '<div style="font-family:\'Syne\',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:12px;color:white;text-shadow:0 0 14px rgba(255,45,120,.4)">'+h.titulo+'</div>'+
+      '<div style="font-size:.85rem;color:rgba(255,255,255,.82);line-height:1.75">'+h.intro+'</div>'+
+    '</div>';
+    if(!d.historiaEleccion){
+      html+='<div style="font-size:.8rem;color:var(--muted);text-align:center;margin-bottom:14px;font-weight:600;text-transform:uppercase;letter-spacing:.1em">¿Qué harías tú?</div>';
+      h.opciones.forEach(function(op,i){
+        var fb=op.feedback.replace(/'/g,"\\'");var lc=op.leccion.replace(/'/g,"\\'");
+        html+='<button class="btn-historia" onclick="GAME.elegirHistoria(\''+op.valor+'\',\''+fb+'\',\''+lc+'\')">'+
+          '<span style="font-size:1.4rem;flex-shrink:0;filter:drop-shadow(0 0 8px rgba(255,45,120,.5))">'+(i===0?'💙':'💜')+'</span>'+
+          '<span style="font-weight:600">'+op.texto+'</span>'+
+        '</button>';
+      });
+    }else{
+      html+='<div style="background:linear-gradient(135deg,rgba(255,45,120,.12),rgba(124,58,237,.12));border:1px solid rgba(255,45,120,.3);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 0 20px rgba(255,45,120,.08)">'+
+        '<div style="font-size:.85rem;line-height:1.75;margin-bottom:14px">'+d.historiaEleccion.feedback+'</div>'+
+        '<div style="font-size:.72rem;font-weight:700;color:var(--pink);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">✦ Lección del día</div>'+
+        '<div style="font-size:.85rem;font-style:italic;color:rgba(255,255,255,.85);line-height:1.6">'+d.historiaEleccion.leccion+'</div>'+
+        '<div style="margin-top:14px;font-size:.75rem;color:var(--success);font-weight:700;text-shadow:0 0 8px rgba(34,211,160,.4)">✅ +2 puntos ganados</div>'+
+      '</div>';
+    }
+    html+='<div class="section-title-game">✦ Mi Diario Personal 📖</div>';
+    html+='<div class="glass-card">'+
+      '<div style="font-size:.78rem;color:var(--muted);margin-bottom:12px;line-height:1.6">Este es tu espacio. Escribe lo que piensas, lo que sentiste hoy. Solo lo ves tú.</div>'+
+      '<textarea id="diario-input" class="diario-textarea" placeholder="¿Qué fue lo mejor de hoy?..." maxlength="500"></textarea>'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px"><span id="diario-counter" style="font-size:.7rem;color:var(--muted)">0 / 500</span></div>'+
+      '<button onclick="GAME.guardarDiario()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-bottom:3px solid var(--pink-dk);border-radius:14px;color:white;font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;font-size:.9rem;text-transform:uppercase;cursor:pointer;margin-top:12px;box-shadow:0 0 20px rgba(255,45,120,.35)">Guardar en mi diario</button>'+
+    '</div>';
+    if(d.diario&&d.diario.length){
+      html+='<div class="section-title-game">✦ Entradas anteriores</div>';
+      d.diario.slice(0,5).forEach(function(e){var fecha=new Date(e.fecha+'T12:00:00').toLocaleDateString('es',{weekday:'short',day:'numeric',month:'short'});html+='<div style="background:linear-gradient(135deg,rgba(15,0,35,.8),rgba(8,0,20,.9));border:1px solid rgba(255,45,120,.15);border-left:3px solid var(--pink);border-radius:14px;padding:14px 16px;margin-bottom:10px;box-shadow:0 0 14px rgba(255,45,120,.06)"><div style="font-size:.68rem;color:rgba(255,150,200,.7);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">'+fecha+'</div><div style="font-size:.88rem;line-height:1.65">'+e.texto+'</div></div>';});
+    }
     return html;
   },
 
   _buildRules:function(){
-    var childName=this._child&&this._child.name?this._child.name:'';var childTitle=this._child&&this._child.title?this._child.title:'';
-    var html='<div class="glass-card" style="text-align:center;margin-bottom:14px"><div style="font-size:2rem;margin-bottom:8px">📋</div><div style="font-family:\'Syne\',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:4px">Las Reglas del Juego</div><div style="font-size:.8rem;color:var(--muted)">El mundo de '+childTitle+' '+childName+'</div></div>';
-    var reglas=[{icon:'⭐',titulo:'Las misiones dan puntos',desc:'Cada misión completada suma puntos a tu total.'},{icon:'🔥',titulo:'La racha es tu superpoder',desc:'Cada día con misiones completas, tu racha crece.'},{icon:'🎁',titulo:'Los premios son reales',desc:'Los puntos se convierten en premios y dinero real.'},{icon:'😇',titulo:'La honestidad suma más',desc:'Ser honesto/a es la misión que más puntos da.'},{icon:'💰',titulo:'Tu dinero tiene propósito',desc:'Los puntos se distribuyen en tus 5 alcancías.'},{icon:'📖',titulo:'La historia del día te enseña',desc:'Cada día hay una historia nueva. Elegís y ganás +2 puntos.'}];
-    reglas.forEach(function(r){html+='<div class="glass-card" style="display:flex;align-items:flex-start;gap:14px;margin-bottom:10px"><div style="font-size:1.8rem;flex-shrink:0">'+r.icon+'</div><div><div style="font-weight:700;font-size:.9rem;margin-bottom:4px">'+r.titulo+'</div><div style="font-size:.82rem;color:var(--muted);line-height:1.6">'+r.desc+'</div></div></div>';});
-    html+='<div style="margin-top:24px;text-align:center"><button onclick="GAME.goConfig()" style="padding:12px 24px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:12px;color:var(--muted);font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.78rem;cursor:pointer;letter-spacing:.06em">⚙️ Configuración</button><div style="margin-top:12px"><button onclick="DOCH.logout()" style="padding:8px 16px;background:transparent;border:none;color:rgba(255,255,255,.25);font-size:.72rem;cursor:pointer;font-family:\'Archivo\',sans-serif">Cerrar sesión</button></div></div>';
+    var c=this._child;var childName=c&&c.name?c.name:'';var childTitle=c&&c.title?c.title:'';
+    var html='<div class="glass-card" style="text-align:center;margin-bottom:14px;background:linear-gradient(135deg,rgba(255,45,120,.1),rgba(124,58,237,.1));border-color:rgba(255,45,120,.25)">'+
+      '<div style="font-size:2.2rem;margin-bottom:8px;filter:drop-shadow(0 0 10px rgba(255,45,120,.5))">📋</div>'+
+      '<div style="font-family:\'Syne\',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:6px;text-shadow:0 0 12px rgba(255,45,120,.4)">Las Reglas del Juego</div>'+
+      '<div style="font-size:.8rem;color:var(--muted)">El mundo de '+childTitle+' '+childName+'</div>'+
+    '</div>';
+    var reglas=[{icon:'⭐',titulo:'Las misiones dan puntos',desc:'Cada misión completada suma puntos. ¡Cada punto cuenta!'},{icon:'🔥',titulo:'La racha es tu superpoder',desc:'Cada día con misiones, tu racha crece. ¡No la rompas!'},{icon:'🎁',titulo:'Los premios son reales',desc:'Los puntos se convierten en premios y dinero real.'},{icon:'😇',titulo:'La honestidad suma más',desc:'Ser honesto/a es la misión que más puntos da.'},{icon:'💰',titulo:'Tu dinero tiene propósito',desc:'Los puntos se distribuyen en tus 5 alcancías.'},{icon:'📖',titulo:'La historia del día te enseña',desc:'Cada día hay una historia nueva. Elegís y ganás +2 pts.'}];
+    reglas.forEach(function(r){html+='<div class="glass-card" style="display:flex;align-items:flex-start;gap:14px;margin-bottom:10px"><div style="font-size:1.8rem;flex-shrink:0;filter:drop-shadow(0 0 8px rgba(255,45,120,.4))">'+r.icon+'</div><div><div style="font-weight:700;font-size:.9rem;margin-bottom:4px">'+r.titulo+'</div><div style="font-size:.82rem;color:var(--muted);line-height:1.6">'+r.desc+'</div></div></div>';});
+    html+='<div style="margin-top:20px;text-align:center">'+
+      '<button onclick="GAME.goConfig()" style="padding:12px 28px;background:rgba(255,45,120,.1);border:1px solid rgba(255,45,120,.3);border-radius:12px;color:rgba(255,150,200,.9);font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.8rem;cursor:pointer;letter-spacing:.06em;transition:all .2s;box-shadow:0 0 14px rgba(255,45,120,.1)">⚙️ Configuración</button>'+
+      '<div style="margin-top:14px"><button onclick="DOCH.logout()" style="padding:8px 16px;background:transparent;border:none;color:rgba(255,255,255,.2);font-size:.72rem;cursor:pointer;font-family:\'Archivo\',sans-serif">Cerrar sesión</button></div>'+
+    '</div>';
     return html;
   },
 
   _buildHistory:function(){
-    var d=this.d;var self=this;
-    var html='<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px"><button onclick="GAME.goRules()" style="padding:10px 16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:var(--text);font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.78rem;cursor:pointer">← Volver</button><div style="font-family:\'Syne\',sans-serif;font-size:1rem;font-weight:800">Configuración</div></div>';
-    html+='<div style="font-family:\'Syne\',sans-serif;font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px">Días Editables (Mes Actual)</div>';
+    var d=this.d;var self=this;var c=this._child;
+    var html='<div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">'+
+      '<button onclick="GAME.goRules()" style="padding:10px 16px;background:rgba(255,45,120,.1);border:1px solid rgba(255,45,120,.25);border-radius:10px;color:rgba(255,150,200,.9);font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.78rem;cursor:pointer">← Volver</button>'+
+      '<div style="font-family:\'Syne\',sans-serif;font-size:1rem;font-weight:800;color:var(--text)">⚙️ Configuración</div>'+
+    '</div>';
+
+    /* ── TEMA VISUAL ── */
+    html+='<div class="section-title-game">✦ Tema Visual</div>';
+    html+='<div class="edit-card">'+
+      '<div class="edit-card-title">Color principal</div>'+
+      '<div class="color-grid" id="cfg-color-grid"></div>'+
+      '<div style="margin-top:14px" class="edit-card-title">Fondo</div>'+
+      '<div class="bg-grid" id="cfg-bg-grid"></div>'+
+      '<div style="margin-top:10px">'+
+        '<div class="bg-upload-btn" id="cfg-bg-upload-btn" onclick="document.getElementById(\'cfg-bg-file\').click()" style="height:60px">'+
+          '<span style="font-size:1rem">📷</span><span>Cambiar imagen propia</span>'+
+        '</div>'+
+        '<input type="file" id="cfg-bg-file" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="GAME._cfgBgUpload(this)">'+
+      '</div>'+
+      '<div style="margin-top:14px"><button class="btn-save-edit" onclick="GAME._saveTheme()">Guardar tema</button></div>'+
+    '</div>';
+
+    /* ── MISIONES ── */
+    html+='<div class="section-title-game">✦ Misiones</div>';
+    var allTasks=c&&c.tasks?c.tasks:DEFAULT_TASKS;
+    allTasks.forEach(function(task,i){
+      html+='<div class="edit-card">'+
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'+
+          '<div style="font-size:1.3rem">'+task.icon+'</div>'+
+          '<div class="edit-card-title" style="margin-bottom:0">'+task.label+'</div>'+
+          '<div style="margin-left:auto"><button class="mission-toggle '+(task.active!==false?'on':'off')+'" style="flex-shrink:0" onclick="GAME._toggleTaskCfg('+i+',this)"></button></div>'+
+        '</div>'+
+        '<input type="text" class="edit-input" id="cfg-task-label-'+i+'" placeholder="Nombre de la misión" value="'+task.label.replace(/'/g,"&#39;")+'" style="margin-bottom:6px">'+
+        '<div style="display:flex;gap:8px">'+
+          '<div style="flex:1"><div style="font-size:.68rem;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em">Puntos</div><input type="number" class="edit-input" id="cfg-task-pts-'+i+'" value="'+task.pts+'" min="1" max="20" style="margin-bottom:0"></div>'+
+          '<div style="flex:1"><div style="font-size:.68rem;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em">Máx. por día</div><input type="number" class="edit-input" id="cfg-task-limit-'+i+'" value="'+task.limit+'" min="1" max="12" style="margin-bottom:0"></div>'+
+        '</div>'+
+        '<div style="margin-top:10px"><button class="btn-save-edit" onclick="GAME._saveTask('+i+')">Guardar</button></div>'+
+      '</div>';
+    });
+
+    /* ── PREMIOS SEMANALES ── */
+    html+='<div class="section-title-game">✦ Premios Semanales</div>';
+    this.WEEKLY.forEach(function(g,i){
+      html+='<div class="edit-card">'+
+        '<input type="text" class="edit-input" id="cfg-weekly-label-'+i+'" placeholder="Nombre del premio" value="'+g.label.replace(/'/g,"&#39;")+'">'+
+        '<div style="display:flex;align-items:center;gap:8px">'+
+          '<input type="number" class="edit-input" id="cfg-weekly-pts-'+i+'" value="'+g.pts+'" min="1" max="9999" style="margin-bottom:0">'+
+          '<span style="font-size:.78rem;color:var(--muted);white-space:nowrap">pts para desbloquear</span>'+
+        '</div>'+
+        '<div style="margin-top:10px"><button class="btn-save-edit" onclick="GAME._saveWeekly('+i+')">Guardar</button></div>'+
+      '</div>';
+    });
+
+    /* ── PREMIOS MENSUALES ── */
+    html+='<div class="section-title-game">✦ Premios Mensuales</div>';
+    this.MONTHLY.forEach(function(g,i){
+      html+='<div class="edit-card">'+
+        '<input type="text" class="edit-input" id="cfg-monthly-label-'+i+'" placeholder="Nombre del premio" value="'+g.label.replace(/'/g,"&#39;")+'">'+
+        '<div style="display:flex;align-items:center;gap:8px">'+
+          '<input type="number" class="edit-input" id="cfg-monthly-pts-'+i+'" value="'+g.pts+'" min="1" max="99999" style="margin-bottom:0">'+
+          '<span style="font-size:.78rem;color:var(--muted);white-space:nowrap">pts para desbloquear</span>'+
+        '</div>'+
+        '<div style="margin-top:10px"><button class="btn-save-edit" onclick="GAME._saveMonthly('+i+')">Guardar</button></div>'+
+      '</div>';
+    });
+
+    /* ── FINANZAS ── */
+    html+='<div class="section-title-game">✦ Finanzas</div>';
+    html+='<div class="edit-card">'+
+      '<div class="edit-card-title" style="margin-bottom:10px">Valor de 1 punto en '+((c&&c.currency)?c.currency.name:'tu moneda')+'</div>'+
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">'+
+        '<span style="font-size:1rem;font-weight:700;color:var(--pink)">'+((c&&c.currency)?c.currency.symbol:'$')+'</span>'+
+        '<input type="number" class="edit-input" id="cfg-point-value" value="'+this.POINT_VALUE+'" min="1" max="99999" style="margin-bottom:0">'+
+        '<span style="font-size:.78rem;color:var(--muted)">por punto</span>'+
+      '</div>'+
+      '<div class="edit-card-title" style="margin-bottom:10px">Distribución de alcancías (debe sumar 100%)</div>'+
+      '<div id="cfg-finance-rows"></div>'+
+      '<div class="finance-total err" id="cfg-finance-total"><span>Total</span><span id="cfg-finance-sum">100%</span></div>'+
+      '<div style="margin-top:12px"><button class="btn-save-edit" onclick="GAME._saveFinance()">Guardar finanzas</button></div>'+
+    '</div>';
+
+    /* ── DÍAS EDITABLES ── */
+    html+='<div class="section-title-game">✦ Días Editables</div>';
     var mesActual=this._mes();var hoy=this._hoy();
     for(var i=1;i<=parseInt(hoy.slice(8,10));i++){
       var fecha=mesActual+'-'+(i<10?'0':'')+i;var histEntry=d.history&&d.history.find(function(x){return x.date===fecha;});var esHoy=fecha===hoy;var pts=esHoy?d.today.totalDay:(histEntry?histEntry.totalDay:0);
       var d2=new Date(fecha+'T12:00:00');var label=d2.toLocaleDateString('es',{weekday:'short',day:'numeric',month:'short'});
-      html+='<div class="hist-row" data-date="'+fecha+'"><div><div style="font-weight:700;font-size:.88rem">'+label+(esHoy?' <span style="color:var(--pink);font-size:.72rem">(hoy)</span>':'')+'</div></div><div style="text-align:right"><div style="font-family:\'Syne\',sans-serif;font-weight:800;color:var(--pink)">'+pts+'</div><div style="font-size:.65rem;color:var(--muted)">pts</div></div></div>';
+      html+='<div class="hist-row" data-date="'+fecha+'"><div><div style="font-weight:700;font-size:.88rem">'+label+(esHoy?' <span style="color:var(--pink);font-size:.72rem">(hoy)</span>':'')+'</div></div><div style="text-align:right"><div style="font-weight:800;color:var(--pink);font-family:\'Syne\',sans-serif">'+pts+'</div><div style="font-size:.65rem;color:var(--muted)">pts</div></div></div>';
     }
-    html+='<div style="font-family:\'Syne\',sans-serif;font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:20px 0 10px">Bonus / Corrección Manual</div>';
-    html+='<div class="glass-card"><div style="font-size:.8rem;color:var(--muted);margin-bottom:12px">Agrega o quita puntos. Úsalo para corregir días sin conectividad o reconocer logros especiales.</div><div style="display:flex;gap:10px;margin-bottom:10px"><input type="number" id="bonus-input" placeholder="Ej: 5 o -3" style="flex:1;padding:12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:\'Archivo\',sans-serif;font-size:.95rem;outline:none;-webkit-appearance:none"><button onclick="GAME._applyBonus()" style="padding:12px 16px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-radius:10px;color:white;font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.8rem;cursor:pointer;flex-shrink:0">Aplicar</button></div></div>';
-    html+='<div style="font-family:\'Syne\',sans-serif;font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#f87171;margin:20px 0 10px">Zona de Peligro</div>';
-    html+='<div class="glass-card" style="border-color:rgba(248,113,113,.3)"><div style="font-size:.82rem;color:var(--muted);margin-bottom:14px">Reiniciar borra todos los puntos e historial. No se puede deshacer.</div><div style="display:flex;gap:10px"><button onclick="GAME.askReset()" style="flex:1;padding:12px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:10px;color:#fbbf24;font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.78rem;cursor:pointer">Reiniciar Día</button><button onclick="GAME.askResetAll()" style="flex:1;padding:12px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;color:#f87171;font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.78rem;cursor:pointer">Reiniciar Todo</button></div></div>';
+
+    /* ── BONUS MANUAL ── */
+    html+='<div class="section-title-game">✦ Bonus / Corrección Manual</div>';
+    html+='<div class="glass-card"><div style="font-size:.8rem;color:var(--muted);margin-bottom:12px;line-height:1.5">Agrega o quita puntos del total. Úsalo para corregir días sin conectividad o reconocer logros especiales.</div>'+
+      '<div style="display:flex;gap:10px"><input type="number" id="bonus-input" placeholder="Ej: 5 o -3" style="flex:1;padding:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:var(--text);font-family:\'Archivo\',sans-serif;font-size:.95rem;outline:none;-webkit-appearance:none"><button onclick="GAME._applyBonus()" style="padding:12px 16px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-radius:10px;color:white;font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.8rem;cursor:pointer;flex-shrink:0;box-shadow:0 0 14px rgba(255,45,120,.3)">Aplicar</button></div></div>';
+
+    /* ── ZONA PELIGRO ── */
+    html+='<div style="font-family:\'Syne\',sans-serif;font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#f87171;margin:20px 0 10px">⚠️ Zona de Peligro</div>';
+    html+='<div class="glass-card" style="border-color:rgba(248,113,113,.2)"><div style="font-size:.82rem;color:var(--muted);margin-bottom:14px">Reiniciar borra los puntos e historial. No se puede deshacer.</div>'+
+      '<div style="display:flex;gap:10px">'+
+        '<button onclick="GAME.askReset()" style="flex:1;padding:12px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);border-radius:10px;color:#fbbf24;font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.78rem;cursor:pointer">Reiniciar Día</button>'+
+        '<button onclick="GAME.askResetAll()" style="flex:1;padding:12px;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);border-radius:10px;color:#f87171;font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.78rem;cursor:pointer">Reiniciar Todo</button>'+
+      '</div></div>';
     return html;
   },
 
+  /* ── CONFIG ACTIONS ── */
+  _renderConfigWidgets:function(){
+    var self=this;var c=this._child;
+    // Color grid
+    var cg=document.getElementById('cfg-color-grid');
+    if(cg){cg.innerHTML='';COLORS.forEach(function(col){var sw=document.createElement('div');sw.className='color-swatch'+(col.hex===(c&&c.theme&&c.theme.primaryColor||'#ff2d78')?' selected':'');sw.style.background=col.hex;sw.style.boxShadow='0 0 10px '+col.hex+'66';sw.onclick=function(){document.querySelectorAll('#cfg-color-grid .color-swatch').forEach(function(s){s.classList.remove('selected');});sw.classList.add('selected');GAME._cfgSelectedColor=col.hex;};cg.appendChild(sw);});GAME._cfgSelectedColor=c&&c.theme&&c.theme.primaryColor||'#ff2d78';}
+    // BG grid
+    var bg=document.getElementById('cfg-bg-grid');
+    if(bg){bg.innerHTML='';BG_PRESETS.forEach(function(p){var div=document.createElement('div');div.className='bg-preset'+(c&&c.theme&&c.theme.bgId===p.id?' selected':'');div.style.background=p.bg;div.innerHTML='<span class="bg-preset-label">'+p.label+'</span>';div.onclick=function(){document.querySelectorAll('#cfg-bg-grid .bg-preset').forEach(function(s){s.classList.remove('selected');});div.classList.add('selected');GAME._cfgSelectedBg={type:'preset',id:p.id,value:p.bg};GAME._cfgSelectedBgBase64=null;};bg.appendChild(div);});GAME._cfgSelectedBg=c&&c.theme?{type:c.theme.bgType,id:c.theme.bgId,value:c.theme.bgValue}:{type:'preset',id:'galaxia',value:BG_PRESETS[0].bg};GAME._cfgSelectedBgBase64=null;}
+    // Finance rows
+    var fr=document.getElementById('cfg-finance-rows');
+    if(fr){fr.innerHTML='';this.FINANCE.forEach(function(f,i){var row=document.createElement('div');row.style.cssText='display:flex;align-items:center;gap:10px;margin-bottom:10px;';row.innerHTML='<div style="width:12px;height:12px;border-radius:50%;background:'+f.color+';box-shadow:0 0 8px '+f.color+';flex-shrink:0"></div><div style="flex:1;font-weight:700;font-size:.88rem">'+f.label+'</div><input type="number" id="cfg-fin-pct-'+i+'" value="'+f.pct+'" min="0" max="100" style="width:70px;padding:8px 10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:var(--text);font-family:Archivo,sans-serif;font-size:.9rem;font-weight:700;text-align:center;outline:none;-webkit-appearance:none;"><span style="font-size:.85rem;font-weight:700;color:var(--muted)">%</span>';fr.appendChild(row);});fr.addEventListener('input',function(e){if(e.target.id&&e.target.id.startsWith('cfg-fin-pct-')){self._updateCfgFinanceTotal();}});this._updateCfgFinanceTotal();}
+  },
+  _cfgSelectedColor:'#ff2d78',_cfgSelectedBg:null,_cfgSelectedBgBase64:null,
+  _updateCfgFinanceTotal:function(){var sum=0;for(var i=0;i<this.FINANCE.length;i++){var el=document.getElementById('cfg-fin-pct-'+i);if(el)sum+=Number(el.value)||0;}var el2=document.getElementById('cfg-finance-sum');var box=document.getElementById('cfg-finance-total');if(el2)el2.textContent=sum+'%';if(box)box.className='finance-total '+(sum===100?'ok':'err');},
+  _cfgBgUpload:function(input){var self=this;var file=input.files[0];if(!file)return;if(file.size>2*1024*1024){showToast('La imagen no puede superar 2MB','','bad');return;}var reader=new FileReader();reader.onload=function(e){var img=new Image();img.onload=function(){var canvas=document.createElement('canvas');var maxW=800;var ratio=Math.min(maxW/img.width,maxW/img.height,1);canvas.width=img.width*ratio;canvas.height=img.height*ratio;canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);var b64=canvas.toDataURL('image/jpeg',0.70);self._cfgSelectedBgBase64=b64;self._cfgSelectedBg={type:'custom',id:'custom',value:b64};document.querySelectorAll('#cfg-bg-grid .bg-preset').forEach(function(s){s.classList.remove('selected');});showToast('Imagen cargada ✅','Guarda el tema para aplicar','reward');};img.src=e.target.result;};reader.readAsDataURL(file);},
+  _saveTheme:function(){
+    if(!this._ref||!this._child)return;var self=this;
+    this._child.theme=this._child.theme||{};
+    this._child.theme.primaryColor=this._cfgSelectedColor;
+    if(this._cfgSelectedBg){this._child.theme.bgType=this._cfgSelectedBg.type;this._child.theme.bgId=this._cfgSelectedBg.id;this._child.theme.bgValue=this._cfgSelectedBg.type==='preset'?this._cfgSelectedBg.value:null;if(this._cfgSelectedBgBase64)this._child.theme.bgBase64=this._cfgSelectedBgBase64;}
+    this._ref.update({theme:this._child.theme}).then(function(){showToast('Tema guardado ✅','Recarga para ver los cambios','reward');self._applyTheme();}).catch(function(){showToast('Error al guardar','','bad');});},
+  _toggleTaskCfg:function(idx,btn){var c=this._child;if(!c||!c.tasks||!c.tasks[idx])return;c.tasks[idx].active=!c.tasks[idx].active;btn.className='mission-toggle '+(c.tasks[idx].active?'on':'off');},
+  _saveTask:function(idx){var c=this._child;if(!c||!c.tasks||!c.tasks[idx]||!this._ref)return;var label=document.getElementById('cfg-task-label-'+idx);var pts=document.getElementById('cfg-task-pts-'+idx);var limit=document.getElementById('cfg-task-limit-'+idx);if(!label||!pts||!limit)return;c.tasks[idx].label=label.value.trim()||c.tasks[idx].label;c.tasks[idx].pts=Math.max(1,parseInt(pts.value)||1);c.tasks[idx].limit=Math.max(1,parseInt(limit.value)||1);var self=this;this._ref.update({tasks:c.tasks}).then(function(){self.TASKS=c.tasks.filter(function(t){return t.active!==false;});showToast('Misión guardada ✅','','reward');}).catch(function(){showToast('Error al guardar','','bad');});},
+  _saveWeekly:function(idx){var label=document.getElementById('cfg-weekly-label-'+idx);var pts=document.getElementById('cfg-weekly-pts-'+idx);if(!label||!pts||!this._ref)return;this.WEEKLY[idx].label=label.value.trim()||this.WEEKLY[idx].label;this.WEEKLY[idx].pts=Math.max(1,parseInt(pts.value)||1);if(this._child)this._child.weeklyPrizes=this.WEEKLY;var self=this;this._ref.update({weeklyPrizes:this.WEEKLY}).then(function(){showToast('Premio semanal guardado ✅','','reward');}).catch(function(){showToast('Error al guardar','','bad');});},
+  _saveMonthly:function(idx){var label=document.getElementById('cfg-monthly-label-'+idx);var pts=document.getElementById('cfg-monthly-pts-'+idx);if(!label||!pts||!this._ref)return;this.MONTHLY[idx].label=label.value.trim()||this.MONTHLY[idx].label;this.MONTHLY[idx].pts=Math.max(1,parseInt(pts.value)||1);if(this._child)this._child.monthlyPrizes=this.MONTHLY;var self=this;this._ref.update({monthlyPrizes:this.MONTHLY}).then(function(){showToast('Premio mensual guardado ✅','','reward');}).catch(function(){showToast('Error al guardar','','bad');});},
+  _saveFinance:function(){
+    var sum=0;var newFin=this.FINANCE.map(function(f,i){var el=document.getElementById('cfg-fin-pct-'+i);var pct=el?Number(el.value)||0:f.pct;sum+=pct;return Object.assign({},f,{pct:pct});});
+    if(sum!==100){showToast('Las alcancías deben sumar exactamente 100%','','bad');return;}
+    var pvEl=document.getElementById('cfg-point-value');var pv=pvEl?Math.max(1,parseInt(pvEl.value)||1):this.POINT_VALUE;
+    this.FINANCE=newFin;this.POINT_VALUE=pv;if(this._child){this._child.finance=newFin;this._child.pointValue=pv;}
+    var self=this;if(this._ref){this._ref.update({finance:newFin,pointValue:pv}).then(function(){showToast('Finanzas guardadas ✅','','reward');self._render();}).catch(function(){showToast('Error al guardar','','bad');});}},
   _applyBonus:function(){var inp=document.getElementById('bonus-input');if(!inp)return;var pts=parseInt(inp.value);if(isNaN(pts)||pts===0){showToast('Ingresa un número válido','','bad');return;}this.bonus(pts);inp.value='';},
-
   openEditDay:function(fecha){
     var isHoy=fecha===this._hoy();var pts=isHoy?this.d.today.totalDay:0;var h=this.d.history&&this.d.history.find(function(x){return x.date===fecha;});if(h)pts=h.totalDay;
     var nuevos=prompt('Puntos para '+fecha+' (actual: '+pts+'):');if(nuevos===null)return;var n=parseInt(nuevos);if(isNaN(n)||n<0){alert('Número inválido');return;}
@@ -865,6 +1163,10 @@ var GAME={
     showToast('Día actualizado ✅','');this._save();
   }
 };
+
+// Attach config widget rendering after DOM updates
+var _origRender=GAME._render.bind(GAME);
+GAME._render=function(){_origRender();if(this.d.activeTab==='history'){setTimeout(function(){GAME._renderConfigWidgets();},50);}};
 
 document.addEventListener('DOMContentLoaded',function(){DOCH.init();});
 </script>
