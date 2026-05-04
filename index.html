@@ -1,1181 +1,809 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<!-- ═══════════════════════════════════════════════════════
-     DOCH — Mis Primeros Pasos
-     Fase 1: Arquitectura y Autenticación
-     Versión: 1.0.0
-     Firebase: doch-platform-e0ac4
-     Repo: github.com/SoyYodaSoyYo/doch-app
-════════════════════════════════════════════════════════ -->
+<!-- DOCH Mis Primeros Pasos - Fase 2: Constructor de Mundo -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0d0d1a">
-<meta name="description" content="DOCH — Mis Primeros Pasos. La herramienta de crianza personalizada para tu familia.">
 <title>DOCH — Mis Primeros Pasos</title>
-
-<!-- PWA -->
-<link rel="manifest" href="./manifest.json">
-<link rel="apple-touch-icon" href="./assets/icon-192.png">
-
-<!-- Firebase 10 compat -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-
-<!-- Tailwind CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
-
-<!-- Fuentes: Syne (display) + Archivo (body) — continuidad con Eva -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Archivo:ital,wght@0,400;0,600;0,700;0,900;1,700&display=swap" rel="stylesheet">
-
 <style>
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-:root {
-    --pink:    #ff2d78;
-    --purple:  #7c3aed;
-    --pink-dk: #c8005f;
-    --purple-dk: #5b21b6;
-    --bg:      #0d0d1a;
-    --bg2:     #13131f;
-    --bg3:     #1a1a2e;
-    --glass:   rgba(255,255,255,0.05);
-    --border:  rgba(255,255,255,0.10);
-    --text:    #f0eeff;
-    --muted:   rgba(240,238,255,0.50);
-    --error:   #ff4e6a;
-    --success: #22d3a0;
-}
-
-html, body {
-    margin: 0; padding: 0;
-    min-height: 100vh;
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Archivo', sans-serif;
-    overflow-x: hidden;
-}
-
-/* ── FONDO ANIMADO ── */
-body::before {
-    content: '';
-    position: fixed; inset: 0; z-index: 0;
-    background:
-        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(124,58,237,0.18) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 50% at 80% 80%, rgba(255,45,120,0.14) 0%, transparent 55%),
-        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(13,13,26,0) 0%, var(--bg) 100%);
-    pointer-events: none;
-}
-
-/* ── TIPOGRAFÍA ── */
-.font-display { font-family: 'Syne', sans-serif; font-weight: 800; }
-.font-bold-it { font-family: 'Archivo', sans-serif; font-weight: 700; font-style: italic; }
-
-/* ── PANTALLAS ── */
-.screen {
-    display: none;
-    position: relative; z-index: 1;
-    min-height: 100vh;
-}
-.screen.active { display: flex; }
-
-/* ══════════════════════════════════
-   PANTALLA: LOADING
-══════════════════════════════════ */
-#screen-loading {
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 24px;
-}
-
-.loader-logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 3rem;
-    background: linear-gradient(135deg, var(--pink), var(--purple));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: pulse-logo 1.8s ease-in-out infinite;
-}
-
-@keyframes pulse-logo {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50%       { opacity: 0.7; transform: scale(0.97); }
-}
-
-.loader-dots {
-    display: flex; gap: 8px;
-}
-.loader-dots span {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--pink);
-    animation: bounce-dot 1.2s ease-in-out infinite;
-}
-.loader-dots span:nth-child(2) { animation-delay: 0.2s; background: color-mix(in srgb, var(--pink) 50%, var(--purple)); }
-.loader-dots span:nth-child(3) { animation-delay: 0.4s; background: var(--purple); }
-
-@keyframes bounce-dot {
-    0%, 100% { transform: translateY(0); opacity: 0.4; }
-    50%       { transform: translateY(-8px); opacity: 1; }
-}
-
-/* ══════════════════════════════════
-   PANTALLA: AUTH (login / registro)
-══════════════════════════════════ */
-#screen-auth {
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 0 0 40px 0;
-    overflow-y: auto;
-}
-
-.auth-header {
-    width: 100%;
-    padding: 48px 24px 32px;
-    text-align: center;
-    position: relative;
-}
-
-.auth-logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 2.8rem;
-    background: linear-gradient(135deg, var(--pink) 0%, var(--purple) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: -0.02em;
-    line-height: 1;
-    margin-bottom: 6px;
-}
-
-.auth-tagline {
-    font-size: 0.85rem;
-    color: var(--muted);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-}
-
-/* Card de auth */
-.auth-card {
-    width: 100%;
-    max-width: 420px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* Tabs login / registro */
-.auth-tabs {
-    display: flex;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 4px;
-    margin-bottom: 24px;
-    gap: 4px;
-}
-
-.auth-tab {
-    flex: 1;
-    padding: 11px;
-    border-radius: 10px;
-    border: none;
-    background: transparent;
-    color: var(--muted);
-    font-family: 'Archivo', sans-serif;
-    font-weight: 700;
-    font-style: italic;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.auth-tab.active {
-    background: linear-gradient(135deg, var(--pink), var(--purple));
-    color: white;
-    box-shadow: 0 0 16px rgba(255,45,120,0.35);
-}
-
-/* Formulario */
-.form-panel { display: none; }
-.form-panel.active { display: flex; flex-direction: column; gap: 14px; }
-
-.form-field {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.form-label {
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-}
-
-.form-input {
-    width: 100%;
-    padding: 14px 16px;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    color: var(--text);
-    font-family: 'Archivo', sans-serif;
-    font-size: 0.95rem;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    -webkit-appearance: none;
-}
-
-.form-input::placeholder { color: rgba(240,238,255,0.25); }
-
-.form-input:focus {
-    border-color: var(--pink);
-    box-shadow: 0 0 0 3px rgba(255,45,120,0.12);
-}
-
-.form-input.error {
-    border-color: var(--error);
-    box-shadow: 0 0 0 3px rgba(255,78,106,0.12);
-}
-
-/* Botón principal */
-.btn-primary {
-    width: 100%;
-    padding: 15px;
-    background: linear-gradient(135deg, var(--pink), var(--purple));
-    border: none;
-    border-bottom: 3px solid var(--pink-dk);
-    border-radius: 14px;
-    color: white;
-    font-family: 'Archivo', sans-serif;
-    font-weight: 700;
-    font-style: italic;
-    font-size: 0.95rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    cursor: pointer;
-    transition: all 0.15s;
-    box-shadow: 0 4px 20px rgba(255,45,120,0.30);
-    position: relative;
-    overflow: hidden;
-}
-
-.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(255,45,120,0.40); }
-.btn-primary:active { transform: translateY(1px); border-bottom-width: 1px; }
-.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-.btn-primary .btn-spinner {
-    display: none;
-    width: 18px; height: 18px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    margin: 0 auto;
-}
-
-.btn-primary.loading .btn-text { display: none; }
-.btn-primary.loading .btn-spinner { display: block; }
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* Divisor */
-.divider {
-    display: flex; align-items: center; gap: 12px;
-    margin: 4px 0;
-}
-.divider::before, .divider::after {
-    content: ''; flex: 1;
-    height: 1px; background: var(--border);
-}
-.divider span {
-    font-size: 0.75rem;
-    color: var(--muted);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-}
-
-/* Botón Google */
-.btn-google {
-    width: 100%;
-    padding: 14px;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    color: var(--text);
-    font-family: 'Archivo', sans-serif;
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-}
-
-.btn-google:hover {
-    background: rgba(255,255,255,0.07);
-    border-color: rgba(255,255,255,0.2);
-    transform: translateY(-1px);
-}
-.btn-google:active { transform: translateY(0); }
-
-.google-icon {
-    width: 20px; height: 20px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23EA4335' d='M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z'/%3E%3Cpath fill='%234285F4' d='M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z'/%3E%3Cpath fill='%23FBBC05' d='M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z'/%3E%3Cpath fill='%2334A853' d='M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z'/%3E%3C/svg%3E") center/contain no-repeat;
-    flex-shrink: 0;
-}
-
-/* Mensaje de error */
-.form-error {
-    background: rgba(255,78,106,0.10);
-    border: 1px solid rgba(255,78,106,0.30);
-    border-radius: 10px;
-    padding: 12px 14px;
-    font-size: 0.82rem;
-    color: var(--error);
-    font-weight: 600;
-    display: none;
-    animation: shake 0.4s ease;
-}
-.form-error.show { display: block; }
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25%       { transform: translateX(-6px); }
-    75%       { transform: translateX(6px); }
-}
-
-/* Link olvidé contraseña */
-.forgot-link {
-    text-align: right;
-    margin-top: -6px;
-}
-.forgot-link a {
-    font-size: 0.78rem;
-    color: var(--muted);
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.2s;
-}
-.forgot-link a:hover { color: var(--pink); }
-
-/* Términos */
-.terms-text {
-    text-align: center;
-    font-size: 0.75rem;
-    color: var(--muted);
-    line-height: 1.6;
-    margin-top: 8px;
-}
-.terms-text a {
-    color: var(--pink);
-    text-decoration: none;
-    font-weight: 600;
-}
-
-/* ══════════════════════════════════
-   PANTALLA: HOME PLACEHOLDER
-   (mientras se construye Fase 2-3)
-══════════════════════════════════ */
-#screen-home {
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 32px 20px;
-    text-align: center;
-    gap: 20px;
-}
-
-.home-logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 2.4rem;
-    background: linear-gradient(135deg, var(--pink), var(--purple));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.home-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 28px 24px;
-    max-width: 380px;
-    width: 100%;
-}
-
-.home-avatar {
-    width: 64px; height: 64px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--pink), var(--purple));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.8rem;
-    margin: 0 auto 16px;
-    box-shadow: 0 0 24px rgba(255,45,120,0.3);
-}
-
-.home-welcome {
-    font-family: 'Archivo', sans-serif;
-    font-weight: 700;
-    font-style: italic;
-    font-size: 1.1rem;
-    color: var(--text);
-    margin-bottom: 6px;
-}
-
-.home-email {
-    font-size: 0.82rem;
-    color: var(--muted);
-    margin-bottom: 20px;
-}
-
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(34,211,160,0.10);
-    border: 1px solid rgba(34,211,160,0.25);
-    border-radius: 999px;
-    padding: 6px 14px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--success);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 20px;
-}
-
-.status-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--success);
-    animation: pulse-dot 1.5s ease-in-out infinite;
-}
-
-@keyframes pulse-dot {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50%       { opacity: 0.4; transform: scale(0.7); }
-}
-
-.phase-info {
-    background: rgba(255,45,120,0.06);
-    border: 1px solid rgba(255,45,120,0.15);
-    border-radius: 12px;
-    padding: 14px 16px;
-    font-size: 0.82rem;
-    color: var(--muted);
-    line-height: 1.6;
-    margin-bottom: 20px;
-    text-align: left;
-}
-
-.phase-info strong {
-    color: var(--pink);
-    font-weight: 700;
-}
-
-.btn-logout {
-    width: 100%;
-    padding: 13px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    color: var(--muted);
-    font-family: 'Archivo', sans-serif;
-    font-weight: 600;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-}
-
-.btn-logout:hover {
-    background: rgba(255,78,106,0.08);
-    border-color: rgba(255,78,106,0.3);
-    color: var(--error);
-}
-
-/* ══════════════════════════════════
-   TOAST
-══════════════════════════════════ */
-#toasts {
-    position: fixed;
-    top: 16px; right: 16px;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    pointer-events: none;
-    width: min(300px, calc(100vw - 32px));
-}
-
-.toast {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--pink);
-    border-radius: 12px;
-    padding: 12px 16px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text);
-    animation: slide-in 0.3s cubic-bezier(0.17,0.89,0.32,1.28);
-    backdrop-filter: blur(16px);
-}
-
-.toast.success { border-left-color: var(--success); }
-.toast.error   { border-left-color: var(--error); color: var(--error); }
-.toast.out     { animation: slide-out 0.25s ease-in forwards; }
-
-@keyframes slide-in  { from { transform: translateX(110%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-@keyframes slide-out { from { transform: translateX(0); opacity: 1; } to { transform: translateX(110%); opacity: 0; } }
-
-/* ══════════════════════════════════
-   MODAL — Reset password
-══════════════════════════════════ */
-#modal-overlay {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(8px);
-    z-index: 500;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-#modal-overlay.show { display: flex; }
-
-.modal-box {
-    background: var(--bg2);
-    border: 1px solid rgba(255,45,120,0.3);
-    border-radius: 20px;
-    padding: 28px 24px;
-    max-width: 360px;
-    width: 100%;
-    text-align: center;
-    box-shadow: 0 0 40px rgba(255,45,120,0.15);
-    animation: modal-in 0.3s cubic-bezier(0.17,0.89,0.32,1.28);
-}
-
-@keyframes modal-in { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-.modal-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.2rem;
-    color: var(--pink);
-    margin-bottom: 8px;
-}
-
-.modal-body {
-    font-size: 0.85rem;
-    color: var(--muted);
-    line-height: 1.6;
-    margin-bottom: 20px;
-}
-
-.modal-actions {
-    display: flex;
-    gap: 10px;
-}
-
-.btn-modal-cancel {
-    flex: 1; padding: 12px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--muted);
-    font-family: 'Archivo', sans-serif;
-    font-weight: 700;
-    font-style: italic;
-    font-size: 0.82rem;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-.btn-modal-cancel:hover { background: var(--glass); }
-
-.btn-modal-confirm {
-    flex: 1; padding: 12px;
-    background: linear-gradient(135deg, var(--pink), var(--purple));
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-family: 'Archivo', sans-serif;
-    font-weight: 700;
-    font-style: italic;
-    font-size: 0.82rem;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.15s;
-    box-shadow: 0 0 16px rgba(255,45,120,0.3);
-}
-.btn-modal-confirm:hover { transform: translateY(-1px); }
-
-/* ══════════════════════════════════
-   RESPONSIVE
-══════════════════════════════════ */
-@media (max-width: 380px) {
-    .auth-logo { font-size: 2.2rem; }
-    .auth-header { padding: 36px 20px 24px; }
-}
-
-@media (min-height: 800px) {
-    .auth-header { padding: 64px 24px 40px; }
-}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{--pink:#ff2d78;--purple:#7c3aed;--pink-dk:#c8005f;--bg:#0d0d1a;--bg2:#13131f;--glass:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.10);--text:#f0eeff;--muted:rgba(240,238,255,0.50);--error:#ff4e6a;--success:#22d3a0;--warn:#fbbf24;}
+html,body{margin:0;padding:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Archivo',sans-serif;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(124,58,237,.18) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 80%,rgba(255,45,120,.14) 0%,transparent 55%);pointer-events:none;}
+
+.screen{display:none;position:relative;z-index:1;min-height:100vh;}
+.screen.active{display:flex;}
+
+/* LOADING */
+#screen-loading{align-items:center;justify-content:center;flex-direction:column;gap:24px;}
+.loader-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:3rem;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:pulse-logo 1.8s ease-in-out infinite;}
+@keyframes pulse-logo{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.7;transform:scale(.97);}}
+.loader-dots{display:flex;gap:8px;}
+.loader-dots span{width:8px;height:8px;border-radius:50%;background:var(--pink);animation:bounce-dot 1.2s ease-in-out infinite;}
+.loader-dots span:nth-child(2){animation-delay:.2s;}
+.loader-dots span:nth-child(3){animation-delay:.4s;background:var(--purple);}
+@keyframes bounce-dot{0%,100%{transform:translateY(0);opacity:.4;}50%{transform:translateY(-8px);opacity:1;}}
+
+/* AUTH */
+#screen-auth{flex-direction:column;align-items:center;justify-content:flex-start;padding:0 0 40px;overflow-y:auto;}
+.auth-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:2.8rem;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.02em;line-height:1;margin-bottom:6px;}
+.auth-tagline{font-size:.85rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.12em;}
+.auth-card{width:100%;max-width:420px;margin:0 auto;padding:0 20px;}
+.auth-tabs{display:flex;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:4px;margin-bottom:24px;gap:4px;}
+.auth-tab{flex:1;padding:11px;border-radius:10px;border:none;background:transparent;color:var(--muted);font-family:'Archivo',sans-serif;font-weight:700;font-style:italic;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;transition:all .2s;}
+.auth-tab.active{background:linear-gradient(135deg,var(--pink),var(--purple));color:white;box-shadow:0 0 16px rgba(255,45,120,.35);}
+.form-panel{display:none;}
+.form-panel.active{display:flex;flex-direction:column;gap:14px;}
+.form-field{display:flex;flex-direction:column;gap:6px;}
+.form-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
+.form-input{width:100%;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'Archivo',sans-serif;font-size:.95rem;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;}
+.form-input::placeholder{color:rgba(240,238,255,.25);}
+.form-input:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,45,120,.12);}
+.btn-primary{width:100%;padding:15px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-bottom:3px solid var(--pink-dk);border-radius:14px;color:white;font-family:'Archivo',sans-serif;font-weight:700;font-style:italic;font-size:.95rem;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;transition:all .15s;box-shadow:0 4px 20px rgba(255,45,120,.30);}
+.btn-primary:hover{transform:translateY(-1px);}
+.btn-primary:active{transform:translateY(1px);border-bottom-width:1px;}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.btn-primary .btn-spinner{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto;}
+.btn-primary.loading .btn-text{display:none;}
+.btn-primary.loading .btn-spinner{display:block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.divider{display:flex;align-items:center;gap:12px;margin:4px 0;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.divider span{font-size:.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.1em;}
+.btn-google{width:100%;padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;color:var(--text);font-family:'Archivo',sans-serif;font-weight:600;font-size:.9rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;}
+.btn-google:hover{background:rgba(255,255,255,.07);transform:translateY(-1px);}
+.google-icon{width:20px;height:20px;flex-shrink:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23EA4335' d='M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z'/%3E%3Cpath fill='%234285F4' d='M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z'/%3E%3Cpath fill='%23FBBC05' d='M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z'/%3E%3Cpath fill='%2334A853' d='M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z'/%3E%3C/svg%3E") center/contain no-repeat;}
+.form-error{background:rgba(255,78,106,.10);border:1px solid rgba(255,78,106,.30);border-radius:10px;padding:12px 14px;font-size:.82rem;color:var(--error);font-weight:600;display:none;}
+.form-error.show{display:block;}
+.forgot-link{text-align:right;margin-top:-6px;}
+.forgot-link a{font-size:.78rem;color:var(--muted);text-decoration:none;font-weight:600;}
+.forgot-link a:hover{color:var(--pink);}
+.terms-text{text-align:center;font-size:.75rem;color:var(--muted);line-height:1.6;margin-top:8px;}
+.terms-text a{color:var(--pink);text-decoration:none;font-weight:600;}
+
+/* ONBOARDING */
+#screen-onboarding{flex-direction:column;align-items:stretch;overflow-y:auto;}
+.ob-header{position:sticky;top:0;z-index:50;background:rgba(13,13,26,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:16px 20px 12px;}
+.ob-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ob-step-label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-weight:700;}
+.ob-progress-track{height:4px;background:var(--border);border-radius:999px;margin-top:10px;overflow:hidden;}
+.ob-progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--pink),var(--purple));transition:width .5s cubic-bezier(.4,0,.2,1);}
+.ob-step{display:none;flex-direction:column;padding:24px 20px 40px;max-width:520px;margin:0 auto;width:100%;}
+.ob-step.active{display:flex;}
+.ob-step-title{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;line-height:1.2;}
+.ob-step-sub{font-size:.88rem;color:var(--muted);line-height:1.6;margin-bottom:28px;}
+.ob-field-card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:16px;}
+.ob-field-name{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:4px;}
+.ob-field-why{font-size:.78rem;color:rgba(255,45,120,.9);font-weight:600;line-height:1.5;margin-bottom:12px;padding:8px 12px;background:rgba(255,45,120,.06);border-radius:8px;border-left:2px solid var(--pink);}
+.ob-field-why strong{color:var(--pink);}
+.ob-input{width:100%;padding:13px 16px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'Archivo',sans-serif;font-size:.95rem;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+.ob-input::placeholder{color:rgba(240,238,255,.2);}
+.ob-input:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,45,120,.10);}
+.ob-examples{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.ob-example{padding:5px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:999px;font-size:.75rem;color:var(--muted);cursor:pointer;transition:all .2s;}
+.ob-example:hover{background:rgba(255,45,120,.15);border-color:rgba(255,45,120,.4);color:var(--pink);}
+.color-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:8px;}
+.color-swatch{width:100%;aspect-ratio:1;border-radius:12px;cursor:pointer;border:3px solid transparent;transition:all .2s;position:relative;}
+.color-swatch.selected::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:1rem;text-shadow:0 0 6px rgba(0,0,0,.5);}
+.color-swatch.selected{border-color:white;transform:scale(1.08);box-shadow:0 0 16px rgba(255,255,255,.3);}
+.bg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;}
+.bg-preset{aspect-ratio:16/9;border-radius:12px;cursor:pointer;border:3px solid transparent;transition:all .2s;position:relative;overflow:hidden;display:flex;align-items:flex-end;}
+.bg-preset.selected{border-color:white;box-shadow:0 0 16px rgba(255,255,255,.3);}
+.bg-preset-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:white;padding:4px 8px;background:rgba(0,0,0,.5);width:100%;text-align:center;}
+.bg-upload-btn{aspect-ratio:16/9;border-radius:12px;cursor:pointer;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:all .2s;background:rgba(255,255,255,.03);}
+.bg-upload-btn:hover{border-color:var(--pink);background:rgba(255,45,120,.06);}
+.bg-upload-btn span{font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.08em;}
+.bg-preview{aspect-ratio:16/9;border-radius:12px;border:3px solid var(--pink);object-fit:cover;width:100%;display:none;}
+.bg-restriction{font-size:.72rem;color:var(--muted);margin-top:8px;text-align:center;line-height:1.5;}
+.finance-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.finance-label-col{flex:1;font-size:.85rem;font-weight:600;}
+.finance-color-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.finance-pct-input{width:72px;padding:8px 10px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Archivo',sans-serif;font-size:.9rem;font-weight:700;text-align:center;outline:none;-webkit-appearance:none;}
+.finance-pct-input:focus{border-color:var(--pink);}
+.finance-total{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:10px;margin-top:4px;font-weight:700;font-size:.88rem;}
+.finance-total.ok{background:rgba(34,211,160,.10);color:var(--success);border:1px solid rgba(34,211,160,.25);}
+.finance-total.err{background:rgba(255,78,106,.10);color:var(--error);border:1px solid rgba(255,78,106,.25);}
+.mission-card{display:flex;align-items:center;gap:12px;padding:14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;transition:all .2s;}
+.mission-card.active-m{border-color:rgba(255,45,120,.35);background:rgba(255,45,120,.06);}
+.mission-icon{font-size:1.4rem;flex-shrink:0;width:36px;text-align:center;}
+.mission-info{flex:1;}
+.mission-name{font-weight:700;font-size:.88rem;margin-bottom:2px;}
+.mission-pts{font-size:.72rem;color:var(--muted);font-weight:600;}
+.mission-toggle{width:44px;height:24px;border-radius:999px;border:none;cursor:pointer;position:relative;transition:all .25s;flex-shrink:0;}
+.mission-toggle.on{background:linear-gradient(135deg,var(--pink),var(--purple));}
+.mission-toggle.off{background:rgba(255,255,255,.15);}
+.mission-toggle::after{content:'';position:absolute;top:3px;width:18px;height:18px;border-radius:50%;background:white;transition:left .25s;box-shadow:0 1px 4px rgba(0,0,0,.3);}
+.mission-toggle.on::after{left:23px;}
+.mission-toggle.off::after{left:3px;}
+.ob-nav{display:flex;gap:12px;margin-top:28px;}
+.btn-ob-back{flex:1;padding:14px;background:transparent;border:1px solid var(--border);border-radius:14px;color:var(--muted);font-family:'Archivo',sans-serif;font-weight:700;font-style:italic;font-size:.88rem;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.btn-ob-back:hover{background:var(--glass);}
+.btn-ob-next{flex:2;padding:14px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-bottom:3px solid var(--pink-dk);border-radius:14px;color:white;font-family:'Archivo',sans-serif;font-weight:700;font-style:italic;font-size:.95rem;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;transition:all .15s;box-shadow:0 4px 20px rgba(255,45,120,.30);}
+.btn-ob-next:hover{transform:translateY(-1px);}
+.btn-ob-next:active{transform:translateY(1px);border-bottom-width:1px;}
+.btn-ob-next:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.btn-ob-next .btn-spinner{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto;}
+.btn-ob-next.loading .btn-text{display:none;}
+.btn-ob-next.loading .btn-spinner{display:block;}
+.disclaimer-box{background:rgba(251,191,36,.06);border:2px solid rgba(251,191,36,.35);border-radius:16px;padding:20px;margin-bottom:20px;}
+.disclaimer-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:var(--warn);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.disclaimer-text{font-size:.82rem;color:rgba(251,191,36,.85);line-height:1.7;}
+.disclaimer-check{display:flex;align-items:flex-start;gap:10px;margin-top:14px;cursor:pointer;}
+.disclaimer-check input{margin-top:2px;accent-color:var(--warn);width:16px;height:16px;flex-shrink:0;}
+.disclaimer-check span{font-size:.82rem;color:rgba(251,191,36,.9);font-weight:600;line-height:1.5;}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.summary-row:last-child{border-bottom:none;}
+.summary-key{font-size:.78rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.08em;}
+.summary-val{font-size:.88rem;font-weight:700;color:var(--text);}
+.theme-preview{border-radius:16px;padding:20px;margin-bottom:0;display:flex;align-items:center;gap:14px;overflow:hidden;position:relative;min-height:90px;}
+.theme-preview-name{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:white;}
+.theme-preview-sub{font-size:.78rem;color:rgba(255,255,255,.7);font-weight:600;}
+
+/* HOME */
+#screen-home{flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;text-align:center;gap:20px;}
+.home-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:28px 24px;max-width:380px;width:100%;}
+.home-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--purple));display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto 16px;box-shadow:0 0 24px rgba(255,45,120,.3);}
+.status-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(34,211,160,.10);border:1px solid rgba(34,211,160,.25);border-radius:999px;padding:6px 14px;font-size:.78rem;font-weight:700;color:var(--success);text-transform:uppercase;letter-spacing:.08em;margin-bottom:20px;}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulse-dot 1.5s ease-in-out infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.7);}}
+.btn-logout{width:100%;padding:13px;background:transparent;border:1px solid var(--border);border-radius:12px;color:var(--muted);font-family:'Archivo',sans-serif;font-weight:600;font-size:.85rem;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.06em;}
+.btn-logout:hover{background:rgba(255,78,106,.08);border-color:rgba(255,78,106,.3);color:var(--error);}
+
+/* TOASTS + MODAL */
+#toasts{position:fixed;top:16px;right:16px;z-index:1000;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:min(300px,calc(100vw - 32px));}
+.toast{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--pink);border-radius:12px;padding:12px 16px;font-size:.85rem;font-weight:600;color:var(--text);animation:slide-in .3s cubic-bezier(.17,.89,.32,1.28);backdrop-filter:blur(16px);}
+.toast.success{border-left-color:var(--success);}
+.toast.error{border-left-color:var(--error);color:var(--error);}
+.toast.out{animation:slide-out .25s ease-in forwards;}
+@keyframes slide-in{from{transform:translateX(110%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes slide-out{from{transform:translateX(0);opacity:1;}to{transform:translateX(110%);opacity:0;}}
+#modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:500;align-items:center;justify-content:center;padding:20px;}
+#modal-overlay.show{display:flex;}
+.modal-box{background:var(--bg2);border:1px solid rgba(255,45,120,.3);border-radius:20px;padding:28px 24px;max-width:360px;width:100%;text-align:center;animation:modal-in .3s cubic-bezier(.17,.89,.32,1.28);}
+@keyframes modal-in{from{transform:scale(.9);opacity:0;}to{transform:scale(1);opacity:1;}}
+.modal-title{font-family:'Syne',sans-serif;font-size:1.2rem;color:var(--pink);margin-bottom:8px;}
+.modal-body{font-size:.85rem;color:var(--muted);line-height:1.6;margin-bottom:20px;}
+.modal-actions{display:flex;gap:10px;}
+.btn-modal-cancel{flex:1;padding:12px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--muted);font-family:'Archivo',sans-serif;font-weight:700;font-style:italic;font-size:.82rem;text-transform:uppercase;cursor:pointer;}
+.btn-modal-confirm{flex:1;padding:12px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-radius:10px;color:white;font-family:'Archivo',sans-serif;font-weight:700;font-style:italic;font-size:.82rem;text-transform:uppercase;cursor:pointer;box-shadow:0 0 16px rgba(255,45,120,.3);}
 </style>
 </head>
 <body>
 
-<!-- ── TOASTS ── -->
 <div id="toasts"></div>
 
-<!-- ── MODAL RESET PASSWORD ── -->
+<!-- MODAL RESET -->
 <div id="modal-overlay">
-    <div class="modal-box">
-        <div style="font-size:2rem;margin-bottom:12px">🔑</div>
-        <div class="modal-title">Recuperar contraseña</div>
-        <div class="modal-body">Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.</div>
-        <div class="form-field" style="margin-bottom:16px">
-            <input type="email" id="reset-email" class="form-input" placeholder="tu@correo.com">
-        </div>
-        <div id="reset-error" class="form-error"></div>
-        <div id="reset-success" style="display:none;background:rgba(34,211,160,0.10);border:1px solid rgba(34,211,160,0.25);border-radius:10px;padding:12px 14px;font-size:0.82rem;color:var(--success);font-weight:600;margin-bottom:12px">
-            ✅ Correo enviado. Revisa tu bandeja de entrada.
-        </div>
-        <div class="modal-actions">
-            <button class="btn-modal-cancel" onclick="DOCH.closeResetModal()">Cancelar</button>
-            <button class="btn-modal-confirm" onclick="DOCH.sendResetEmail()">
-                <span class="btn-text">Enviar</span>
-            </button>
-        </div>
+  <div class="modal-box">
+    <div style="font-size:2rem;margin-bottom:12px">🔑</div>
+    <div class="modal-title">Recuperar contraseña</div>
+    <div class="modal-body">Te enviaremos un enlace para restablecer tu contraseña.</div>
+    <div class="form-field" style="margin-bottom:12px"><input type="email" id="reset-email" class="form-input" placeholder="tu@correo.com"></div>
+    <div id="reset-error" class="form-error"></div>
+    <div id="reset-success" style="display:none;background:rgba(34,211,160,.10);border:1px solid rgba(34,211,160,.25);border-radius:10px;padding:12px;font-size:.82rem;color:var(--success);font-weight:600;margin-bottom:12px">✅ Correo enviado. Revisa tu bandeja.</div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="DOCH.closeResetModal()">Cancelar</button>
+      <button class="btn-modal-confirm" onclick="DOCH.sendResetEmail()">Enviar</button>
     </div>
+  </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════
-     PANTALLA: LOADING
-══════════════════════════════════════════════════ -->
+<!-- LOADING -->
 <div id="screen-loading" class="screen active">
-    <div class="loader-logo">DOCH</div>
-    <div class="loader-dots">
-        <span></span><span></span><span></span>
-    </div>
-    <div style="font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;font-weight:600;margin-top:8px">
-        Conectando...
-    </div>
+  <div class="loader-logo">DOCH</div>
+  <div class="loader-dots"><span></span><span></span><span></span></div>
+  <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-weight:600;margin-top:8px">Conectando...</div>
 </div>
 
-<!-- ══════════════════════════════════════════════════
-     PANTALLA: AUTH
-══════════════════════════════════════════════════ -->
+<!-- AUTH -->
 <div id="screen-auth" class="screen">
-
-    <div class="auth-header">
-        <div class="auth-logo">DOCH</div>
-        <div class="auth-tagline">Mis Primeros Pasos</div>
+  <div style="width:100%;padding:48px 24px 32px;text-align:center">
+    <div class="auth-logo">DOCH</div>
+    <div class="auth-tagline">Mis Primeros Pasos</div>
+  </div>
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login" onclick="DOCH.switchTab('login')">Entrar</button>
+      <button class="auth-tab" id="tab-register" onclick="DOCH.switchTab('register')">Crear cuenta</button>
     </div>
-
-    <div class="auth-card">
-
-        <!-- TABS -->
-        <div class="auth-tabs">
-            <button class="auth-tab active" id="tab-login" onclick="DOCH.switchTab('login')">
-                Entrar
-            </button>
-            <button class="auth-tab" id="tab-register" onclick="DOCH.switchTab('register')">
-                Crear cuenta
-            </button>
-        </div>
-
-        <!-- ── FORMULARIO LOGIN ── -->
-        <div id="panel-login" class="form-panel active">
-
-            <div id="login-error" class="form-error"></div>
-
-            <div class="form-field">
-                <label class="form-label">Correo electrónico</label>
-                <input type="email" id="login-email" class="form-input"
-                    placeholder="tu@correo.com"
-                    autocomplete="email"
-                    onkeydown="if(event.key==='Enter')DOCH.login()">
-            </div>
-
-            <div class="form-field">
-                <label class="form-label">Contraseña</label>
-                <input type="password" id="login-pass" class="form-input"
-                    placeholder="••••••••"
-                    autocomplete="current-password"
-                    onkeydown="if(event.key==='Enter')DOCH.login()">
-            </div>
-
-            <div class="forgot-link">
-                <a href="#" onclick="DOCH.openResetModal();return false;">¿Olvidaste tu contraseña?</a>
-            </div>
-
-            <button class="btn-primary" id="btn-login" onclick="DOCH.login()">
-                <div class="btn-spinner"></div>
-                <span class="btn-text">Entrar</span>
-            </button>
-
-            <div class="divider"><span>o</span></div>
-
-            <button class="btn-google" id="btn-google-login" onclick="DOCH.loginGoogle()">
-                <div class="google-icon"></div>
-                Continuar con Google
-            </button>
-
-            <div class="terms-text">
-                Al continuar aceptas nuestros
-                <a href="#" onclick="return false">Términos de uso</a> y
-                <a href="#" onclick="return false">Política de privacidad</a>
-            </div>
-
-        </div>
-
-        <!-- ── FORMULARIO REGISTRO ── -->
-        <div id="panel-register" class="form-panel">
-
-            <div id="register-error" class="form-error"></div>
-
-            <div class="form-field">
-                <label class="form-label">Tu nombre</label>
-                <input type="text" id="reg-name" class="form-input"
-                    placeholder="Mamá, Papá..."
-                    autocomplete="name"
-                    onkeydown="if(event.key==='Enter')document.getElementById('reg-email').focus()">
-            </div>
-
-            <div class="form-field">
-                <label class="form-label">Correo electrónico</label>
-                <input type="email" id="reg-email" class="form-input"
-                    placeholder="tu@correo.com"
-                    autocomplete="email"
-                    onkeydown="if(event.key==='Enter')document.getElementById('reg-pass').focus()">
-            </div>
-
-            <div class="form-field">
-                <label class="form-label">Contraseña</label>
-                <input type="password" id="reg-pass" class="form-input"
-                    placeholder="Mínimo 6 caracteres"
-                    autocomplete="new-password"
-                    onkeydown="if(event.key==='Enter')document.getElementById('reg-pass2').focus()">
-            </div>
-
-            <div class="form-field">
-                <label class="form-label">Confirmar contraseña</label>
-                <input type="password" id="reg-pass2" class="form-input"
-                    placeholder="Repite tu contraseña"
-                    autocomplete="new-password"
-                    onkeydown="if(event.key==='Enter')DOCH.register()">
-            </div>
-
-            <button class="btn-primary" id="btn-register" onclick="DOCH.register()">
-                <div class="btn-spinner"></div>
-                <span class="btn-text">Crear mi cuenta</span>
-            </button>
-
-            <div class="divider"><span>o</span></div>
-
-            <button class="btn-google" id="btn-google-reg" onclick="DOCH.loginGoogle()">
-                <div class="google-icon"></div>
-                Continuar con Google
-            </button>
-
-            <div class="terms-text">
-                Al crear una cuenta aceptas nuestros
-                <a href="#" onclick="return false">Términos de uso</a> y
-                <a href="#" onclick="return false">Política de privacidad</a>.<br>
-                <span style="color:rgba(240,238,255,0.35)">Los datos de tus hijos son tuyos. DOCH solo provee la tecnología.</span>
-            </div>
-
-        </div>
-
+    <div id="panel-login" class="form-panel active">
+      <div id="login-error" class="form-error"></div>
+      <div class="form-field"><label class="form-label">Correo</label><input type="email" id="login-email" class="form-input" placeholder="tu@correo.com" autocomplete="email" onkeydown="if(event.key==='Enter')DOCH.login()"></div>
+      <div class="form-field"><label class="form-label">Contraseña</label><input type="password" id="login-pass" class="form-input" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')DOCH.login()"></div>
+      <div class="forgot-link"><a href="#" onclick="DOCH.openResetModal();return false;">¿Olvidaste tu contraseña?</a></div>
+      <button class="btn-primary" id="btn-login" onclick="DOCH.login()"><div class="btn-spinner"></div><span class="btn-text">Entrar</span></button>
+      <div class="divider"><span>o</span></div>
+      <button class="btn-google" onclick="DOCH.loginGoogle()"><div class="google-icon"></div>Continuar con Google</button>
+      <div class="terms-text">Al continuar aceptas nuestros <a href="#" onclick="return false">Términos</a> y <a href="#" onclick="return false">Privacidad</a></div>
     </div>
+    <div id="panel-register" class="form-panel">
+      <div id="register-error" class="form-error"></div>
+      <div class="form-field"><label class="form-label">Tu nombre</label><input type="text" id="reg-name" class="form-input" placeholder="Mamá, Papá, Tutor/a..." autocomplete="name"></div>
+      <div class="form-field"><label class="form-label">Correo</label><input type="email" id="reg-email" class="form-input" placeholder="tu@correo.com" autocomplete="email"></div>
+      <div class="form-field"><label class="form-label">Contraseña</label><input type="password" id="reg-pass" class="form-input" placeholder="Mínimo 6 caracteres" autocomplete="new-password"></div>
+      <div class="form-field"><label class="form-label">Confirmar contraseña</label><input type="password" id="reg-pass2" class="form-input" placeholder="Repite tu contraseña" autocomplete="new-password" onkeydown="if(event.key==='Enter')DOCH.register()"></div>
+      <button class="btn-primary" id="btn-register" onclick="DOCH.register()"><div class="btn-spinner"></div><span class="btn-text">Crear mi cuenta</span></button>
+      <div class="divider"><span>o</span></div>
+      <button class="btn-google" onclick="DOCH.loginGoogle()"><div class="google-icon"></div>Continuar con Google</button>
+      <div class="terms-text">Al crear una cuenta aceptas nuestros <a href="#" onclick="return false">Términos</a> y <a href="#" onclick="return false">Privacidad</a>.<br><span style="color:rgba(240,238,255,.3)">Los datos de tu familia son tuyos. DOCH solo provee la tecnología.</span></div>
+    </div>
+  </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════
-     PANTALLA: HOME (placeholder Fase 1)
-     Se reemplaza en Fase 2 con el onboarding real
-══════════════════════════════════════════════════ -->
+<!-- ONBOARDING -->
+<div id="screen-onboarding" class="screen">
+  <div class="ob-header">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div class="ob-logo">DOCH</div>
+      <div class="ob-step-label" id="ob-step-label">Paso 1 de 4</div>
+    </div>
+    <div class="ob-progress-track"><div class="ob-progress-fill" id="ob-progress" style="width:25%"></div></div>
+  </div>
+
+  <!-- PASO 1: IDENTIDAD -->
+  <div class="ob-step active" id="ob-step-1">
+    <div style="margin-bottom:28px">
+      <div class="ob-step-title">¿Quién es el protagonista? 🌟</div>
+      <div class="ob-step-sub">Configura la identidad visual del mundo de tu hijo/a. Todo puede editarse después desde el panel de configuración.</div>
+    </div>
+    <div class="ob-field-card">
+      <div class="ob-field-name">Nombre del niño o niña</div>
+      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> El nombre aparece en cada logro, medalla y premio. Hace que la app se sienta verdaderamente suya — no una app genérica, sino su mundo.</div>
+      <input type="text" class="ob-input" id="ob-child-name" placeholder="Escribe el nombre..." maxlength="30">
+      <div class="ob-examples">
+        <span class="ob-example" onclick="OB.fillInput('ob-child-name',this)">Valentina</span>
+        <span class="ob-example" onclick="OB.fillInput('ob-child-name',this)">Mateo</span>
+        <span class="ob-example" onclick="OB.fillInput('ob-child-name',this)">Sofía</span>
+        <span class="ob-example" onclick="OB.fillInput('ob-child-name',this)">Sebastián</span>
+        <span class="ob-example" onclick="OB.fillInput('ob-child-name',this)">Isabela</span>
+        <span class="ob-example" onclick="OB.fillInput('ob-child-name',this)">Lucas</span>
+      </div>
+    </div>
+    <div class="ob-field-card">
+      <div class="ob-field-name">Título de su mundo</div>
+      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> El título convierte la app en algo épico. "El Mundo de la Aventurera Valentina" genera identidad y un rol. El niño/a lo sentirá como propio desde el primer día.</div>
+      <input type="text" class="ob-input" id="ob-child-title" placeholder="Aventurera, Explorador, Campeona..." maxlength="30">
+      <div class="ob-examples">
+        <span class="ob-example" onclick="OB.fillInput('ob-child-title',this)">Aventurera</span>
+        <span class="ob-example" onclick="OB.fillInput('ob-child-title',this)">Explorador</span>
+        <span class="ob-example" onclick="OB.fillInput('ob-child-title',this)">Campeona</span>
+        <span class="ob-example" onclick="OB.fillInput('ob-child-title',this)">Superhéroe</span>
+        <span class="ob-example" onclick="OB.fillInput('ob-child-title',this)">Estrella</span>
+        <span class="ob-example" onclick="OB.fillInput('ob-child-title',this)">Ninja</span>
+        <span class="ob-example" onclick="OB.fillInput('ob-child-title',this)">Científica</span>
+        <span class="ob-example" onclick="OB.fillInput('ob-child-title',this)">Mago</span>
+      </div>
+    </div>
+    <div class="ob-field-card">
+      <div class="ob-field-name">Color principal</div>
+      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> El color define la energía visual de toda la app — botones, medallas, barras de progreso. Elige uno que represente la personalidad de tu hijo/a.</div>
+      <div class="color-grid" id="color-grid"></div>
+    </div>
+    <div class="ob-field-card">
+      <div class="ob-field-name">Fondo de la app</div>
+      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> El fondo crea la atmósfera del mundo. Usa uno de los presets o sube algo especial — una foto familiar, el personaje favorito — cualquier imagen que motive a tu hijo/a a abrir la app cada día.</div>
+      <div class="bg-grid" id="bg-grid"></div>
+      <div style="margin-top:10px">
+        <div class="bg-upload-btn" id="bg-upload-btn" onclick="document.getElementById('bg-file-input').click()">
+          <span style="font-size:1.4rem">📷</span>
+          <span>Subir imagen propia</span>
+        </div>
+        <img id="bg-preview-img" class="bg-preview" alt="Vista previa">
+        <input type="file" id="bg-file-input" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="OB.handleBgUpload(this)">
+        <div class="bg-restriction">JPG, PNG o WebP · Máx. 2MB · Se optimiza automáticamente al subirse</div>
+      </div>
+    </div>
+    <div class="ob-nav">
+      <button class="btn-ob-next" onclick="OB.next(1)"><div class="btn-spinner"></div><span class="btn-text">Siguiente — Finanzas →</span></button>
+    </div>
+  </div>
+
+  <!-- PASO 2: FINANZAS -->
+  <div class="ob-step" id="ob-step-2">
+    <div style="margin-bottom:28px">
+      <div class="ob-step-title">El valor del esfuerzo 💰</div>
+      <div class="ob-step-sub">Cada punto ganado tiene un valor real en dinero. Aquí configuras la primera lección de educación financiera de tu hijo/a.</div>
+    </div>
+    <div class="ob-field-card">
+      <div class="ob-field-name">Moneda</div>
+      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> Usar la moneda real de tu país convierte los puntos en algo concreto. Cuando tu hijo/a vea "$500 pesos" entiende el valor real de su esfuerzo y empieza a pensar en dinero de verdad.</div>
+      <div style="display:flex;gap:10px">
+        <input type="text" class="ob-input" id="ob-currency-symbol" placeholder="$" maxlength="3" style="width:70px;text-align:center;font-size:1.2rem;font-weight:700;flex-shrink:0">
+        <input type="text" class="ob-input" id="ob-currency-name" placeholder="Nombre de la moneda...">
+      </div>
+      <div class="ob-examples" style="margin-top:10px">
+        <span class="ob-example" onclick="OB.fillCurrency('$','Pesos')">🇨🇱 Pesos CLP</span>
+        <span class="ob-example" onclick="OB.fillCurrency('$','Dólares')">🇺🇸 Dólares</span>
+        <span class="ob-example" onclick="OB.fillCurrency('€','Euros')">🇪🇺 Euros</span>
+        <span class="ob-example" onclick="OB.fillCurrency('S/','Soles')">🇵🇪 Soles</span>
+        <span class="ob-example" onclick="OB.fillCurrency('$','Pesos MX')">🇲🇽 Pesos MX</span>
+        <span class="ob-example" onclick="OB.fillCurrency('$','Pesos CO')">🇨🇴 Pesos CO</span>
+      </div>
+    </div>
+    <div class="ob-field-card">
+      <div class="ob-field-name">¿Cuánto vale 1 punto?</div>
+      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> Este número es el puente entre el esfuerzo y la realidad. Si 1 punto = $10, hacer la cama cada día genera ingresos reales. Empieza con un valor cómodo — puedes ajustarlo cuando quieras.</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span id="ob-currency-preview" style="font-size:1rem;font-weight:700;color:var(--pink);flex-shrink:0">$</span>
+        <input type="number" class="ob-input" id="ob-point-value" placeholder="10" min="1" max="99999" value="10" oninput="OB.updateCurrencyPreview()">
+        <span style="font-size:.82rem;color:var(--muted);flex-shrink:0">por punto</span>
+      </div>
+      <div class="ob-examples">
+        <span class="ob-example" onclick="OB.fillInput('ob-point-value',this)">5</span>
+        <span class="ob-example" onclick="OB.fillInput('ob-point-value',this)">10</span>
+        <span class="ob-example" onclick="OB.fillInput('ob-point-value',this)">25</span>
+        <span class="ob-example" onclick="OB.fillInput('ob-point-value',this)">50</span>
+        <span class="ob-example" onclick="OB.fillInput('ob-point-value',this)">100</span>
+      </div>
+    </div>
+    <div class="ob-field-card">
+      <div class="ob-field-name">Las 5 alcancías</div>
+      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> Distribuir el dinero en categorías es la base de la inteligencia financiera. Tu hijo/a aprende que el dinero tiene propósitos: no todo es para gastar hoy. Deben sumar exactamente 100%.</div>
+      <div id="finance-rows"></div>
+      <div class="finance-total err" id="finance-total"><span>Total</span><span id="finance-sum">100%</span></div>
+    </div>
+    <div class="ob-nav">
+      <button class="btn-ob-back" onclick="OB.back(2)">← Volver</button>
+      <button class="btn-ob-next" onclick="OB.next(2)"><div class="btn-spinner"></div><span class="btn-text">Siguiente — Misiones →</span></button>
+    </div>
+  </div>
+
+  <!-- PASO 3: MISIONES -->
+  <div class="ob-step" id="ob-step-3">
+    <div style="margin-bottom:28px">
+      <div class="ob-step-title">Las misiones del día 🎯</div>
+      <div class="ob-step-sub">Activa las misiones que apliquen a la rutina de tu hijo/a. Todas son editables en nombre, puntos y límite desde la configuración después de crear.</div>
+    </div>
+    <div class="ob-field-card" style="padding:14px">
+      <div class="ob-field-why" style="margin-bottom:12px">💡 <strong>¿Por qué importa?</strong> Las misiones son el corazón del juego. Cada misión completada es un hábito reforzado. Tú decides qué hábitos son prioritarios para el desarrollo de tu hijo/a en este momento de su vida.</div>
+      <div id="missions-list"></div>
+    </div>
+    <div class="ob-nav">
+      <button class="btn-ob-back" onclick="OB.back(3)">← Volver</button>
+      <button class="btn-ob-next" onclick="OB.next(3)"><div class="btn-spinner"></div><span class="btn-text">Siguiente — Confirmar →</span></button>
+    </div>
+  </div>
+
+  <!-- PASO 4: CONFIRMACIÓN -->
+  <div class="ob-step" id="ob-step-4">
+    <div style="margin-bottom:28px">
+      <div class="ob-step-title">Casi listo, arquitecto 🏗️</div>
+      <div class="ob-step-sub">Revisa el resumen y lee el compromiso parental. Puedes volver a cambiar cualquier cosa antes de crear.</div>
+    </div>
+    <div class="ob-field-card" style="padding:0;overflow:hidden;margin-bottom:16px">
+      <div class="theme-preview" id="theme-preview-box" style="background:linear-gradient(135deg,#ff2d78,#7c3aed)">
+        <div style="font-size:2.5rem">🌟</div>
+        <div>
+          <div class="theme-preview-name" id="preview-app-name">El Mundo de...</div>
+          <div class="theme-preview-sub" id="preview-app-sub">Tu aplicación personalizada</div>
+        </div>
+      </div>
+    </div>
+    <div class="ob-field-card">
+      <div class="ob-field-name" style="margin-bottom:12px">Resumen</div>
+      <div class="summary-row"><span class="summary-key">Nombre</span><span class="summary-val" id="sum-name">—</span></div>
+      <div class="summary-row"><span class="summary-key">Título</span><span class="summary-val" id="sum-title">—</span></div>
+      <div class="summary-row"><span class="summary-key">Moneda</span><span class="summary-val" id="sum-currency">—</span></div>
+      <div class="summary-row"><span class="summary-key">Valor del punto</span><span class="summary-val" id="sum-point">—</span></div>
+      <div class="summary-row"><span class="summary-key">Misiones activas</span><span class="summary-val" id="sum-missions">—</span></div>
+      <div class="summary-row"><span class="summary-key">Fondo</span><span class="summary-val" id="sum-bg">—</span></div>
+    </div>
+    <div class="disclaimer-box">
+      <div class="disclaimer-title">⚠️ Compromiso Parental — Lee con atención</div>
+      <div class="disclaimer-text">
+        <strong style="color:var(--warn)">DOCH es una herramienta, no un terapeuta.</strong><br><br>
+        Esta aplicación ofrece un esquema digital de organización de hábitos. <strong>No reemplaza ningún tipo de orientación clínica, psicológica ni pedagógica.</strong><br><br>
+        Como padre, madre o tutor/a, eres el único responsable de:<br>
+        • El uso de esta aplicación en tu hogar<br>
+        • El contenido de las misiones e historias morales<br>
+        • Las recompensas prometidas y cumplidas<br>
+        • La supervisión del acceso de tu hijo/a<br><br>
+        <strong style="color:var(--warn)">Los datos de tu familia son tuyos.</strong> DOCH nunca compartirá ni venderá información personal de tu familia ni de tus hijos.<br><br>
+        El éxito de esta herramienta depende de tu participación activa como adulto responsable.
+      </div>
+      <label class="disclaimer-check">
+        <input type="checkbox" id="disclaimer-check" onchange="OB.checkDisclaimer()">
+        <span>Entiendo y acepto que soy el único responsable del uso de DOCH en mi hogar y que esta herramienta no reemplaza orientación profesional.</span>
+      </label>
+    </div>
+    <div class="ob-nav">
+      <button class="btn-ob-back" onclick="OB.back(4)">← Volver</button>
+      <button class="btn-ob-next" id="btn-create-world" onclick="OB.createWorld()" disabled>
+        <div class="btn-spinner"></div><span class="btn-text">🌟 Crear el mundo</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- HOME PLACEHOLDER -->
 <div id="screen-home" class="screen">
-    <div class="home-logo">DOCH</div>
-
-    <div class="home-card">
-        <div class="home-avatar">👋</div>
-        <div class="home-welcome" id="home-welcome-text">¡Hola!</div>
-        <div class="home-email" id="home-email-text"></div>
-
-        <div class="status-badge">
-            <div class="status-dot"></div>
-            Firebase conectado
-        </div>
-
-        <div class="phase-info">
-            <strong>Fase 1 completada ✅</strong><br>
-            Autenticación lista. Tu cuenta está creada y conectada a Firebase.<br><br>
-            <strong>Próximo paso:</strong> Fase 2 — Constructor de Mundo (Onboarding).
-        </div>
-
-        <button class="btn-logout" onclick="DOCH.logout()">
-            Cerrar sesión
-        </button>
+  <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:2.4rem;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">DOCH</div>
+  <div class="home-card">
+    <div class="home-avatar">🌟</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;margin-bottom:6px" id="home-welcome-text">¡Hola!</div>
+    <div style="font-size:.82rem;color:var(--muted);margin-bottom:20px" id="home-email-text"></div>
+    <div class="status-badge"><div class="status-dot"></div>Mundo creado ✅</div>
+    <div style="background:rgba(255,45,120,.06);border:1px solid rgba(255,45,120,.15);border-radius:12px;padding:14px 16px;font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:20px">
+      <strong style="color:var(--pink)">Fase 2 completada ✅</strong><br>
+      Tu mundo está configurado y guardado en Firebase.<br><br>
+      <strong style="color:var(--pink)">Próximo:</strong> Fase 3 — La App del Niño.
     </div>
-
-    <div style="font-size:0.72rem;color:rgba(240,238,255,0.2);text-transform:uppercase;letter-spacing:0.12em;font-weight:600">
-        DOCH v1.0 — Fase 1
-    </div>
+    <button class="btn-logout" onclick="DOCH.logout()">Cerrar sesión</button>
+  </div>
+  <div style="font-size:.72rem;color:rgba(240,238,255,.2);text-transform:uppercase;letter-spacing:.12em;font-weight:600">DOCH v2.0 — Fase 2</div>
 </div>
 
-<!-- ══════════════════════════════════════════════════
-     JAVASCRIPT
-══════════════════════════════════════════════════ -->
 <script>
-/* ── CONFIG FIREBASE ── */
-var FIREBASE_CONFIG = {
-    apiKey:            'AIzaSyCKk_A-rUvRUxNLm5bul49-oA2S4S8RYpo',
-    authDomain:        'doch-platform-e0ac4.firebaseapp.com',
-    projectId:         'doch-platform-e0ac4',
-    storageBucket:     'doch-platform-e0ac4.firebasestorage.app',
-    messagingSenderId: '175084087977',
-    appId:             '1:175084087977:web:ec50da24b53af913f917b8',
-    measurementId:     'G-KQX0VDWT2S'
+var FIREBASE_CONFIG={apiKey:'AIzaSyCKk_A-rUvRUxNLm5bul49-oA2S4S8RYpo',authDomain:'doch-platform-e0ac4.firebaseapp.com',projectId:'doch-platform-e0ac4',storageBucket:'doch-platform-e0ac4.firebasestorage.app',messagingSenderId:'175084087977',appId:'1:175084087977:web:ec50da24b53af913f917b8',measurementId:'G-KQX0VDWT2S'};
+
+var DEFAULT_TASKS=[
+  {id:'cama',label:'Hacer la cama',pts:1,limit:1,icon:'🛌',active:true},
+  {id:'espacio',label:'Mi espacio ordenado',pts:1,limit:1,icon:'✨',active:true},
+  {id:'dientes',label:'Lavarse los dientes',pts:1,limit:6,icon:'🦷',active:true},
+  {id:'dormir',label:'Dormir solo/a',pts:1,limit:1,icon:'🌙',active:true},
+  {id:'banarse',label:'Bañarse solo/a',pts:1,limit:1,icon:'🛁',active:true},
+  {id:'vestirse',label:'Vestirse solo/a',pts:1,limit:1,icon:'👗',active:true},
+  {id:'tarea',label:'Tareas escolares',pts:1,limit:1,icon:'📚',active:true},
+  {id:'leer',label:'Leer',pts:1,limit:6,icon:'📖',active:true},
+  {id:'crear',label:'Crear algo',pts:1,limit:2,icon:'🎨',active:true},
+  {id:'comida',label:'Comida balanceada',pts:1,limit:3,icon:'🥗',active:true},
+  {id:'honesto',label:'Día honesto',pts:5,limit:1,icon:'😇',active:true},
+  {id:'gritos',label:'Día sin gritar ni manipular',pts:5,limit:1,icon:'🤍',active:true}
+];
+
+var DEFAULT_FINANCE=[
+  {label:'Libre uso',pct:40,color:'#ff9ecc',desc:'Para gastar libremente'},
+  {label:'Gastos',pct:40,color:'#ffccdd',desc:'Necesidades y extras'},
+  {label:'Ahorro',pct:10,color:'#ffffff',desc:'Para el futuro'},
+  {label:'Invertir',pct:8,color:'#facc15',desc:'Hacer crecer el dinero'},
+  {label:'Donar',pct:2,color:'#86efac',desc:'Ayudar y regalar'}
+];
+
+var COLORS=[
+  {hex:'#ff2d78',name:'Rosa'},{hex:'#7c3aed',name:'Púrpura'},{hex:'#2563eb',name:'Azul'},
+  {hex:'#06b6d4',name:'Cyan'},{hex:'#16a34a',name:'Verde'},{hex:'#ca8a04',name:'Dorado'},
+  {hex:'#ea580c',name:'Naranja'},{hex:'#dc2626',name:'Rojo'},{hex:'#a21caf',name:'Fucsia'},
+  {hex:'#0d9488',name:'Teal'},{hex:'#4f46e5',name:'Índigo'},{hex:'#be185d',name:'Rosa Oscuro'}
+];
+
+var BG_PRESETS=[
+  {id:'galaxia',label:'Galaxia',bg:'linear-gradient(135deg,#0d0d1a 0%,#1a0040 50%,#0d1a2e 100%)'},
+  {id:'aurora',label:'Aurora',bg:'linear-gradient(135deg,#0d1a0d 0%,#001a1a 50%,#0d0d26 100%)'},
+  {id:'atardecer',label:'Atardecer',bg:'linear-gradient(135deg,#1a0d00 0%,#261000 50%,#1a001a 100%)'},
+  {id:'oceano',label:'Océano',bg:'linear-gradient(135deg,#001a26 0%,#000d1a 50%,#001a1a 100%)'},
+  {id:'fuego',label:'Fuego',bg:'linear-gradient(135deg,#1a0000 0%,#260d00 50%,#1a1a00 100%)'},
+  {id:'noche',label:'Noche',bg:'linear-gradient(135deg,#000d1a 0%,#0d0d26 50%,#1a001a 100%)'}
+];
+
+/* ══ DOCH AUTH ══ */
+var DOCH={
+  _db:null,_auth:null,_user:null,
+  init:function(){
+    var self=this;
+    try{
+      var app=firebase.apps.length?firebase.app():firebase.initializeApp(FIREBASE_CONFIG);
+      this._db=firebase.firestore(app);this._auth=firebase.auth(app);
+      this._auth.onAuthStateChanged(function(user){
+        if(user){self._user=user;self._onLogin(user);}
+        else{self._user=null;self._show('auth');}
+      });
+    }catch(e){console.error(e);this._show('auth');this._toast('Error al conectar','error');}
+  },
+  _onLogin:function(user){
+    var self=this;
+    this._db.collection('families').doc(user.uid).get()
+      .then(function(snap){
+        if(snap.exists&&snap.data().setupComplete){self._showHome(user,snap.data());}
+        else{OB.init(user);self._show('onboarding');}
+      }).catch(function(){OB.init(user);self._show('onboarding');});
+  },
+  _showHome:function(user,data){
+    var name=data&&data.childName?'El mundo de '+data.childName:(user.displayName?user.displayName.split(' ')[0]:'tu familia');
+    var el=document.getElementById('home-welcome-text');var em=document.getElementById('home-email-text');
+    if(el)el.textContent='¡'+name+'!';if(em)em.textContent=user.email||'';
+    this._show('home');
+  },
+  login:function(){
+    var self=this;var email=document.getElementById('login-email').value.trim();var pass=document.getElementById('login-pass').value;
+    this._clearErr('login');
+    if(!email)return this._err('login','Ingresa tu correo');
+    if(!pass)return this._err('login','Ingresa tu contraseña');
+    this._load('btn-login',true);
+    this._auth.signInWithEmailAndPassword(email,pass).catch(function(e){self._load('btn-login',false);self._err('login',self._authMsg(e.code));});
+  },
+  register:function(){
+    var self=this;var name=document.getElementById('reg-name').value.trim();var email=document.getElementById('reg-email').value.trim();
+    var pass=document.getElementById('reg-pass').value;var pass2=document.getElementById('reg-pass2').value;
+    this._clearErr('register');
+    if(!name)return this._err('register','Ingresa tu nombre');
+    if(!email)return this._err('register','Ingresa tu correo');
+    if(pass.length<6)return this._err('register','La contraseña debe tener al menos 6 caracteres');
+    if(pass!==pass2)return this._err('register','Las contraseñas no coinciden');
+    this._load('btn-register',true);
+    this._auth.createUserWithEmailAndPassword(email,pass).then(function(c){
+      return c.user.updateProfile({displayName:name}).then(function(){
+        return self._db.collection('families').doc(c.user.uid).set({
+          uid:c.user.uid,email:email,displayName:name,
+          createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+          plan:'explorer',planActivatedAt:null,childCount:0,lang:'es',
+          setupComplete:false,lastLogin:firebase.firestore.FieldValue.serverTimestamp()
+        });
+      });
+    }).then(function(){self._toast('¡Cuenta creada! Bienvenido/a 🎉','success');})
+    .catch(function(e){self._load('btn-register',false);self._err('register',self._authMsg(e.code));});
+  },
+  loginGoogle:function(){
+    var self=this;var p=new firebase.auth.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});
+    this._auth.signInWithPopup(p).then(function(r){
+      var u=r.user;var isNew=r.additionalUserInfo&&r.additionalUserInfo.isNewUser;
+      if(isNew){return self._db.collection('families').doc(u.uid).set({uid:u.uid,email:u.email,displayName:u.displayName||'',createdAt:firebase.firestore.FieldValue.serverTimestamp(),plan:'explorer',planActivatedAt:null,childCount:0,lang:'es',setupComplete:false,lastLogin:firebase.firestore.FieldValue.serverTimestamp()});}
+      else{return self._db.collection('families').doc(u.uid).update({lastLogin:firebase.firestore.FieldValue.serverTimestamp()});}
+    }).catch(function(e){if(e.code!=='auth/popup-closed-by-user')self._toast(self._authMsg(e.code),'error');});
+  },
+  logout:function(){var self=this;this._auth.signOut().then(function(){self._toast('Hasta pronto 👋');});},
+  openResetModal:function(){document.getElementById('modal-overlay').classList.add('show');document.getElementById('reset-error').classList.remove('show');document.getElementById('reset-success').style.display='none';document.getElementById('reset-email').value=document.getElementById('login-email').value||'';},
+  closeResetModal:function(){document.getElementById('modal-overlay').classList.remove('show');},
+  sendResetEmail:function(){
+    var self=this;var email=document.getElementById('reset-email').value.trim();
+    var errEl=document.getElementById('reset-error');var sucEl=document.getElementById('reset-success');
+    errEl.classList.remove('show');sucEl.style.display='none';
+    if(!email){errEl.textContent='Ingresa tu correo';errEl.classList.add('show');return;}
+    this._auth.sendPasswordResetEmail(email).then(function(){sucEl.style.display='block';setTimeout(function(){self.closeResetModal();},3000);}).catch(function(e){errEl.textContent=self._authMsg(e.code);errEl.classList.add('show');});
+  },
+  switchTab:function(t){
+    document.getElementById('tab-login').classList.toggle('active',t==='login');document.getElementById('tab-register').classList.toggle('active',t==='register');
+    document.getElementById('panel-login').classList.toggle('active',t==='login');document.getElementById('panel-register').classList.toggle('active',t==='register');
+    this._clearErr('login');this._clearErr('register');
+  },
+  _show:function(n){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});var t=document.getElementById('screen-'+n);if(t)t.classList.add('active');},
+  _load:function(id,v){var b=document.getElementById(id);if(!b)return;b.classList.toggle('loading',v);b.disabled=v;},
+  _err:function(f,msg){var el=document.getElementById(f+'-error');if(el){el.textContent=msg;el.classList.add('show');}},
+  _clearErr:function(f){var el=document.getElementById(f+'-error');if(el)el.classList.remove('show');},
+  _toast:function(msg,type){
+    type=type||'normal';var box=document.getElementById('toasts');var el=document.createElement('div');
+    el.className='toast'+(type==='success'?' success':type==='error'?' error':'');el.textContent=msg;
+    box.appendChild(el);setTimeout(function(){el.classList.add('out');setTimeout(function(){el.remove();},280);},3800);
+  },
+  _authMsg:function(code){
+    var m={'auth/user-not-found':'No encontramos una cuenta con ese correo','auth/wrong-password':'Contraseña incorrecta','auth/email-already-in-use':'Ya existe una cuenta con ese correo','auth/invalid-email':'El correo no es válido','auth/weak-password':'Contraseña muy débil (mínimo 6 caracteres)','auth/network-request-failed':'Sin conexión a internet','auth/too-many-requests':'Demasiados intentos. Espera unos minutos','auth/popup-blocked':'Permite popups para este sitio','auth/invalid-credential':'Correo o contraseña incorrectos'};
+    return m[code]||'Error inesperado. Intenta de nuevo';
+  }
 };
 
-/* ══════════════════════════════════════════
-   DOCH — OBJETO PRINCIPAL
-══════════════════════════════════════════ */
-var DOCH = {
+/* ══ ONBOARDING ══ */
+var OB={
+  _user:null,_step:1,
+  _data:{
+    childName:'',childTitle:'',color:'#ff2d78',
+    bg:{type:'preset',id:'galaxia',value:'linear-gradient(135deg,#0d0d1a 0%,#1a0040 50%,#0d1a2e 100%)'},
+    bgBase64:null,currencySymbol:'$',currencyName:'Pesos',pointValue:10,
+    finance:DEFAULT_FINANCE.map(function(f){return Object.assign({},f);}),
+    tasks:DEFAULT_TASKS.map(function(t){return Object.assign({},t);})
+  },
 
-    _db:   null,
-    _auth: null,
-    _user: null,
+  init:function(user){
+    this._user=user;this._step=1;
+    this._buildColors();this._buildBgs();this._buildFinance();this._buildMissions();this._updateProgress();
+  },
 
-    /* ── INIT ── */
-    init: function() {
-        var self = this;
-        try {
-            var app = firebase.apps.length
-                ? firebase.app()
-                : firebase.initializeApp(FIREBASE_CONFIG);
+  next:function(from){
+    if(!this._validate(from))return;
+    this._step=from+1;this._showStep();
+    if(this._step===4)this._buildSummary();
+    window.scrollTo(0,0);
+  },
+  back:function(from){this._step=from-1;this._showStep();window.scrollTo(0,0);},
+  _showStep:function(){
+    document.querySelectorAll('.ob-step').forEach(function(s){s.classList.remove('active');});
+    var s=document.getElementById('ob-step-'+this._step);if(s)s.classList.add('active');
+    this._updateProgress();
+  },
+  _updateProgress:function(){
+    var b=document.getElementById('ob-progress');if(b)b.style.width=(this._step/4*100)+'%';
+    var l=document.getElementById('ob-step-label');if(l)l.textContent='Paso '+this._step+' de 4';
+  },
 
-            this._db   = firebase.firestore(app);
-            this._auth = firebase.auth(app);
-
-            /* ── Observer de auth: determina qué pantalla mostrar ── */
-            this._auth.onAuthStateChanged(function(user) {
-                if (user) {
-                    self._user = user;
-                    self._onUserLoggedIn(user);
-                } else {
-                    self._user = null;
-                    self._showScreen('auth');
-                }
-            });
-
-        } catch(e) {
-            console.error('Firebase init error:', e);
-            self._showScreen('auth');
-            self._toast('Error al conectar con Firebase', 'error');
-        }
-    },
-
-    /* ── ROUTER: qué mostrar cuando hay sesión ── */
-    _onUserLoggedIn: function(user) {
-        var self = this;
-
-        /* Verificar si la familia ya tiene datos en Firestore */
-        this._db
-            .collection('families')
-            .doc(user.uid)
-            .get()
-            .then(function(snap) {
-                if (snap.exists && snap.data().setupComplete) {
-                    /* Familia configurada → ir a la app */
-                    self._showHome(user);
-                } else {
-                    /* Sin configurar → ir a onboarding (Fase 2) */
-                    /* Por ahora mostramos home con aviso de fase */
-                    self._showHome(user);
-                }
-            })
-            .catch(function(e) {
-                console.error('Firestore error:', e);
-                /* Si falla Firestore, igual mostramos la pantalla */
-                self._showHome(user);
-            });
-    },
-
-    /* ── PANTALLA HOME ── */
-    _showHome: function(user) {
-        var name = user.displayName
-            ? user.displayName.split(' ')[0]
-            : 'de nuevo';
-
-        var el = document.getElementById('home-welcome-text');
-        var em = document.getElementById('home-email-text');
-        if (el) el.textContent = '¡Hola, ' + name + '!';
-        if (em) em.textContent = user.email || '';
-
-        this._showScreen('home');
-    },
-
-    /* ══════════════════════
-       AUTH: EMAIL + PASS
-    ══════════════════════ */
-    login: function() {
-        var self = this;
-        var email = document.getElementById('login-email').value.trim();
-        var pass  = document.getElementById('login-pass').value;
-
-        this._clearErrors('login');
-
-        if (!email) { return this._showError('login', 'Ingresa tu correo electrónico'); }
-        if (!pass)  { return this._showError('login', 'Ingresa tu contraseña'); }
-
-        this._setLoading('btn-login', true);
-
-        this._auth
-            .signInWithEmailAndPassword(email, pass)
-            .catch(function(e) {
-                self._setLoading('btn-login', false);
-                self._showError('login', self._authError(e.code));
-            });
-    },
-
-    register: function() {
-        var self = this;
-        var name  = document.getElementById('reg-name').value.trim();
-        var email = document.getElementById('reg-email').value.trim();
-        var pass  = document.getElementById('reg-pass').value;
-        var pass2 = document.getElementById('reg-pass2').value;
-
-        this._clearErrors('register');
-
-        if (!name)          { return this._showError('register', 'Ingresa tu nombre'); }
-        if (!email)         { return this._showError('register', 'Ingresa tu correo electrónico'); }
-        if (pass.length < 6){ return this._showError('register', 'La contraseña debe tener al menos 6 caracteres'); }
-        if (pass !== pass2) { return this._showError('register', 'Las contraseñas no coinciden'); }
-
-        this._setLoading('btn-register', true);
-
-        this._auth
-            .createUserWithEmailAndPassword(email, pass)
-            .then(function(cred) {
-                /* Guardar nombre en el perfil de Auth */
-                return cred.user.updateProfile({ displayName: name })
-                    .then(function() {
-                        /* Crear documento inicial de la familia en Firestore */
-                        return self._db.collection('families').doc(cred.user.uid).set({
-                            uid:           cred.user.uid,
-                            email:         email,
-                            displayName:   name,
-                            createdAt:     firebase.firestore.FieldValue.serverTimestamp(),
-                            plan:          'explorer',
-                            planActivatedAt: null,
-                            childCount:    0,
-                            lang:          'es',
-                            setupComplete: false,
-                            lastLogin:     firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                    });
-            })
-            .then(function() {
-                self._toast('¡Cuenta creada! Bienvenido a DOCH 🎉', 'success');
-            })
-            .catch(function(e) {
-                self._setLoading('btn-register', false);
-                self._showError('register', self._authError(e.code));
-            });
-    },
-
-    /* ══════════════════════
-       AUTH: GOOGLE
-    ══════════════════════ */
-    loginGoogle: function() {
-        var self = this;
-        var provider = new firebase.auth.GoogleAuthProvider();
-        provider.setCustomParameters({ prompt: 'select_account' });
-
-        this._auth
-            .signInWithPopup(provider)
-            .then(function(result) {
-                var user = result.user;
-                var isNew = result.additionalUserInfo && result.additionalUserInfo.isNewUser;
-
-                if (isNew) {
-                    /* Nuevo usuario Google → crear documento en Firestore */
-                    return self._db.collection('families').doc(user.uid).set({
-                        uid:           user.uid,
-                        email:         user.email,
-                        displayName:   user.displayName || '',
-                        createdAt:     firebase.firestore.FieldValue.serverTimestamp(),
-                        plan:          'explorer',
-                        planActivatedAt: null,
-                        childCount:    0,
-                        lang:          'es',
-                        setupComplete: false,
-                        lastLogin:     firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                } else {
-                    /* Usuario existente → actualizar lastLogin */
-                    return self._db.collection('families').doc(user.uid).update({
-                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                }
-            })
-            .catch(function(e) {
-                if (e.code !== 'auth/popup-closed-by-user') {
-                    self._toast(self._authError(e.code), 'error');
-                }
-            });
-    },
-
-    /* ══════════════════════
-       AUTH: LOGOUT
-    ══════════════════════ */
-    logout: function() {
-        var self = this;
-        this._auth.signOut().then(function() {
-            self._toast('Hasta pronto 👋');
-        });
-    },
-
-    /* ══════════════════════
-       RESET PASSWORD
-    ══════════════════════ */
-    openResetModal: function() {
-        document.getElementById('modal-overlay').classList.add('show');
-        document.getElementById('reset-error').classList.remove('show');
-        document.getElementById('reset-success').style.display = 'none';
-        var email = document.getElementById('login-email').value;
-        document.getElementById('reset-email').value = email || '';
-    },
-
-    closeResetModal: function() {
-        document.getElementById('modal-overlay').classList.remove('show');
-    },
-
-    sendResetEmail: function() {
-        var self = this;
-        var email = document.getElementById('reset-email').value.trim();
-        var errEl = document.getElementById('reset-error');
-        var sucEl = document.getElementById('reset-success');
-
-        errEl.classList.remove('show');
-        sucEl.style.display = 'none';
-
-        if (!email) {
-            errEl.textContent = 'Ingresa tu correo electrónico';
-            errEl.classList.add('show');
-            return;
-        }
-
-        this._auth.sendPasswordResetEmail(email)
-            .then(function() {
-                sucEl.style.display = 'block';
-                setTimeout(function() { self.closeResetModal(); }, 3000);
-            })
-            .catch(function(e) {
-                errEl.textContent = self._authError(e.code);
-                errEl.classList.add('show');
-            });
-    },
-
-    /* ══════════════════════
-       SWITCH TAB
-    ══════════════════════ */
-    switchTab: function(tab) {
-        document.getElementById('tab-login').classList.toggle('active', tab === 'login');
-        document.getElementById('tab-register').classList.toggle('active', tab === 'register');
-        document.getElementById('panel-login').classList.toggle('active', tab === 'login');
-        document.getElementById('panel-register').classList.toggle('active', tab === 'register');
-        this._clearErrors('login');
-        this._clearErrors('register');
-    },
-
-    /* ══════════════════════
-       HELPERS UI
-    ══════════════════════ */
-    _showScreen: function(name) {
-        document.querySelectorAll('.screen').forEach(function(s) {
-            s.classList.remove('active');
-        });
-        var target = document.getElementById('screen-' + name);
-        if (target) target.classList.add('active');
-    },
-
-    _setLoading: function(btnId, loading) {
-        var btn = document.getElementById(btnId);
-        if (!btn) return;
-        btn.classList.toggle('loading', loading);
-        btn.disabled = loading;
-    },
-
-    _showError: function(form, msg) {
-        var el = document.getElementById(form + '-error');
-        if (el) {
-            el.textContent = msg;
-            el.classList.add('show');
-            /* Shake animation restart */
-            el.style.animation = 'none';
-            el.offsetHeight;
-            el.style.animation = '';
-        }
-    },
-
-    _clearErrors: function(form) {
-        var el = document.getElementById(form + '-error');
-        if (el) el.classList.remove('show');
-    },
-
-    _toast: function(msg, type) {
-        type = type || 'normal';
-        var box = document.getElementById('toasts');
-        var el  = document.createElement('div');
-        el.className = 'toast' + (type === 'success' ? ' success' : type === 'error' ? ' error' : '');
-        el.textContent = msg;
-        box.appendChild(el);
-        setTimeout(function() {
-            el.classList.add('out');
-            setTimeout(function() { el.remove(); }, 280);
-        }, 3500);
-    },
-
-    /* ══════════════════════
-       MENSAJES DE ERROR AUTH
-    ══════════════════════ */
-    _authError: function(code) {
-        var messages = {
-            'auth/user-not-found':        'No encontramos una cuenta con ese correo',
-            'auth/wrong-password':        'Contraseña incorrecta',
-            'auth/email-already-in-use':  'Ya existe una cuenta con ese correo',
-            'auth/invalid-email':         'El correo no es válido',
-            'auth/weak-password':         'La contraseña es muy débil (mínimo 6 caracteres)',
-            'auth/network-request-failed':'Sin conexión. Verifica tu internet',
-            'auth/too-many-requests':     'Demasiados intentos. Espera unos minutos',
-            'auth/popup-blocked':         'El popup fue bloqueado. Permite popups para este sitio',
-            'auth/invalid-credential':    'Correo o contraseña incorrectos',
-            'auth/user-disabled':         'Esta cuenta ha sido deshabilitada',
-        };
-        return messages[code] || 'Error inesperado. Intenta de nuevo';
+  _validate:function(step){
+    var d=this._data;
+    if(step===1){
+      var name=document.getElementById('ob-child-name').value.trim();
+      var title=document.getElementById('ob-child-title').value.trim();
+      if(!name){DOCH._toast('Ingresa el nombre del niño/a','error');return false;}
+      if(!title){DOCH._toast('Ingresa un título para su mundo','error');return false;}
+      d.childName=name;d.childTitle=title;return true;
     }
+    if(step===2){
+      var sym=document.getElementById('ob-currency-symbol').value.trim();
+      var cur=document.getElementById('ob-currency-name').value.trim();
+      var pv=parseFloat(document.getElementById('ob-point-value').value);
+      if(!sym){DOCH._toast('Ingresa el símbolo de la moneda','error');return false;}
+      if(!cur){DOCH._toast('Ingresa el nombre de la moneda','error');return false;}
+      if(!pv||pv<1){DOCH._toast('El valor del punto debe ser al menos 1','error');return false;}
+      var sum=d.finance.reduce(function(s,f){return s+Number(f.pct);},0);
+      if(sum!==100){DOCH._toast('Las alcancías deben sumar exactamente 100%','error');return false;}
+      d.currencySymbol=sym;d.currencyName=cur;d.pointValue=pv;return true;
+    }
+    if(step===3){
+      var activas=d.tasks.filter(function(t){return t.active;}).length;
+      if(activas===0){DOCH._toast('Activa al menos una misión','error');return false;}
+      return true;
+    }
+    if(step===4){
+      if(!document.getElementById('disclaimer-check').checked){DOCH._toast('Debes aceptar el compromiso parental','error');return false;}
+      return true;
+    }
+    return true;
+  },
 
+  fillInput:function(id,el){
+    var inp=document.getElementById(id);if(inp)inp.value=el.textContent.trim();
+    if(id==='ob-point-value')this.updateCurrencyPreview();
+  },
+  fillCurrency:function(sym,name){
+    document.getElementById('ob-currency-symbol').value=sym;
+    document.getElementById('ob-currency-name').value=name;
+    this.updateCurrencyPreview();
+  },
+  updateCurrencyPreview:function(){
+    var sym=document.getElementById('ob-currency-symbol');
+    var el=document.getElementById('ob-currency-preview');
+    if(sym&&el)el.textContent=sym.value||'$';
+  },
+
+  _buildColors:function(){
+    var self=this;var grid=document.getElementById('color-grid');if(!grid)return;
+    grid.innerHTML='';
+    COLORS.forEach(function(c){
+      var sw=document.createElement('div');sw.className='color-swatch'+(c.hex===self._data.color?' selected':'');
+      sw.style.background=c.hex;sw.title=c.name;
+      sw.onclick=function(){
+        self._data.color=c.hex;
+        document.querySelectorAll('.color-swatch').forEach(function(s){s.classList.remove('selected');});
+        sw.classList.add('selected');
+      };
+      grid.appendChild(sw);
+    });
+  },
+
+  _buildBgs:function(){
+    var self=this;var grid=document.getElementById('bg-grid');if(!grid)return;
+    grid.innerHTML='';
+    BG_PRESETS.forEach(function(p){
+      var div=document.createElement('div');div.className='bg-preset'+(self._data.bg.id===p.id?' selected':'');
+      div.style.background=p.bg;
+      div.innerHTML='<span class="bg-preset-label">'+p.label+'</span>';
+      div.onclick=function(){
+        self._data.bg={type:'preset',id:p.id,value:p.bg};self._data.bgBase64=null;
+        document.querySelectorAll('.bg-preset').forEach(function(s){s.classList.remove('selected');});
+        div.classList.add('selected');
+        document.getElementById('bg-preview-img').style.display='none';
+        document.getElementById('bg-upload-btn').style.display='flex';
+      };
+      grid.appendChild(div);
+    });
+  },
+
+  handleBgUpload:function(input){
+    var self=this;var file=input.files[0];if(!file)return;
+    if(file.size>2*1024*1024){DOCH._toast('La imagen no puede superar 2MB','error');return;}
+    var reader=new FileReader();
+    reader.onload=function(e){
+      var img=new Image();
+      img.onload=function(){
+        var canvas=document.createElement('canvas');var maxW=800;
+        var ratio=Math.min(maxW/img.width,maxW/img.height,1);
+        canvas.width=img.width*ratio;canvas.height=img.height*ratio;
+        canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+        var b64=canvas.toDataURL('image/jpeg',0.70);
+        self._data.bgBase64=b64;self._data.bg={type:'custom',id:'custom',value:b64};
+        document.querySelectorAll('.bg-preset').forEach(function(s){s.classList.remove('selected');});
+        var prev=document.getElementById('bg-preview-img');prev.src=b64;prev.style.display='block';
+        document.getElementById('bg-upload-btn').style.display='none';
+        DOCH._toast('Imagen cargada y optimizada ✅','success');
+      };
+      img.src=e.target.result;
+    };
+    reader.readAsDataURL(file);
+  },
+
+  _buildFinance:function(){
+    var self=this;var container=document.getElementById('finance-rows');if(!container)return;
+    container.innerHTML='';
+    this._data.finance.forEach(function(f,i){
+      var row=document.createElement('div');row.className='finance-row';
+      row.innerHTML='<div class="finance-color-dot" style="background:'+f.color+'"></div>'+
+        '<div class="finance-label-col"><div style="font-weight:700;font-size:.88rem">'+f.label+'</div>'+
+        '<div style="font-size:.72rem;color:var(--muted)">'+f.desc+'</div></div>'+
+        '<input type="number" class="finance-pct-input" data-idx="'+i+'" value="'+f.pct+'" min="0" max="100">'+
+        '<span style="font-size:.85rem;font-weight:700;color:var(--muted)">%</span>';
+      container.appendChild(row);
+    });
+    container.addEventListener('input',function(e){
+      if(e.target.classList.contains('finance-pct-input')){
+        self._data.finance[parseInt(e.target.dataset.idx)].pct=Number(e.target.value)||0;
+        self._updateFinanceTotal();
+      }
+    });
+    this._updateFinanceTotal();
+  },
+  _updateFinanceTotal:function(){
+    var sum=this._data.finance.reduce(function(s,f){return s+Number(f.pct);},0);
+    var el=document.getElementById('finance-sum');var box=document.getElementById('finance-total');
+    if(el)el.textContent=sum+'%';if(box)box.className='finance-total '+(sum===100?'ok':'err');
+  },
+
+  _buildMissions:function(){
+    var self=this;var list=document.getElementById('missions-list');if(!list)return;
+    list.innerHTML='';
+    this._data.tasks.forEach(function(t,i){
+      var card=document.createElement('div');card.className='mission-card'+(t.active?' active-m':'');
+      card.innerHTML='<div class="mission-icon">'+t.icon+'</div>'+
+        '<div class="mission-info"><div class="mission-name">'+t.label+'</div>'+
+        '<div class="mission-pts">'+t.pts+' pts · máx '+t.limit+' por día</div></div>'+
+        '<button class="mission-toggle '+(t.active?'on':'off')+'" onclick="OB.toggleM('+i+',this,event)"></button>';
+      list.appendChild(card);
+    });
+  },
+  toggleM:function(idx,btn,e){
+    e.stopPropagation();this._data.tasks[idx].active=!this._data.tasks[idx].active;
+    btn.className='mission-toggle '+(this._data.tasks[idx].active?'on':'off');
+    btn.closest('.mission-card').className='mission-card'+(this._data.tasks[idx].active?' active-m':'');
+  },
+
+  checkDisclaimer:function(){
+    var checked=document.getElementById('disclaimer-check').checked;
+    var btn=document.getElementById('btn-create-world');if(btn)btn.disabled=!checked;
+  },
+
+  _buildSummary:function(){
+    var d=this._data;
+    document.getElementById('sum-name').textContent=d.childName||'—';
+    document.getElementById('sum-title').textContent=d.childTitle||'—';
+    document.getElementById('sum-currency').textContent=(d.currencySymbol||'$')+' '+d.currencyName;
+    document.getElementById('sum-point').textContent=(d.currencySymbol||'$')+d.pointValue+' por punto';
+    document.getElementById('sum-missions').textContent=d.tasks.filter(function(t){return t.active;}).length+' de 12 activas';
+    document.getElementById('sum-bg').textContent=d.bg.type==='custom'?'Imagen personalizada':d.bg.id.charAt(0).toUpperCase()+d.bg.id.slice(1);
+    var pn=document.getElementById('preview-app-name');var ps=document.getElementById('preview-app-sub');
+    if(pn)pn.textContent='El mundo de '+d.childName;if(ps)ps.textContent=d.childTitle||'Tu app personalizada';
+    var pb=document.getElementById('theme-preview-box');
+    if(pb){pb.style.background=d.bg.type==='custom'?'url('+d.bgBase64+') center/cover':d.bg.value;pb.style.boxShadow='0 0 30px '+d.color+'44';}
+  },
+
+  createWorld:function(){
+    if(!this._validate(4))return;
+    var self=this;var d=this._data;var uid=this._user.uid;var db=DOCH._db;
+    var btn=document.getElementById('btn-create-world');if(btn){btn.classList.add('loading');btn.disabled=true;}
+    var childId='child_'+Date.now();
+    var childData={
+      childId:childId,name:d.childName,title:d.childTitle,
+      theme:{primaryColor:d.color,bgType:d.bg.type,bgId:d.bg.id,bgValue:d.bg.type==='preset'?d.bg.value:null,bgBase64:d.bgBase64||null},
+      currency:{symbol:d.currencySymbol,name:d.currencyName},pointValue:d.pointValue,
+      finance:d.finance,tasks:d.tasks,
+      weeklyPrizes:[{label:'Premio Semanal 1',pts:100},{label:'Premio Semanal 2',pts:180}],
+      monthlyPrizes:[{label:'Premio Mensual 1',pts:400},{label:'Premio Mensual 2',pts:800}],
+      gameData:{total:0,today:{date:'',points:{},totalDay:0,basePoints:0,perfectDay:false},week:{id:'',pts:0,claimed:[]},month:{id:'',pts:0,claimed:[]},history:[],historialMeses:[],racha:0,rachaMax:0,medallas:[],diario:[],hiddenTasks:[],historiaLeida:'',historiaEleccion:null},
+      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    };
+    var batch=db.batch();
+    batch.update(db.collection('families').doc(uid),{setupComplete:true,childCount:1,activeChildId:childId,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+    batch.set(db.collection('families').doc(uid).collection('children').doc(childId),childData);
+    batch.commit().then(function(){
+      DOCH._toast('¡El mundo de '+d.childName+' está listo! 🌟','success');
+      setTimeout(function(){DOCH._showHome(self._user,{childName:d.childName});},1200);
+    }).catch(function(e){
+      console.error(e);if(btn){btn.classList.remove('loading');btn.disabled=false;}
+      DOCH._toast('Error al guardar. Intenta de nuevo.','error');
+    });
+  }
 };
 
-/* ── ARRANCAR ── */
-document.addEventListener('DOMContentLoaded', function() { DOCH.init(); });
+document.addEventListener('DOMContentLoaded',function(){DOCH.init();});
 </script>
-
 </body>
 </html>
