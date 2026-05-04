@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<!-- DOCH Mis Primeros Pasos - Fase 2: Constructor de Mundo -->
+<!-- DOCH Mis Primeros Pasos - Fase 3: Motor del Juego - v3.0.0 -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0d0d1a">
@@ -16,7 +16,6 @@
 :root{--pink:#ff2d78;--purple:#7c3aed;--pink-dk:#c8005f;--bg:#0d0d1a;--bg2:#13131f;--glass:rgba(255,255,255,0.05);--border:rgba(255,255,255,0.10);--text:#f0eeff;--muted:rgba(240,238,255,0.50);--error:#ff4e6a;--success:#22d3a0;--warn:#fbbf24;}
 html,body{margin:0;padding:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:'Archivo',sans-serif;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(124,58,237,.18) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 80%,rgba(255,45,120,.14) 0%,transparent 55%);pointer-events:none;}
-
 .screen{display:none;position:relative;z-index:1;min-height:100vh;}
 .screen.active{display:flex;}
 
@@ -26,8 +25,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
 @keyframes pulse-logo{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.7;transform:scale(.97);}}
 .loader-dots{display:flex;gap:8px;}
 .loader-dots span{width:8px;height:8px;border-radius:50%;background:var(--pink);animation:bounce-dot 1.2s ease-in-out infinite;}
-.loader-dots span:nth-child(2){animation-delay:.2s;}
-.loader-dots span:nth-child(3){animation-delay:.4s;background:var(--purple);}
+.loader-dots span:nth-child(2){animation-delay:.2s;}.loader-dots span:nth-child(3){animation-delay:.4s;background:var(--purple);}
 @keyframes bounce-dot{0%,100%{transform:translateY(0);opacity:.4;}50%{transform:translateY(-8px);opacity:1;}}
 
 /* AUTH */
@@ -38,20 +36,17 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
 .auth-tabs{display:flex;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:4px;margin-bottom:24px;gap:4px;}
 .auth-tab{flex:1;padding:11px;border-radius:10px;border:none;background:transparent;color:var(--muted);font-family:'Archivo',sans-serif;font-weight:700;font-style:italic;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;transition:all .2s;}
 .auth-tab.active{background:linear-gradient(135deg,var(--pink),var(--purple));color:white;box-shadow:0 0 16px rgba(255,45,120,.35);}
-.form-panel{display:none;}
-.form-panel.active{display:flex;flex-direction:column;gap:14px;}
+.form-panel{display:none;}.form-panel.active{display:flex;flex-direction:column;gap:14px;}
 .form-field{display:flex;flex-direction:column;gap:6px;}
 .form-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
-.form-input{width:100%;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'Archivo',sans-serif;font-size:.95rem;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;}
+.form-input{width:100%;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:'Archivo',sans-serif;font-size:.95rem;outline:none;transition:border-color .2s;-webkit-appearance:none;}
 .form-input::placeholder{color:rgba(240,238,255,.25);}
 .form-input:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,45,120,.12);}
 .btn-primary{width:100%;padding:15px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-bottom:3px solid var(--pink-dk);border-radius:14px;color:white;font-family:'Archivo',sans-serif;font-weight:700;font-style:italic;font-size:.95rem;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;transition:all .15s;box-shadow:0 4px 20px rgba(255,45,120,.30);}
-.btn-primary:hover{transform:translateY(-1px);}
-.btn-primary:active{transform:translateY(1px);border-bottom-width:1px;}
+.btn-primary:hover{transform:translateY(-1px);}.btn-primary:active{transform:translateY(1px);}
 .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 .btn-primary .btn-spinner{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto;}
-.btn-primary.loading .btn-text{display:none;}
-.btn-primary.loading .btn-spinner{display:block;}
+.btn-primary.loading .btn-text{display:none;}.btn-primary.loading .btn-spinner{display:block;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .divider{display:flex;align-items:center;gap:12px;margin:4px 0;}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
@@ -101,38 +96,30 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
 .bg-upload-btn span{font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.08em;}
 .bg-preview{aspect-ratio:16/9;border-radius:12px;border:3px solid var(--pink);object-fit:cover;width:100%;display:none;}
 .bg-restriction{font-size:.72rem;color:var(--muted);margin-top:8px;text-align:center;line-height:1.5;}
-.finance-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.finance-label-col{flex:1;font-size:.85rem;font-weight:600;}
+.finance-row-ob{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
 .finance-color-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
 .finance-pct-input{width:72px;padding:8px 10px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Archivo',sans-serif;font-size:.9rem;font-weight:700;text-align:center;outline:none;-webkit-appearance:none;}
 .finance-pct-input:focus{border-color:var(--pink);}
 .finance-total{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:10px;margin-top:4px;font-weight:700;font-size:.88rem;}
 .finance-total.ok{background:rgba(34,211,160,.10);color:var(--success);border:1px solid rgba(34,211,160,.25);}
 .finance-total.err{background:rgba(255,78,106,.10);color:var(--error);border:1px solid rgba(255,78,106,.25);}
-.mission-card{display:flex;align-items:center;gap:12px;padding:14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;transition:all .2s;}
-.mission-card.active-m{border-color:rgba(255,45,120,.35);background:rgba(255,45,120,.06);}
-.mission-icon{font-size:1.4rem;flex-shrink:0;width:36px;text-align:center;}
-.mission-info{flex:1;}
-.mission-name{font-weight:700;font-size:.88rem;margin-bottom:2px;}
-.mission-pts{font-size:.72rem;color:var(--muted);font-weight:600;}
+.mission-card-ob{display:flex;align-items:center;gap:12px;padding:14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;transition:all .2s;}
+.mission-card-ob.active-m{border-color:rgba(255,45,120,.35);background:rgba(255,45,120,.06);}
 .mission-toggle{width:44px;height:24px;border-radius:999px;border:none;cursor:pointer;position:relative;transition:all .25s;flex-shrink:0;}
 .mission-toggle.on{background:linear-gradient(135deg,var(--pink),var(--purple));}
 .mission-toggle.off{background:rgba(255,255,255,.15);}
 .mission-toggle::after{content:'';position:absolute;top:3px;width:18px;height:18px;border-radius:50%;background:white;transition:left .25s;box-shadow:0 1px 4px rgba(0,0,0,.3);}
-.mission-toggle.on::after{left:23px;}
-.mission-toggle.off::after{left:3px;}
+.mission-toggle.on::after{left:23px;}.mission-toggle.off::after{left:3px;}
 .ob-nav{display:flex;gap:12px;margin-top:28px;}
 .btn-ob-back{flex:1;padding:14px;background:transparent;border:1px solid var(--border);border-radius:14px;color:var(--muted);font-family:'Archivo',sans-serif;font-weight:700;font-style:italic;font-size:.88rem;text-transform:uppercase;cursor:pointer;transition:all .2s;}
 .btn-ob-back:hover{background:var(--glass);}
 .btn-ob-next{flex:2;padding:14px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-bottom:3px solid var(--pink-dk);border-radius:14px;color:white;font-family:'Archivo',sans-serif;font-weight:700;font-style:italic;font-size:.95rem;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;transition:all .15s;box-shadow:0 4px 20px rgba(255,45,120,.30);}
-.btn-ob-next:hover{transform:translateY(-1px);}
-.btn-ob-next:active{transform:translateY(1px);border-bottom-width:1px;}
+.btn-ob-next:hover{transform:translateY(-1px);}.btn-ob-next:active{transform:translateY(1px);}
 .btn-ob-next:disabled{opacity:.4;cursor:not-allowed;transform:none;}
 .btn-ob-next .btn-spinner{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto;}
-.btn-ob-next.loading .btn-text{display:none;}
-.btn-ob-next.loading .btn-spinner{display:block;}
+.btn-ob-next.loading .btn-text{display:none;}.btn-ob-next.loading .btn-spinner{display:block;}
 .disclaimer-box{background:rgba(251,191,36,.06);border:2px solid rgba(251,191,36,.35);border-radius:16px;padding:20px;margin-bottom:20px;}
-.disclaimer-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:var(--warn);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.disclaimer-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:var(--warn);margin-bottom:10px;}
 .disclaimer-text{font-size:.82rem;color:rgba(251,191,36,.85);line-height:1.7;}
 .disclaimer-check{display:flex;align-items:flex-start;gap:10px;margin-top:14px;cursor:pointer;}
 .disclaimer-check input{margin-top:2px;accent-color:var(--warn);width:16px;height:16px;flex-shrink:0;}
@@ -141,55 +128,106 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
 .summary-row:last-child{border-bottom:none;}
 .summary-key{font-size:.78rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.08em;}
 .summary-val{font-size:.88rem;font-weight:700;color:var(--text);}
-.theme-preview{border-radius:16px;padding:20px;margin-bottom:0;display:flex;align-items:center;gap:14px;overflow:hidden;position:relative;min-height:90px;}
+.theme-preview{border-radius:16px;padding:20px;display:flex;align-items:center;gap:14px;overflow:hidden;min-height:90px;}
 .theme-preview-name{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:white;}
 .theme-preview-sub{font-size:.78rem;color:rgba(255,255,255,.7);font-weight:600;}
 
-/* HOME */
-#screen-home{flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;text-align:center;gap:20px;}
-.home-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:28px 24px;max-width:380px;width:100%;}
-.home-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--purple));display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto 16px;box-shadow:0 0 24px rgba(255,45,120,.3);}
-.status-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(34,211,160,.10);border:1px solid rgba(34,211,160,.25);border-radius:999px;padding:6px 14px;font-size:.78rem;font-weight:700;color:var(--success);text-transform:uppercase;letter-spacing:.08em;margin-bottom:20px;}
-.status-dot{width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulse-dot 1.5s ease-in-out infinite;}
-@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.7);}}
-.btn-logout{width:100%;padding:13px;background:transparent;border:1px solid var(--border);border-radius:12px;color:var(--muted);font-family:'Archivo',sans-serif;font-weight:600;font-size:.85rem;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.06em;}
-.btn-logout:hover{background:rgba(255,78,106,.08);border-color:rgba(255,78,106,.3);color:var(--error);}
-
-/* TOASTS + MODAL */
-#toasts{position:fixed;top:16px;right:16px;z-index:1000;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:min(300px,calc(100vw - 32px));}
-.toast{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--pink);border-radius:12px;padding:12px 16px;font-size:.85rem;font-weight:600;color:var(--text);animation:slide-in .3s cubic-bezier(.17,.89,.32,1.28);backdrop-filter:blur(16px);}
-.toast.success{border-left-color:var(--success);}
-.toast.error{border-left-color:var(--error);color:var(--error);}
-.toast.out{animation:slide-out .25s ease-in forwards;}
-@keyframes slide-in{from{transform:translateX(110%);opacity:0;}to{transform:translateX(0);opacity:1;}}
-@keyframes slide-out{from{transform:translateX(0);opacity:1;}to{transform:translateX(110%);opacity:0;}}
-#modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:500;align-items:center;justify-content:center;padding:20px;}
-#modal-overlay.show{display:flex;}
-.modal-box{background:var(--bg2);border:1px solid rgba(255,45,120,.3);border-radius:20px;padding:28px 24px;max-width:360px;width:100%;text-align:center;animation:modal-in .3s cubic-bezier(.17,.89,.32,1.28);}
-@keyframes modal-in{from{transform:scale(.9);opacity:0;}to{transform:scale(1);opacity:1;}}
-.modal-title{font-family:'Syne',sans-serif;font-size:1.2rem;color:var(--pink);margin-bottom:8px;}
-.modal-body{font-size:.85rem;color:var(--muted);line-height:1.6;margin-bottom:20px;}
-.modal-actions{display:flex;gap:10px;}
-.btn-modal-cancel{flex:1;padding:12px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--muted);font-family:'Archivo',sans-serif;font-weight:700;font-style:italic;font-size:.82rem;text-transform:uppercase;cursor:pointer;}
-.btn-modal-confirm{flex:1;padding:12px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-radius:10px;color:white;font-family:'Archivo',sans-serif;font-weight:700;font-style:italic;font-size:.82rem;text-transform:uppercase;cursor:pointer;box-shadow:0 0 16px rgba(255,45,120,.3);}
+/* GAME */
+#screen-game{flex-direction:column;align-items:stretch;overflow:hidden;height:100vh;}
+.marquee-wrap{background:linear-gradient(90deg,rgba(180,0,90,.95),rgba(100,0,60,.95));overflow:hidden;white-space:nowrap;padding:8px 0;box-shadow:0 0 18px rgba(255,0,127,.6);position:sticky;top:0;z-index:50;border-bottom:1px solid rgba(255,0,127,.4);}
+.marquee-inner{display:inline-block;animation:marquee 22s linear infinite;font-family:'Syne',sans-serif;font-weight:800;text-transform:uppercase;font-size:1rem;padding-left:100%;letter-spacing:.05em;}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-250%)}}
+.game-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(13,13,26,.80);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.game-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.pts-badge{display:flex;align-items:center;gap:6px;background:rgba(255,45,120,.12);border:1px solid rgba(255,45,120,.3);border-radius:999px;padding:5px 12px;}
+.pts-num{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--pink);}
+.pts-label{font-size:.65rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+.game-content{flex:1;overflow-y:auto;padding:12px 14px 100px;-webkit-overflow-scrolling:touch;}
+.game-tabs{position:fixed;bottom:0;left:0;right:0;z-index:50;background:rgba(13,13,26,.95);backdrop-filter:blur(16px);border-top:1px solid var(--border);padding:8px 12px calc(8px + env(safe-area-inset-bottom));display:flex;gap:6px;}
+.tab-btn{flex:1;padding:10px 4px;border-radius:10px;font-family:'Archivo',sans-serif;font-style:italic;text-transform:uppercase;font-size:10px;font-weight:700;cursor:pointer;transition:all .2s;opacity:.5;background:none;border:none;color:var(--text);letter-spacing:.04em;}
+.tab-btn.active{background:linear-gradient(135deg,var(--pink),var(--purple));color:white;opacity:1;box-shadow:0 0 14px rgba(255,45,120,.4);}
+.task-card{background:rgba(10,0,25,.80);border:1px solid rgba(255,255,255,.12);border-left:4px solid rgba(255,255,255,.2);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;margin-bottom:10px;backdrop-filter:blur(12px);transition:all .3s;}
+.task-card.done{border-left-color:var(--pink);background:rgba(120,0,60,.55);animation:pulse-glow 2s infinite alternate;}
+@keyframes pulse-glow{from{box-shadow:inset 0 0 8px rgba(255,0,127,.08);}to{box-shadow:inset 0 0 22px rgba(255,0,127,.28);}}
+.seg{height:7px;flex:1;border-radius:4px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);transition:all .3s;}
+.seg.on{background:var(--pink);border-color:var(--pink);box-shadow:0 0 7px var(--pink);}
+.btn-m{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);font-size:20px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;user-select:none;-webkit-user-select:none;}
+.btn-p{width:40px;height:40px;border-radius:10px;background:var(--pink);border:none;border-bottom:4px solid var(--pink-dk);color:#fff;font-size:22px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px rgba(255,0,127,.5);transition:all .12s;user-select:none;-webkit-user-select:none;}
+.btn-p.off{background:#444;border-bottom-color:#222;box-shadow:none;opacity:.4;}
+.btn-m:active,.btn-p:active{transform:scale(.85);}
+.prog-track{width:100%;height:9px;background:rgba(0,0,0,.6);border-radius:999px;overflow:hidden;border:1px solid rgba(255,255,255,.1);}
+.prog-fill{height:100%;border-radius:999px;transition:width .9s;}
+.glass-card{background:rgba(10,0,20,.75);border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:18px;padding:16px;margin-bottom:12px;}
+.medal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px;}
+.medal-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border-radius:12px;cursor:pointer;transition:all .2s;}
+.medal-item.earned{background:rgba(255,45,120,.12);border:1px solid rgba(255,45,120,.3);}
+.medal-item.locked{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);opacity:.5;}
+.medal-icon{font-size:1.6rem;}
+.medal-label{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;text-align:center;color:var(--muted);line-height:1.2;}
+.reward-card{background:rgba(10,0,25,.80);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(12px);border-radius:14px;padding:14px 16px;margin-bottom:10px;}
+.finance-row-disp{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07);}
+.finance-row-disp:last-child{border-bottom:none;}
+.btn-historia{width:100%;text-align:left;background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.1);border-radius:16px;padding:16px 18px;margin-bottom:12px;color:var(--text);cursor:pointer;font-size:.88rem;line-height:1.6;font-family:'Archivo',sans-serif;transition:all .2s;display:flex;align-items:flex-start;gap:12px;}
+.btn-historia:hover{background:rgba(255,45,120,.15);border-color:rgba(255,45,120,.6);}
+.diario-textarea{width:100%;min-height:110px;padding:14px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.15);border-radius:16px;color:var(--text);font-family:'Archivo',sans-serif;font-size:.95rem;line-height:1.7;resize:none;outline:none;-webkit-appearance:none;}
+.diario-textarea:focus{border-color:rgba(255,45,120,.6);}
+.diario-textarea::placeholder{color:rgba(255,255,255,.3);}
+.hist-row{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;border-radius:13px;margin-bottom:9px;background:rgba(10,0,25,.80);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(10px);cursor:pointer;}
+#toasts{position:fixed;top:60px;right:12px;z-index:300;display:flex;flex-direction:column;gap:9px;pointer-events:none;width:min(290px,calc(100vw - 24px));}
+.toast{background:rgba(10,0,20,.92);border:1px solid rgba(255,255,255,.15);border-left:4px solid var(--pink);border-radius:13px;padding:13px 15px;backdrop-filter:blur(18px);animation:tIn .38s cubic-bezier(.17,.89,.32,1.28);}
+.toast.out{animation:tOut .3s ease-in forwards;}
+.toast.perfect{border-left-color:#facc15;}.toast.reward{border-left-color:#22d3ee;}.toast.bad{border-left-color:#f87171;}
+@keyframes tIn{from{transform:translateX(108%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes tOut{from{transform:translateX(0);opacity:1}to{transform:translateX(108%);opacity:0}}
+#fx-canvas{position:fixed;inset:0;pointer-events:none;z-index:900;}
+#sync-bar{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);z-index:60;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.12em;padding:5px 14px;border-radius:999px;transition:all .3s;white-space:nowrap;pointer-events:none;}
+.sb-ok{background:rgba(0,180,60,.25);color:#00ff70;border:1px solid rgba(0,220,80,.4);}
+.sb-busy{background:rgba(255,200,0,.2);color:#ffc800;border:1px solid rgba(255,200,0,.4);}
+.sb-err{background:rgba(255,60,60,.2);color:#ff6060;border:1px solid rgba(255,80,80,.4);}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:800;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.show{display:flex;}
+.modal-box{background:rgba(15,0,30,.96);border:1px solid rgba(255,45,120,.4);border-radius:22px;padding:28px 24px;max-width:320px;width:90%;text-align:center;box-shadow:0 0 40px rgba(255,45,120,.2);}
 </style>
 </head>
 <body>
-
+<canvas id="fx-canvas"></canvas>
 <div id="toasts"></div>
+<div id="sync-bar" class="sb-busy">⏳ Conectando...</div>
 
-<!-- MODAL RESET -->
-<div id="modal-overlay">
+<!-- MODALES -->
+<div class="modal-overlay" id="modal-reset">
   <div class="modal-box">
-    <div style="font-size:2rem;margin-bottom:12px">🔑</div>
-    <div class="modal-title">Recuperar contraseña</div>
-    <div class="modal-body">Te enviaremos un enlace para restablecer tu contraseña.</div>
-    <div class="form-field" style="margin-bottom:12px"><input type="email" id="reset-email" class="form-input" placeholder="tu@correo.com"></div>
+    <div style="font-size:2.5rem;margin-bottom:12px">🔄</div>
+    <div style="font-family:'Syne',sans-serif;font-size:1.1rem;color:var(--pink);margin-bottom:8px">¿Reiniciar el día?</div>
+    <div style="font-size:.85rem;color:rgba(255,255,255,.7);margin-bottom:22px;line-height:1.5">Se guardarán los puntos de hoy y se reiniciarán las misiones.</div>
+    <div style="display:flex;gap:12px">
+      <button onclick="GAME.cancelReset()" style="flex:1;padding:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:12px;color:#fff;font-family:'Archivo',sans-serif;font-style:italic;text-transform:uppercase;font-size:11px;cursor:pointer">Cancelar</button>
+      <button onclick="GAME.confirmReset()" style="flex:1;padding:14px;background:var(--pink);border:none;border-bottom:4px solid var(--pink-dk);border-radius:12px;color:#fff;font-family:'Archivo',sans-serif;font-style:italic;text-transform:uppercase;font-size:11px;cursor:pointer">Reiniciar</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="modal-resetall">
+  <div class="modal-box">
+    <div style="font-size:2.5rem;margin-bottom:12px">⚠️</div>
+    <div style="font-family:'Syne',sans-serif;font-size:1.1rem;color:#f87171;margin-bottom:8px">¿Reiniciar TODO?</div>
+    <div style="font-size:.85rem;color:rgba(255,255,255,.7);margin-bottom:22px;line-height:1.5">Se borrarán <strong>todos</strong> los puntos, historial y medallas. No se puede deshacer.</div>
+    <div style="display:flex;gap:12px">
+      <button onclick="GAME.cancelResetAll()" style="flex:1;padding:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:12px;color:#fff;font-family:'Archivo',sans-serif;font-style:italic;text-transform:uppercase;font-size:11px;cursor:pointer">Cancelar</button>
+      <button onclick="GAME.confirmResetAll()" style="flex:1;padding:14px;background:#f87171;border:none;border-bottom:4px solid #b91c1c;border-radius:12px;color:#fff;font-family:'Archivo',sans-serif;font-style:italic;text-transform:uppercase;font-size:11px;cursor:pointer">Borrar todo</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="modal-auth">
+  <div class="modal-box">
+    <div style="font-size:2.5rem;margin-bottom:12px">🔑</div>
+    <div style="font-family:'Syne',sans-serif;font-size:1.1rem;color:var(--pink);margin-bottom:8px">Recuperar contraseña</div>
+    <div style="font-size:.85rem;color:rgba(255,255,255,.7);margin-bottom:18px">Te enviaremos un enlace a tu correo.</div>
+    <div style="margin-bottom:12px"><input type="email" id="reset-email" class="form-input" placeholder="tu@correo.com"></div>
     <div id="reset-error" class="form-error"></div>
-    <div id="reset-success" style="display:none;background:rgba(34,211,160,.10);border:1px solid rgba(34,211,160,.25);border-radius:10px;padding:12px;font-size:.82rem;color:var(--success);font-weight:600;margin-bottom:12px">✅ Correo enviado. Revisa tu bandeja.</div>
-    <div class="modal-actions">
-      <button class="btn-modal-cancel" onclick="DOCH.closeResetModal()">Cancelar</button>
-      <button class="btn-modal-confirm" onclick="DOCH.sendResetEmail()">Enviar</button>
+    <div id="reset-success" style="display:none;background:rgba(34,211,160,.10);border:1px solid rgba(34,211,160,.25);border-radius:10px;padding:12px;font-size:.82rem;color:var(--success);font-weight:600;margin-bottom:12px">✅ Correo enviado.</div>
+    <div style="display:flex;gap:10px">
+      <button onclick="DOCH.closeResetModal()" style="flex:1;padding:12px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--muted);font-family:'Archivo',sans-serif;font-style:italic;text-transform:uppercase;font-size:.82rem;cursor:pointer">Cancelar</button>
+      <button onclick="DOCH.sendResetEmail()" style="flex:1;padding:12px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-radius:10px;color:white;font-family:'Archivo',sans-serif;font-style:italic;text-transform:uppercase;font-size:.82rem;cursor:pointer">Enviar</button>
     </div>
   </div>
 </div>
@@ -220,18 +258,18 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
       <button class="btn-primary" id="btn-login" onclick="DOCH.login()"><div class="btn-spinner"></div><span class="btn-text">Entrar</span></button>
       <div class="divider"><span>o</span></div>
       <button class="btn-google" onclick="DOCH.loginGoogle()"><div class="google-icon"></div>Continuar con Google</button>
-      <div class="terms-text">Al continuar aceptas nuestros <a href="#" onclick="return false">Términos</a> y <a href="#" onclick="return false">Privacidad</a></div>
+      <div class="terms-text">Al continuar aceptas <a href="#" onclick="return false">Términos</a> y <a href="#" onclick="return false">Privacidad</a></div>
     </div>
     <div id="panel-register" class="form-panel">
       <div id="register-error" class="form-error"></div>
       <div class="form-field"><label class="form-label">Tu nombre</label><input type="text" id="reg-name" class="form-input" placeholder="Mamá, Papá, Tutor/a..." autocomplete="name"></div>
       <div class="form-field"><label class="form-label">Correo</label><input type="email" id="reg-email" class="form-input" placeholder="tu@correo.com" autocomplete="email"></div>
       <div class="form-field"><label class="form-label">Contraseña</label><input type="password" id="reg-pass" class="form-input" placeholder="Mínimo 6 caracteres" autocomplete="new-password"></div>
-      <div class="form-field"><label class="form-label">Confirmar contraseña</label><input type="password" id="reg-pass2" class="form-input" placeholder="Repite tu contraseña" autocomplete="new-password" onkeydown="if(event.key==='Enter')DOCH.register()"></div>
+      <div class="form-field"><label class="form-label">Confirmar</label><input type="password" id="reg-pass2" class="form-input" placeholder="Repite tu contraseña" autocomplete="new-password" onkeydown="if(event.key==='Enter')DOCH.register()"></div>
       <button class="btn-primary" id="btn-register" onclick="DOCH.register()"><div class="btn-spinner"></div><span class="btn-text">Crear mi cuenta</span></button>
       <div class="divider"><span>o</span></div>
       <button class="btn-google" onclick="DOCH.loginGoogle()"><div class="google-icon"></div>Continuar con Google</button>
-      <div class="terms-text">Al crear una cuenta aceptas nuestros <a href="#" onclick="return false">Términos</a> y <a href="#" onclick="return false">Privacidad</a>.<br><span style="color:rgba(240,238,255,.3)">Los datos de tu familia son tuyos. DOCH solo provee la tecnología.</span></div>
+      <div class="terms-text">Aceptas <a href="#" onclick="return false">Términos</a> y <a href="#" onclick="return false">Privacidad</a>.<br><span style="color:rgba(240,238,255,.3)">Los datos de tu familia son tuyos.</span></div>
     </div>
   </div>
 </div>
@@ -245,16 +283,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
     </div>
     <div class="ob-progress-track"><div class="ob-progress-fill" id="ob-progress" style="width:25%"></div></div>
   </div>
-
-  <!-- PASO 1: IDENTIDAD -->
   <div class="ob-step active" id="ob-step-1">
     <div style="margin-bottom:28px">
       <div class="ob-step-title">¿Quién es el protagonista? 🌟</div>
-      <div class="ob-step-sub">Configura la identidad visual del mundo de tu hijo/a. Todo puede editarse después desde el panel de configuración.</div>
+      <div class="ob-step-sub">Configura la identidad del mundo. Todo puede editarse después en Configuración.</div>
     </div>
     <div class="ob-field-card">
       <div class="ob-field-name">Nombre del niño o niña</div>
-      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> El nombre aparece en cada logro, medalla y premio. Hace que la app se sienta verdaderamente suya — no una app genérica, sino su mundo.</div>
+      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> El nombre aparece en cada logro, medalla y premio. La app se sentirá verdaderamente suya.</div>
       <input type="text" class="ob-input" id="ob-child-name" placeholder="Escribe el nombre..." maxlength="30">
       <div class="ob-examples">
         <span class="ob-example" onclick="OB.fillInput('ob-child-name',this)">Valentina</span>
@@ -267,7 +303,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
     </div>
     <div class="ob-field-card">
       <div class="ob-field-name">Título de su mundo</div>
-      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> El título convierte la app en algo épico. "El Mundo de la Aventurera Valentina" genera identidad y un rol. El niño/a lo sentirá como propio desde el primer día.</div>
+      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> "El Mundo de la Aventurera Valentina" genera identidad y un rol propio desde el primer día.</div>
       <input type="text" class="ob-input" id="ob-child-title" placeholder="Aventurera, Explorador, Campeona..." maxlength="30">
       <div class="ob-examples">
         <span class="ob-example" onclick="OB.fillInput('ob-child-title',this)">Aventurera</span>
@@ -276,49 +312,44 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
         <span class="ob-example" onclick="OB.fillInput('ob-child-title',this)">Superhéroe</span>
         <span class="ob-example" onclick="OB.fillInput('ob-child-title',this)">Estrella</span>
         <span class="ob-example" onclick="OB.fillInput('ob-child-title',this)">Ninja</span>
-        <span class="ob-example" onclick="OB.fillInput('ob-child-title',this)">Científica</span>
-        <span class="ob-example" onclick="OB.fillInput('ob-child-title',this)">Mago</span>
       </div>
     </div>
     <div class="ob-field-card">
       <div class="ob-field-name">Color principal</div>
-      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> El color define la energía visual de toda la app — botones, medallas, barras de progreso. Elige uno que represente la personalidad de tu hijo/a.</div>
+      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> El color define la energía visual — botones, medallas, barras de progreso.</div>
       <div class="color-grid" id="color-grid"></div>
     </div>
     <div class="ob-field-card">
       <div class="ob-field-name">Fondo de la app</div>
-      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> El fondo crea la atmósfera del mundo. Usa uno de los presets o sube algo especial — una foto familiar, el personaje favorito — cualquier imagen que motive a tu hijo/a a abrir la app cada día.</div>
+      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> Esta imagen aparecerá como fondo en la app de tu hijo/a en todos los dispositivos. Usa un preset o sube algo especial — una foto familiar o el personaje favorito.</div>
       <div class="bg-grid" id="bg-grid"></div>
       <div style="margin-top:10px">
         <div class="bg-upload-btn" id="bg-upload-btn" onclick="document.getElementById('bg-file-input').click()">
-          <span style="font-size:1.4rem">📷</span>
-          <span>Subir imagen propia</span>
+          <span style="font-size:1.4rem">📷</span><span>Subir imagen propia</span>
         </div>
         <img id="bg-preview-img" class="bg-preview" alt="Vista previa">
         <input type="file" id="bg-file-input" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="OB.handleBgUpload(this)">
-        <div class="bg-restriction">JPG, PNG o WebP · Máx. 2MB · Se optimiza automáticamente al subirse</div>
+        <div class="bg-restriction">JPG, PNG o WebP · Máx. 2MB · Se optimiza automáticamente</div>
       </div>
     </div>
     <div class="ob-nav">
       <button class="btn-ob-next" onclick="OB.next(1)"><div class="btn-spinner"></div><span class="btn-text">Siguiente — Finanzas →</span></button>
     </div>
   </div>
-
-  <!-- PASO 2: FINANZAS -->
   <div class="ob-step" id="ob-step-2">
     <div style="margin-bottom:28px">
       <div class="ob-step-title">El valor del esfuerzo 💰</div>
-      <div class="ob-step-sub">Cada punto ganado tiene un valor real en dinero. Aquí configuras la primera lección de educación financiera de tu hijo/a.</div>
+      <div class="ob-step-sub">Cada punto ganado tiene un valor real en dinero. Primera lección de educación financiera.</div>
     </div>
     <div class="ob-field-card">
       <div class="ob-field-name">Moneda</div>
-      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> Usar la moneda real de tu país convierte los puntos en algo concreto. Cuando tu hijo/a vea "$500 pesos" entiende el valor real de su esfuerzo y empieza a pensar en dinero de verdad.</div>
+      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> Usar la moneda real convierte los puntos en algo concreto y enseña el valor del dinero.</div>
       <div style="display:flex;gap:10px">
         <input type="text" class="ob-input" id="ob-currency-symbol" placeholder="$" maxlength="3" style="width:70px;text-align:center;font-size:1.2rem;font-weight:700;flex-shrink:0">
         <input type="text" class="ob-input" id="ob-currency-name" placeholder="Nombre de la moneda...">
       </div>
       <div class="ob-examples" style="margin-top:10px">
-        <span class="ob-example" onclick="OB.fillCurrency('$','Pesos')">🇨🇱 Pesos CLP</span>
+        <span class="ob-example" onclick="OB.fillCurrency('$','Pesos')">🇨🇱 Pesos</span>
         <span class="ob-example" onclick="OB.fillCurrency('$','Dólares')">🇺🇸 Dólares</span>
         <span class="ob-example" onclick="OB.fillCurrency('€','Euros')">🇪🇺 Euros</span>
         <span class="ob-example" onclick="OB.fillCurrency('S/','Soles')">🇵🇪 Soles</span>
@@ -328,7 +359,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
     </div>
     <div class="ob-field-card">
       <div class="ob-field-name">¿Cuánto vale 1 punto?</div>
-      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> Este número es el puente entre el esfuerzo y la realidad. Si 1 punto = $10, hacer la cama cada día genera ingresos reales. Empieza con un valor cómodo — puedes ajustarlo cuando quieras.</div>
+      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> Este número conecta el esfuerzo con la realidad. Ajústalo cuando quieras.</div>
       <div style="display:flex;align-items:center;gap:10px">
         <span id="ob-currency-preview" style="font-size:1rem;font-weight:700;color:var(--pink);flex-shrink:0">$</span>
         <input type="number" class="ob-input" id="ob-point-value" placeholder="10" min="1" max="99999" value="10" oninput="OB.updateCurrencyPreview()">
@@ -344,7 +375,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
     </div>
     <div class="ob-field-card">
       <div class="ob-field-name">Las 5 alcancías</div>
-      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> Distribuir el dinero en categorías es la base de la inteligencia financiera. Tu hijo/a aprende que el dinero tiene propósitos: no todo es para gastar hoy. Deben sumar exactamente 100%.</div>
+      <div class="ob-field-why">💡 <strong>¿Por qué importa?</strong> Distribuir el dinero enseña que no todo es para gastar hoy. Deben sumar 100%.</div>
       <div id="finance-rows"></div>
       <div class="finance-total err" id="finance-total"><span>Total</span><span id="finance-sum">100%</span></div>
     </div>
@@ -353,15 +384,13 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
       <button class="btn-ob-next" onclick="OB.next(2)"><div class="btn-spinner"></div><span class="btn-text">Siguiente — Misiones →</span></button>
     </div>
   </div>
-
-  <!-- PASO 3: MISIONES -->
   <div class="ob-step" id="ob-step-3">
     <div style="margin-bottom:28px">
       <div class="ob-step-title">Las misiones del día 🎯</div>
-      <div class="ob-step-sub">Activa las misiones que apliquen a la rutina de tu hijo/a. Todas son editables en nombre, puntos y límite desde la configuración después de crear.</div>
+      <div class="ob-step-sub">Activa las misiones de la rutina. Todas son editables desde Configuración.</div>
     </div>
     <div class="ob-field-card" style="padding:14px">
-      <div class="ob-field-why" style="margin-bottom:12px">💡 <strong>¿Por qué importa?</strong> Las misiones son el corazón del juego. Cada misión completada es un hábito reforzado. Tú decides qué hábitos son prioritarios para el desarrollo de tu hijo/a en este momento de su vida.</div>
+      <div class="ob-field-why" style="margin-bottom:12px">💡 <strong>¿Por qué importa?</strong> Cada misión completada es un hábito reforzado. Tú decides qué hábitos son prioritarios ahora.</div>
       <div id="missions-list"></div>
     </div>
     <div class="ob-nav">
@@ -369,20 +398,15 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
       <button class="btn-ob-next" onclick="OB.next(3)"><div class="btn-spinner"></div><span class="btn-text">Siguiente — Confirmar →</span></button>
     </div>
   </div>
-
-  <!-- PASO 4: CONFIRMACIÓN -->
   <div class="ob-step" id="ob-step-4">
     <div style="margin-bottom:28px">
       <div class="ob-step-title">Casi listo, arquitecto 🏗️</div>
-      <div class="ob-step-sub">Revisa el resumen y lee el compromiso parental. Puedes volver a cambiar cualquier cosa antes de crear.</div>
+      <div class="ob-step-sub">Revisa el resumen y acepta el compromiso parental.</div>
     </div>
     <div class="ob-field-card" style="padding:0;overflow:hidden;margin-bottom:16px">
       <div class="theme-preview" id="theme-preview-box" style="background:linear-gradient(135deg,#ff2d78,#7c3aed)">
         <div style="font-size:2.5rem">🌟</div>
-        <div>
-          <div class="theme-preview-name" id="preview-app-name">El Mundo de...</div>
-          <div class="theme-preview-sub" id="preview-app-sub">Tu aplicación personalizada</div>
-        </div>
+        <div><div class="theme-preview-name" id="preview-app-name">El Mundo de...</div><div class="theme-preview-sub" id="preview-app-sub">Tu app personalizada</div></div>
       </div>
     </div>
     <div class="ob-field-card">
@@ -395,21 +419,15 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
       <div class="summary-row"><span class="summary-key">Fondo</span><span class="summary-val" id="sum-bg">—</span></div>
     </div>
     <div class="disclaimer-box">
-      <div class="disclaimer-title">⚠️ Compromiso Parental — Lee con atención</div>
+      <div class="disclaimer-title">⚠️ Compromiso Parental</div>
       <div class="disclaimer-text">
-        <strong style="color:var(--warn)">DOCH es una herramienta, no un terapeuta.</strong><br><br>
-        Esta aplicación ofrece un esquema digital de organización de hábitos. <strong>No reemplaza ningún tipo de orientación clínica, psicológica ni pedagógica.</strong><br><br>
-        Como padre, madre o tutor/a, eres el único responsable de:<br>
-        • El uso de esta aplicación en tu hogar<br>
-        • El contenido de las misiones e historias morales<br>
-        • Las recompensas prometidas y cumplidas<br>
-        • La supervisión del acceso de tu hijo/a<br><br>
-        <strong style="color:var(--warn)">Los datos de tu familia son tuyos.</strong> DOCH nunca compartirá ni venderá información personal de tu familia ni de tus hijos.<br><br>
-        El éxito de esta herramienta depende de tu participación activa como adulto responsable.
+        <strong style="color:var(--warn)">DOCH es una herramienta, no un terapeuta.</strong> No reemplaza orientación clínica, psicológica ni pedagógica.<br><br>
+        Como padre/madre/tutor eres el único responsable del uso en tu hogar, el contenido de las misiones e historias, las recompensas prometidas y la supervisión del acceso de tu hijo/a.<br><br>
+        <strong style="color:var(--warn)">Los datos de tu familia son tuyos.</strong> DOCH nunca los compartirá ni venderá.
       </div>
       <label class="disclaimer-check">
         <input type="checkbox" id="disclaimer-check" onchange="OB.checkDisclaimer()">
-        <span>Entiendo y acepto que soy el único responsable del uso de DOCH en mi hogar y que esta herramienta no reemplaza orientación profesional.</span>
+        <span>Entiendo y acepto ser el único responsable del uso de DOCH en mi hogar.</span>
       </label>
     </div>
     <div class="ob-nav">
@@ -421,22 +439,23 @@ body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradi
   </div>
 </div>
 
-<!-- HOME PLACEHOLDER -->
-<div id="screen-home" class="screen">
-  <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:2.4rem;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">DOCH</div>
-  <div class="home-card">
-    <div class="home-avatar">🌟</div>
-    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;margin-bottom:6px" id="home-welcome-text">¡Hola!</div>
-    <div style="font-size:.82rem;color:var(--muted);margin-bottom:20px" id="home-email-text"></div>
-    <div class="status-badge"><div class="status-dot"></div>Mundo creado ✅</div>
-    <div style="background:rgba(255,45,120,.06);border:1px solid rgba(255,45,120,.15);border-radius:12px;padding:14px 16px;font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:20px">
-      <strong style="color:var(--pink)">Fase 2 completada ✅</strong><br>
-      Tu mundo está configurado y guardado en Firebase.<br><br>
-      <strong style="color:var(--pink)">Próximo:</strong> Fase 3 — La App del Niño.
+<!-- GAME -->
+<div id="screen-game" class="screen">
+  <div class="marquee-wrap"><div class="marquee-inner" id="marquee-text">DOCH · Mis Primeros Pasos · Cada misión cuenta · ¡Tú puedes! · </div></div>
+  <div class="game-header">
+    <div>
+      <div class="game-title" id="game-app-title">DOCH</div>
+      <div style="font-size:.68rem;color:var(--muted);font-weight:600" id="game-date-label"></div>
     </div>
-    <button class="btn-logout" onclick="DOCH.logout()">Cerrar sesión</button>
+    <div class="pts-badge"><div class="pts-num" id="total-pts">0</div><div class="pts-label">pts</div></div>
   </div>
-  <div style="font-size:.72rem;color:rgba(240,238,255,.2);text-transform:uppercase;letter-spacing:.12em;font-weight:600">DOCH v2.0 — Fase 2</div>
+  <div class="game-content" id="content"></div>
+  <div class="game-tabs">
+    <button class="tab-btn active" id="tab-tasks" onclick="GAME.tab('tasks')">🎯<br>Misiones</button>
+    <button class="tab-btn" id="tab-rewards" onclick="GAME.tab('rewards')">🎁<br>Premios</button>
+    <button class="tab-btn" id="tab-historia" onclick="GAME.tab('historia')">📖<br>Mi Espacio</button>
+    <button class="tab-btn" id="tab-rules" onclick="GAME.tab('rules')">📋<br>Reglas</button>
+  </div>
 </div>
 
 <script>
@@ -456,7 +475,6 @@ var DEFAULT_TASKS=[
   {id:'honesto',label:'Día honesto',pts:5,limit:1,icon:'😇',active:true},
   {id:'gritos',label:'Día sin gritar ni manipular',pts:5,limit:1,icon:'🤍',active:true}
 ];
-
 var DEFAULT_FINANCE=[
   {label:'Libre uso',pct:40,color:'#ff9ecc',desc:'Para gastar libremente'},
   {label:'Gastos',pct:40,color:'#ffccdd',desc:'Necesidades y extras'},
@@ -464,342 +482,387 @@ var DEFAULT_FINANCE=[
   {label:'Invertir',pct:8,color:'#facc15',desc:'Hacer crecer el dinero'},
   {label:'Donar',pct:2,color:'#86efac',desc:'Ayudar y regalar'}
 ];
+var COLORS=[{hex:'#ff2d78',name:'Rosa'},{hex:'#7c3aed',name:'Púrpura'},{hex:'#2563eb',name:'Azul'},{hex:'#06b6d4',name:'Cyan'},{hex:'#16a34a',name:'Verde'},{hex:'#ca8a04',name:'Dorado'},{hex:'#ea580c',name:'Naranja'},{hex:'#dc2626',name:'Rojo'},{hex:'#a21caf',name:'Fucsia'},{hex:'#0d9488',name:'Teal'},{hex:'#4f46e5',name:'Índigo'},{hex:'#be185d',name:'Rosa Oscuro'}];
+var BG_PRESETS=[{id:'galaxia',label:'Galaxia',bg:'linear-gradient(135deg,#0d0d1a 0%,#1a0040 50%,#0d1a2e 100%)'},{id:'aurora',label:'Aurora',bg:'linear-gradient(135deg,#0d1a0d 0%,#001a1a 50%,#0d0d26 100%)'},{id:'atardecer',label:'Atardecer',bg:'linear-gradient(135deg,#1a0d00 0%,#261000 50%,#1a001a 100%)'},{id:'oceano',label:'Océano',bg:'linear-gradient(135deg,#001a26 0%,#000d1a 50%,#001a1a 100%)'},{id:'fuego',label:'Fuego',bg:'linear-gradient(135deg,#1a0000 0%,#260d00 50%,#1a1a00 100%)'},{id:'noche',label:'Noche',bg:'linear-gradient(135deg,#000d1a 0%,#0d0d26 50%,#1a001a 100%)'}];
 
-var COLORS=[
-  {hex:'#ff2d78',name:'Rosa'},{hex:'#7c3aed',name:'Púrpura'},{hex:'#2563eb',name:'Azul'},
-  {hex:'#06b6d4',name:'Cyan'},{hex:'#16a34a',name:'Verde'},{hex:'#ca8a04',name:'Dorado'},
-  {hex:'#ea580c',name:'Naranja'},{hex:'#dc2626',name:'Rojo'},{hex:'#a21caf',name:'Fucsia'},
-  {hex:'#0d9488',name:'Teal'},{hex:'#4f46e5',name:'Índigo'},{hex:'#be185d',name:'Rosa Oscuro'}
+var MEDALLAS_BASE=[
+  {id:'primera',icon:'⭐',label:'Primera Misión',desc:'Completaste tu primera misión',check:function(d){return d.total>0;}},
+  {id:'dia_perf',icon:'🌟',label:'Día Perfecto',desc:'Completaste todas las misiones en un día',check:function(d){return(d.today&&d.today.perfectDay)||(d.history&&d.history.some(function(h){return h.perfectDay;}));}},
+  {id:'racha3',icon:'🔥',label:'En Llamas',desc:'3 días seguidos con puntos',check:function(d){return(d.racha||0)>=3;}},
+  {id:'racha7',icon:'💥',label:'Semana Épica',desc:'7 días seguidos con puntos',check:function(d){return(d.racha||0)>=7;}},
+  {id:'racha14',icon:'👑',label:'Constante',desc:'14 días seguidos con puntos',check:function(d){return(d.racha||0)>=14;}},
+  {id:'pts100',icon:'💎',label:'Centenaria',desc:'100 puntos en total',check:function(d){return d.total>=100;}},
+  {id:'pts500',icon:'🚀',label:'Superstar',desc:'500 puntos en total',check:function(d){return d.total>=500;}},
+  {id:'pts1000',icon:'🏆',label:'Leyenda',desc:'1000 puntos en total',check:function(d){return d.total>=1000;}},
+  {id:'leer10',icon:'📚',label:'Lectora',desc:'Leíste 10 veces en total',check:function(d){var t=d.history?d.history.reduce(function(s,h){return s+(h.points&&h.points.leer||0);},0):0;return t+(d.today&&d.today.points&&d.today.points.leer||0)>=10;}},
+  {id:'hon5',icon:'😇',label:'Corazón Honesto',desc:'5 días honestos registrados',check:function(d){var t=d.history?d.history.filter(function(h){return h.points&&h.points.honesto>0;}).length:0;return t+(d.today&&d.today.points&&d.today.points.honesto?1:0)>=5;}},
+  {id:'mes400',icon:'🎁',label:'Del Mes',desc:'400 puntos en un mes',check:function(d){return d.month&&d.month.pts>=400;}},
+  {id:'dien30',icon:'🦷',label:'Sonrisa',desc:'30 veces lavaste los dientes',check:function(d){var t=d.history?d.history.reduce(function(s,h){return s+(h.points&&h.points.dientes||0);},0):0;return t+(d.today&&d.today.points&&d.today.points.dientes||0)>=30;}}
 ];
 
-var BG_PRESETS=[
-  {id:'galaxia',label:'Galaxia',bg:'linear-gradient(135deg,#0d0d1a 0%,#1a0040 50%,#0d1a2e 100%)'},
-  {id:'aurora',label:'Aurora',bg:'linear-gradient(135deg,#0d1a0d 0%,#001a1a 50%,#0d0d26 100%)'},
-  {id:'atardecer',label:'Atardecer',bg:'linear-gradient(135deg,#1a0d00 0%,#261000 50%,#1a001a 100%)'},
-  {id:'oceano',label:'Océano',bg:'linear-gradient(135deg,#001a26 0%,#000d1a 50%,#001a1a 100%)'},
-  {id:'fuego',label:'Fuego',bg:'linear-gradient(135deg,#1a0000 0%,#260d00 50%,#1a1a00 100%)'},
-  {id:'noche',label:'Noche',bg:'linear-gradient(135deg,#000d1a 0%,#0d0d26 50%,#1a001a 100%)'}
+var HISTORIAS_BASE=[
+  {titulo:'La tarea que no quería hacer',emoji:'📚',intro:'Era viernes por la tarde y el sol brillaba afuera. Tenía tarea de matemáticas — sumas difíciles. Sus amigas la llamaron para ir al parque. "Después la hago", pensó. Pero cuando volvió estaba muy cansada y la tarea seguía ahí, sin hacer.',opciones:[{texto:'Hago la tarea antes de salir a jugar',valor:'bueno',feedback:'⭐ ¡Decisión de campeona! Primero lo importante, después el descanso.',leccion:'Cumplir las responsabilidades primero nos deja disfrutar el tiempo libre sin culpa.'},{texto:'Salgo a jugar y la hago después',valor:'neutro',feedback:'😕 El "después" no siempre llega. La tarea sin hacer pesa más que el juego.',leccion:'Dejar las tareas para después hace que se acumulen y cuesten más.'}]},
+  {titulo:'El vaso roto',emoji:'🥛',intro:'Estaba jugando en la cocina y sin querer tiró un vaso que se rompió. Nadie la vio. Podía dejar los pedazos ahí y hacerse que no sabía nada.',opciones:[{texto:'Le digo a mamá o papá que rompí el vaso',valor:'bueno',feedback:'💎 ¡Eso es valentía real! Decir la verdad cuando nadie nos vio es el acto más honesto.',leccion:'La honestidad vale más cuando nadie nos está mirando.'},{texto:'Escondo los pedazos y no digo nada',valor:'malo',feedback:'😔 Esconder el error no lo borra. Siempre es mejor decir la verdad antes de que otros lo descubran.',leccion:'Admitir nuestros errores nos hace más confiables y nos libera por dentro.'}]},
+  {titulo:'El juguete ajeno',emoji:'🚗',intro:'Encontró el juguete favorito de su hermano en el piso. Ella quería jugar con él pero él no estaba para pedirle permiso.',opciones:[{texto:'Espero y le pido permiso cuando llegue',valor:'bueno',feedback:'🌟 ¡Perfecto! Respetar las cosas ajenas es una de las formas más bonitas de querer a alguien.',leccion:'Pedir permiso antes de usar algo de otra persona demuestra respeto y cariño.'},{texto:'Lo tomo prestado, total ya lo devuelvo',valor:'neutro',feedback:'🤔 Aunque lo devuelvas, él no supo que lo usaste. El permiso es importante aunque parezca pequeño.',leccion:'Usar cosas ajenas sin permiso puede romper la confianza, aunque tengamos buenas intenciones.'}]},
+  {titulo:'La amiga que está sola',emoji:'🫂',intro:'En el recreo vio que Camila estaba sola en un rincón mirando al suelo. Sus otras amigas la llamaban para jugar.',opciones:[{texto:'Me acerco a Camila para ver si está bien',valor:'bueno',feedback:'💝 Eso es empatía pura. Ver a alguien que necesita ayuda y actuar es un superpoder.',leccion:'Notar cuando alguien está triste y acercarse hace una diferencia enorme en su día.'},{texto:'Me voy a jugar con mis amigas',valor:'neutro',feedback:'😕 Es normal querer jugar, pero Camila necesitaba que alguien la viera.',leccion:'Un pequeño gesto de atención puede cambiar completamente el día de alguien.'}]},
+  {titulo:'Los dulces de la despensa',emoji:'🍬',intro:'Encontró una bolsa de dulces en la despensa. Nadie estaba en casa. Le dijeron que no comiera dulces antes de comer.',opciones:[{texto:'No como los dulces y espero hasta después de comer',valor:'bueno',feedback:'⭐ ¡Fuerza de voluntad increíble! Respetar las reglas aunque nadie te vea es ser íntegra.',leccion:'Cumplir las reglas cuando nadie nos mira es la prueba más real de nuestro carácter.'},{texto:'Como uno solo, nadie se va a dar cuenta',valor:'malo',feedback:'😔 "Solo uno" muchas veces se convierte en varios. Y la culpa de saber que desobedeciste pesa.',leccion:'Las reglas no son solo para cuando nos ven. Son para ayudarnos a tomar buenas decisiones.'}]},
+  {titulo:'El dibujo que no salió bien',emoji:'🎨',intro:'Trabajó mucho en su dibujo para el colegio pero no quedó como esperaba. Su amiga dijo que el suyo era mejor. Tuvo ganas de copiar partes del dibujo de su amiga.',opciones:[{texto:'Entrego mi dibujo aunque no sea perfecto',valor:'bueno',feedback:'💪 ¡Valiente! Lo que hiciste con tus propias manos vale mucho más que cualquier copia perfecta.',leccion:'Nuestro esfuerzo propio siempre vale más que copiarlo de otros, aunque no sea perfecto.'},{texto:'Copio algunas partes del dibujo de mi amiga',valor:'malo',feedback:'😔 Copiar puede parecer una solución rápida, pero el resultado no es tuyo.',leccion:'La honestidad en el trabajo propio construye confianza y orgullo real.'}]},
+  {titulo:'El secreto de una amiga',emoji:'🤫',intro:'Una amiga le contó un secreto muy personal y le pidió que no se lo dijera a nadie. Al rato, otras amigas le preguntaron qué le pasaba.',opciones:[{texto:'Les digo que es un secreto y no cuento nada',valor:'bueno',feedback:'💎 ¡Eso es ser una amiga de verdad! Guardar un secreto es uno de los actos de lealtad más importantes.',leccion:'Guardar los secretos que nos confían construye amistades reales y duraderas.'},{texto:'Cuento el secreto porque no es para tanto',valor:'malo',feedback:'😔 Para ella sí era importante. Contar secretos rompe la confianza y es muy difícil repararla.',leccion:'La confianza se gana con el tiempo y se puede perder en segundos.'}]},
+  {titulo:'La fila del recreo',emoji:'🧃',intro:'Había una fila larga para comprar jugo. Llegó tarde pero vio un espacio en el medio donde podía meterse sin que nadie lo notara mucho.',opciones:[{texto:'Me pongo al final de la fila como todos',valor:'bueno',feedback:'⭐ ¡Justo y correcto! Respetar el orden hace que todo funcione mejor para todos.',leccion:'Respetar las filas y los turnos es una forma de respetar a las personas que llegaron antes.'},{texto:'Me meto en el espacio del medio',valor:'malo',feedback:'😕 Meterse en la fila es injusto con quienes esperaron.',leccion:'Hacer trampa en cosas pequeñas también cuenta. El respeto se practica en cada detalle.'}]},
+  {titulo:'El regalo de la abuela',emoji:'🎁',intro:'La abuela le regaló un suéter muy feo. La abuela preguntó: "¿Te gustó?" No sabía qué decir.',opciones:[{texto:'Le digo que me gusta el gesto aunque no sea mi favorito',valor:'bueno',feedback:'💝 ¡Muy bien! Puedes ser honesta con amor. Agradecer el gesto sin herir a quien te quiere es sabiduría.',leccion:'Podemos ser honestos y amables al mismo tiempo.'},{texto:'Le digo que me encanta aunque no sea verdad',valor:'neutro',feedback:'🤔 A veces las mentiras piadosas protegen sentimientos. Pero también podemos encontrar formas honestas de agradecer.',leccion:'Agradecer el gesto siempre es verdadero.'}]},
+  {titulo:'Pedir ayuda',emoji:'🆘',intro:'Tenía un problema de matemáticas muy difícil. Llevaba mucho tiempo intentándolo sola y se sentía frustrada. Le daba vergüenza preguntar.',opciones:[{texto:'Pido ayuda a mamá, papá o a la profe',valor:'bueno',feedback:'💪 ¡Pedir ayuda es una fortaleza, no una debilidad! Los más sabios siempre saben cuándo necesitan apoyo.',leccion:'Pedir ayuda cuando la necesitamos es señal de inteligencia y valentía.'},{texto:'Sigo intentando sola aunque me frustre',valor:'neutro',feedback:'🤔 La perseverancia es buena, pero saber cuándo pedir ayuda también es una habilidad importante.',leccion:'Hay momentos para intentarlo solo y momentos para pedir apoyo.'}]},
+  {titulo:'El error en el juego',emoji:'⚽',intro:'Jugando con amigos, ganó pero en secreto movió una pieza sin querer con el pie. Nadie la vio.',opciones:[{texto:'Digo la verdad: moví la pieza sin querer',valor:'bueno',feedback:'💎 ¡Eso es jugar limpio de verdad! Decir la verdad aunque signifique no ganar es la mayor victoria.',leccion:'Jugar limpio y decir la verdad es siempre más importante que ganar.'},{texto:'No digo nada, fue sin querer y nadie me vio',valor:'malo',feedback:'😔 Una victoria que no fue justa no se siente igual que ganar de verdad.',leccion:'Una victoria que no fue justa no nos hace sentir bien.'}]},
+  {titulo:'Compartir el juguete nuevo',emoji:'🎀',intro:'Recibió un juguete nuevo precioso. Su prima lo vio y preguntó: "¿puedo jugar un ratito?"',opciones:[{texto:'Le presto el juguete y jugamos juntas',valor:'bueno',feedback:'🌟 ¡Compartir hace todo más grande! Jugaron juntas y fue el doble de divertido.',leccion:'Compartir lo que más queremos hace que todo sea infinitamente más divertido.'},{texto:'Le digo que no, es muy nuevo y puede romperlo',valor:'neutro',feedback:'😕 Es normal querer cuidarlo. Pero las cosas más lindas se disfrutan más cuando las compartimos.',leccion:'Las cosas que más queremos se disfrutan más cuando las compartimos.'}]}
 ];
 
-/* ══ DOCH AUTH ══ */
+/* FX */
+var FX=(function(){
+  var cv,ctx2d,parts=[],cols=['#ff2d78','#7c3aed','#facc15','#22d3a0','#fff'];
+  function loop(){requestAnimationFrame(loop);if(!ctx2d)return;ctx2d.clearRect(0,0,cv.width,cv.height);parts=parts.filter(function(p){p.x+=p.vx;p.y+=p.vy;p.vy+=0.4;p.life-=0.018;p.spin+=p.sp;if(p.life<=0)return false;ctx2d.save();ctx2d.globalAlpha=p.life;ctx2d.translate(p.x,p.y);ctx2d.rotate(p.spin*Math.PI/180);ctx2d.fillStyle=p.col;ctx2d.fillRect(-p.sz/2,-p.sz/2,p.sz,p.sz);ctx2d.restore();return true;});}
+  return{init:function(){cv=document.getElementById('fx-canvas');if(!cv)return;ctx2d=cv.getContext('2d');function r(){cv.width=innerWidth;cv.height=innerHeight;}r();window.addEventListener('resize',r);loop();},burst:function(){for(var i=0;i<160;i++)parts.push({x:innerWidth/2,y:innerHeight/2,vx:(Math.random()-.5)*26,vy:(Math.random()-1)*26-4,sz:Math.random()*8+4,col:cols[Math.floor(Math.random()*cols.length)],life:1,spin:Math.random()*360,sp:(Math.random()-.5)*10});}};
+})();
+
+/* SFX */
+var SFX=(function(){
+  var ctx=null;
+  function ac(){if(!ctx)try{ctx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}return ctx;}
+  function tone(freq,dur,type,vol){var a=ac();if(!a)return;var o=a.createOscillator();var g=a.createGain();o.connect(g);g.connect(a.destination);o.type=type||'sine';o.frequency.value=freq;g.gain.setValueAtTime(vol||0.15,a.currentTime);g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+dur);o.start();o.stop(a.currentTime+dur);}
+  return{coin:function(){tone(880,.1,'sine',.12);setTimeout(function(){tone(1320,.15,'sine',.10);},80);},perfect:function(){[523,659,784,1047].forEach(function(f,i){setTimeout(function(){tone(f,.2,'sine',.12);},i*80);});},win:function(){[440,554,659,880].forEach(function(f,i){setTimeout(function(){tone(f,.25,'sine',.12);},i*100);});},error:function(){tone(200,.3,'sawtooth',.08);},unlock:function(){tone(660,.15,'sine',.10);setTimeout(function(){tone(990,.2,'sine',.12);},120);}};
+})();
+
+function showToast(title,msg,type){
+  type=type||'normal';var box=document.getElementById('toasts');var el=document.createElement('div');
+  el.className='toast'+(type==='perfect'?' perfect':type==='reward'?' reward':type==='bad'?' bad':'');
+  el.innerHTML='<div style="font-family:\'Syne\',sans-serif;font-size:14px;margin-bottom:2px;font-weight:800">'+title+'</div>'+(msg?'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;opacity:.8">'+msg+'</div>':'');
+  box.appendChild(el);setTimeout(function(){el.classList.add('out');setTimeout(function(){el.remove();},320);},3600);
+}
+function syncBar(cls,txt){var b=document.getElementById('sync-bar');if(b){b.className=cls;b.textContent=txt;}}
+function emptyGameData(){return{total:0,today:{date:'',points:{},totalDay:0,basePoints:0,perfectDay:false},week:{id:'',pts:0,claimed:[]},month:{id:'',pts:0,claimed:[]},history:[],historialMeses:[],activeTab:'tasks',lastSync:0,historiaLeida:'',historiaEleccion:null,diario:[],racha:0,rachaMax:0,medallas:[],hiddenTasks:[]};}
+
+/* DOCH AUTH */
 var DOCH={
   _db:null,_auth:null,_user:null,
   init:function(){
     var self=this;
-    try{
-      var app=firebase.apps.length?firebase.app():firebase.initializeApp(FIREBASE_CONFIG);
-      this._db=firebase.firestore(app);this._auth=firebase.auth(app);
-      this._auth.onAuthStateChanged(function(user){
-        if(user){self._user=user;self._onLogin(user);}
-        else{self._user=null;self._show('auth');}
-      });
-    }catch(e){console.error(e);this._show('auth');this._toast('Error al conectar','error');}
+    try{var app=firebase.apps.length?firebase.app():firebase.initializeApp(FIREBASE_CONFIG);this._db=firebase.firestore(app);this._auth=firebase.auth(app);
+      this._auth.onAuthStateChanged(function(user){if(user){self._user=user;self._onLogin(user);}else{self._user=null;self._show('auth');}});
+    }catch(e){console.error(e);this._show('auth');}
   },
   _onLogin:function(user){
     var self=this;
-    this._db.collection('families').doc(user.uid).get()
-      .then(function(snap){
-        if(snap.exists&&snap.data().setupComplete){self._showHome(user,snap.data());}
-        else{OB.init(user);self._show('onboarding');}
-      }).catch(function(){OB.init(user);self._show('onboarding');});
-  },
-  _showHome:function(user,data){
-    var name=data&&data.childName?'El mundo de '+data.childName:(user.displayName?user.displayName.split(' ')[0]:'tu familia');
-    var el=document.getElementById('home-welcome-text');var em=document.getElementById('home-email-text');
-    if(el)el.textContent='¡'+name+'!';if(em)em.textContent=user.email||'';
-    this._show('home');
+    this._db.collection('families').doc(user.uid).get().then(function(snap){
+      if(!snap.exists||!snap.data().setupComplete){OB.init(user);self._show('onboarding');}
+      else{var fam=snap.data();self._db.collection('families').doc(user.uid).collection('children').doc(fam.activeChildId).get().then(function(cs){if(cs.exists){GAME.init(user,self._db,cs.data(),fam);self._show('game');}else{OB.init(user);self._show('onboarding');}}).catch(function(){OB.init(user);self._show('onboarding');});}
+    }).catch(function(){OB.init(user);self._show('onboarding');});
   },
   login:function(){
     var self=this;var email=document.getElementById('login-email').value.trim();var pass=document.getElementById('login-pass').value;
-    this._clearErr('login');
-    if(!email)return this._err('login','Ingresa tu correo');
-    if(!pass)return this._err('login','Ingresa tu contraseña');
-    this._load('btn-login',true);
-    this._auth.signInWithEmailAndPassword(email,pass).catch(function(e){self._load('btn-login',false);self._err('login',self._authMsg(e.code));});
+    this._clearErr('login');if(!email)return this._err('login','Ingresa tu correo');if(!pass)return this._err('login','Ingresa tu contraseña');
+    this._load('btn-login',true);this._auth.signInWithEmailAndPassword(email,pass).catch(function(e){self._load('btn-login',false);self._err('login',self._authMsg(e.code));});
   },
   register:function(){
-    var self=this;var name=document.getElementById('reg-name').value.trim();var email=document.getElementById('reg-email').value.trim();
-    var pass=document.getElementById('reg-pass').value;var pass2=document.getElementById('reg-pass2').value;
-    this._clearErr('register');
-    if(!name)return this._err('register','Ingresa tu nombre');
-    if(!email)return this._err('register','Ingresa tu correo');
-    if(pass.length<6)return this._err('register','La contraseña debe tener al menos 6 caracteres');
-    if(pass!==pass2)return this._err('register','Las contraseñas no coinciden');
-    this._load('btn-register',true);
-    this._auth.createUserWithEmailAndPassword(email,pass).then(function(c){
-      return c.user.updateProfile({displayName:name}).then(function(){
-        return self._db.collection('families').doc(c.user.uid).set({
-          uid:c.user.uid,email:email,displayName:name,
-          createdAt:firebase.firestore.FieldValue.serverTimestamp(),
-          plan:'explorer',planActivatedAt:null,childCount:0,lang:'es',
-          setupComplete:false,lastLogin:firebase.firestore.FieldValue.serverTimestamp()
-        });
-      });
-    }).then(function(){self._toast('¡Cuenta creada! Bienvenido/a 🎉','success');})
-    .catch(function(e){self._load('btn-register',false);self._err('register',self._authMsg(e.code));});
+    var self=this;var name=document.getElementById('reg-name').value.trim();var email=document.getElementById('reg-email').value.trim();var pass=document.getElementById('reg-pass').value;var pass2=document.getElementById('reg-pass2').value;
+    this._clearErr('register');if(!name)return this._err('register','Ingresa tu nombre');if(!email)return this._err('register','Ingresa tu correo');if(pass.length<6)return this._err('register','Mínimo 6 caracteres');if(pass!==pass2)return this._err('register','Las contraseñas no coinciden');
+    this._load('btn-register',true);var tz=Intl.DateTimeFormat().resolvedOptions().timeZone;
+    this._auth.createUserWithEmailAndPassword(email,pass).then(function(c){return c.user.updateProfile({displayName:name}).then(function(){return self._db.collection('families').doc(c.user.uid).set({uid:c.user.uid,email:email,displayName:name,createdAt:firebase.firestore.FieldValue.serverTimestamp(),plan:'explorer',planActivatedAt:null,childCount:0,lang:'es',setupComplete:false,lastLogin:firebase.firestore.FieldValue.serverTimestamp(),timezone:tz});});}).then(function(){showToast('¡Bienvenido/a a DOCH! 🎉','','reward');}).catch(function(e){self._load('btn-register',false);self._err('register',self._authMsg(e.code));});
   },
   loginGoogle:function(){
-    var self=this;var p=new firebase.auth.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});
-    this._auth.signInWithPopup(p).then(function(r){
-      var u=r.user;var isNew=r.additionalUserInfo&&r.additionalUserInfo.isNewUser;
-      if(isNew){return self._db.collection('families').doc(u.uid).set({uid:u.uid,email:u.email,displayName:u.displayName||'',createdAt:firebase.firestore.FieldValue.serverTimestamp(),plan:'explorer',planActivatedAt:null,childCount:0,lang:'es',setupComplete:false,lastLogin:firebase.firestore.FieldValue.serverTimestamp()});}
-      else{return self._db.collection('families').doc(u.uid).update({lastLogin:firebase.firestore.FieldValue.serverTimestamp()});}
-    }).catch(function(e){if(e.code!=='auth/popup-closed-by-user')self._toast(self._authMsg(e.code),'error');});
+    var self=this;var p=new firebase.auth.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});var tz=Intl.DateTimeFormat().resolvedOptions().timeZone;
+    this._auth.signInWithPopup(p).then(function(r){var u=r.user;var isNew=r.additionalUserInfo&&r.additionalUserInfo.isNewUser;if(isNew){return self._db.collection('families').doc(u.uid).set({uid:u.uid,email:u.email,displayName:u.displayName||'',createdAt:firebase.firestore.FieldValue.serverTimestamp(),plan:'explorer',planActivatedAt:null,childCount:0,lang:'es',setupComplete:false,lastLogin:firebase.firestore.FieldValue.serverTimestamp(),timezone:tz});}else{return self._db.collection('families').doc(u.uid).update({lastLogin:firebase.firestore.FieldValue.serverTimestamp()});}}).catch(function(e){if(e.code!=='auth/popup-closed-by-user')showToast(self._authMsg(e.code),'','bad');});
   },
-  logout:function(){var self=this;this._auth.signOut().then(function(){self._toast('Hasta pronto 👋');});},
-  openResetModal:function(){document.getElementById('modal-overlay').classList.add('show');document.getElementById('reset-error').classList.remove('show');document.getElementById('reset-success').style.display='none';document.getElementById('reset-email').value=document.getElementById('login-email').value||'';},
-  closeResetModal:function(){document.getElementById('modal-overlay').classList.remove('show');},
-  sendResetEmail:function(){
-    var self=this;var email=document.getElementById('reset-email').value.trim();
-    var errEl=document.getElementById('reset-error');var sucEl=document.getElementById('reset-success');
-    errEl.classList.remove('show');sucEl.style.display='none';
-    if(!email){errEl.textContent='Ingresa tu correo';errEl.classList.add('show');return;}
-    this._auth.sendPasswordResetEmail(email).then(function(){sucEl.style.display='block';setTimeout(function(){self.closeResetModal();},3000);}).catch(function(e){errEl.textContent=self._authMsg(e.code);errEl.classList.add('show');});
-  },
-  switchTab:function(t){
-    document.getElementById('tab-login').classList.toggle('active',t==='login');document.getElementById('tab-register').classList.toggle('active',t==='register');
-    document.getElementById('panel-login').classList.toggle('active',t==='login');document.getElementById('panel-register').classList.toggle('active',t==='register');
-    this._clearErr('login');this._clearErr('register');
-  },
+  logout:function(){var self=this;if(GAME._unsub)GAME._unsub();this._auth.signOut().then(function(){showToast('Hasta pronto 👋','');});},
+  openResetModal:function(){document.getElementById('modal-auth').classList.add('show');document.getElementById('reset-error').classList.remove('show');document.getElementById('reset-success').style.display='none';document.getElementById('reset-email').value=document.getElementById('login-email').value||'';},
+  closeResetModal:function(){document.getElementById('modal-auth').classList.remove('show');},
+  sendResetEmail:function(){var self=this;var email=document.getElementById('reset-email').value.trim();var errEl=document.getElementById('reset-error');var sucEl=document.getElementById('reset-success');errEl.classList.remove('show');sucEl.style.display='none';if(!email){errEl.textContent='Ingresa tu correo';errEl.classList.add('show');return;}this._auth.sendPasswordResetEmail(email).then(function(){sucEl.style.display='block';setTimeout(function(){self.closeResetModal();},3000);}).catch(function(e){errEl.textContent=self._authMsg(e.code);errEl.classList.add('show');});},
+  switchTab:function(t){['login','register'].forEach(function(x){document.getElementById('tab-'+x).classList.toggle('active',x===t);document.getElementById('panel-'+x).classList.toggle('active',x===t);});this._clearErr('login');this._clearErr('register');},
   _show:function(n){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});var t=document.getElementById('screen-'+n);if(t)t.classList.add('active');},
   _load:function(id,v){var b=document.getElementById(id);if(!b)return;b.classList.toggle('loading',v);b.disabled=v;},
   _err:function(f,msg){var el=document.getElementById(f+'-error');if(el){el.textContent=msg;el.classList.add('show');}},
   _clearErr:function(f){var el=document.getElementById(f+'-error');if(el)el.classList.remove('show');},
-  _toast:function(msg,type){
-    type=type||'normal';var box=document.getElementById('toasts');var el=document.createElement('div');
-    el.className='toast'+(type==='success'?' success':type==='error'?' error':'');el.textContent=msg;
-    box.appendChild(el);setTimeout(function(){el.classList.add('out');setTimeout(function(){el.remove();},280);},3800);
-  },
-  _authMsg:function(code){
-    var m={'auth/user-not-found':'No encontramos una cuenta con ese correo','auth/wrong-password':'Contraseña incorrecta','auth/email-already-in-use':'Ya existe una cuenta con ese correo','auth/invalid-email':'El correo no es válido','auth/weak-password':'Contraseña muy débil (mínimo 6 caracteres)','auth/network-request-failed':'Sin conexión a internet','auth/too-many-requests':'Demasiados intentos. Espera unos minutos','auth/popup-blocked':'Permite popups para este sitio','auth/invalid-credential':'Correo o contraseña incorrectos'};
-    return m[code]||'Error inesperado. Intenta de nuevo';
+  _authMsg:function(code){var m={'auth/user-not-found':'No encontramos una cuenta con ese correo','auth/wrong-password':'Contraseña incorrecta','auth/email-already-in-use':'Ya existe una cuenta con ese correo','auth/invalid-email':'Correo no válido','auth/weak-password':'Mínimo 6 caracteres','auth/network-request-failed':'Sin conexión','auth/too-many-requests':'Demasiados intentos. Espera un poco','auth/popup-blocked':'Permite popups para este sitio','auth/invalid-credential':'Correo o contraseña incorrectos'};return m[code]||'Error inesperado. Intenta de nuevo';}
+};
+
+/* ONBOARDING */
+var OB={
+  _user:null,_step:1,
+  _data:{childName:'',childTitle:'',color:'#ff2d78',bg:{type:'preset',id:'galaxia',value:'linear-gradient(135deg,#0d0d1a 0%,#1a0040 50%,#0d1a2e 100%)'},bgBase64:null,currencySymbol:'$',currencyName:'Pesos',pointValue:10,finance:DEFAULT_FINANCE.map(function(f){return Object.assign({},f);}),tasks:DEFAULT_TASKS.map(function(t){return Object.assign({},t);})},
+  init:function(user){this._user=user;this._step=1;this._buildColors();this._buildBgs();this._buildFinance();this._buildMissions();this._updateProgress();},
+  next:function(from){if(!this._validate(from))return;this._step=from+1;this._showStep();if(this._step===4)this._buildSummary();window.scrollTo(0,0);},
+  back:function(from){this._step=from-1;this._showStep();window.scrollTo(0,0);},
+  _showStep:function(){document.querySelectorAll('.ob-step').forEach(function(s){s.classList.remove('active');});var s=document.getElementById('ob-step-'+this._step);if(s)s.classList.add('active');this._updateProgress();},
+  _updateProgress:function(){var b=document.getElementById('ob-progress');if(b)b.style.width=(this._step/4*100)+'%';var l=document.getElementById('ob-step-label');if(l)l.textContent='Paso '+this._step+' de 4';},
+  _validate:function(step){var d=this._data;
+    if(step===1){var name=document.getElementById('ob-child-name').value.trim();var title=document.getElementById('ob-child-title').value.trim();if(!name){showToast('Ingresa el nombre del niño/a','','bad');return false;}if(!title){showToast('Ingresa un título para su mundo','','bad');return false;}d.childName=name;d.childTitle=title;return true;}
+    if(step===2){var sym=document.getElementById('ob-currency-symbol').value.trim();var cur=document.getElementById('ob-currency-name').value.trim();var pv=parseFloat(document.getElementById('ob-point-value').value);if(!sym){showToast('Ingresa el símbolo de la moneda','','bad');return false;}if(!cur){showToast('Ingresa el nombre de la moneda','','bad');return false;}if(!pv||pv<1){showToast('El valor del punto debe ser al menos 1','','bad');return false;}var sum=d.finance.reduce(function(s,f){return s+Number(f.pct);},0);if(sum!==100){showToast('Las alcancías deben sumar exactamente 100%','','bad');return false;}d.currencySymbol=sym;d.currencyName=cur;d.pointValue=pv;return true;}
+    if(step===3){if(!d.tasks.filter(function(t){return t.active;}).length){showToast('Activa al menos una misión','','bad');return false;}return true;}
+    if(step===4){if(!document.getElementById('disclaimer-check').checked){showToast('Debes aceptar el compromiso parental','','bad');return false;}return true;}
+    return true;},
+  fillInput:function(id,el){var inp=document.getElementById(id);if(inp)inp.value=el.textContent.trim();if(id==='ob-point-value')this.updateCurrencyPreview();},
+  fillCurrency:function(sym,name){document.getElementById('ob-currency-symbol').value=sym;document.getElementById('ob-currency-name').value=name;this.updateCurrencyPreview();},
+  updateCurrencyPreview:function(){var s=document.getElementById('ob-currency-symbol');var e=document.getElementById('ob-currency-preview');if(s&&e)e.textContent=s.value||'$';},
+  _buildColors:function(){var self=this;var grid=document.getElementById('color-grid');if(!grid)return;grid.innerHTML='';COLORS.forEach(function(c){var sw=document.createElement('div');sw.className='color-swatch'+(c.hex===self._data.color?' selected':'');sw.style.background=c.hex;sw.title=c.name;sw.onclick=function(){self._data.color=c.hex;document.querySelectorAll('.color-swatch').forEach(function(s){s.classList.remove('selected');});sw.classList.add('selected');};grid.appendChild(sw);});},
+  _buildBgs:function(){var self=this;var grid=document.getElementById('bg-grid');if(!grid)return;grid.innerHTML='';BG_PRESETS.forEach(function(p){var div=document.createElement('div');div.className='bg-preset'+(self._data.bg.id===p.id?' selected':'');div.style.background=p.bg;div.innerHTML='<span class="bg-preset-label">'+p.label+'</span>';div.onclick=function(){self._data.bg={type:'preset',id:p.id,value:p.bg};self._data.bgBase64=null;document.querySelectorAll('.bg-preset').forEach(function(s){s.classList.remove('selected');});div.classList.add('selected');document.getElementById('bg-preview-img').style.display='none';document.getElementById('bg-upload-btn').style.display='flex';};grid.appendChild(div);});},
+  handleBgUpload:function(input){var self=this;var file=input.files[0];if(!file)return;if(file.size>2*1024*1024){showToast('La imagen no puede superar 2MB','','bad');return;}var reader=new FileReader();reader.onload=function(e){var img=new Image();img.onload=function(){var canvas=document.createElement('canvas');var maxW=800;var ratio=Math.min(maxW/img.width,maxW/img.height,1);canvas.width=img.width*ratio;canvas.height=img.height*ratio;canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);var b64=canvas.toDataURL('image/jpeg',0.70);self._data.bgBase64=b64;self._data.bg={type:'custom',id:'custom',value:b64};document.querySelectorAll('.bg-preset').forEach(function(s){s.classList.remove('selected');});var prev=document.getElementById('bg-preview-img');prev.src=b64;prev.style.display='block';document.getElementById('bg-upload-btn').style.display='none';showToast('Imagen optimizada ✅','','reward');};img.src=e.target.result;};reader.readAsDataURL(file);},
+  _buildFinance:function(){var self=this;var container=document.getElementById('finance-rows');if(!container)return;container.innerHTML='';this._data.finance.forEach(function(f,i){var row=document.createElement('div');row.className='finance-row-ob';row.style.cssText='display:flex;align-items:center;gap:10px;margin-bottom:10px;';row.innerHTML='<div class="finance-color-dot" style="background:'+f.color+'"></div><div style="flex:1"><div style="font-weight:700;font-size:.88rem">'+f.label+'</div><div style="font-size:.72rem;color:var(--muted)">'+f.desc+'</div></div><input type="number" class="finance-pct-input" data-idx="'+i+'" value="'+f.pct+'" min="0" max="100"><span style="font-size:.85rem;font-weight:700;color:var(--muted)">%</span>';container.appendChild(row);});container.addEventListener('input',function(e){if(e.target.classList.contains('finance-pct-input')){self._data.finance[parseInt(e.target.dataset.idx)].pct=Number(e.target.value)||0;self._updateFinanceTotal();}});this._updateFinanceTotal();},
+  _updateFinanceTotal:function(){var sum=this._data.finance.reduce(function(s,f){return s+Number(f.pct);},0);var el=document.getElementById('finance-sum');var box=document.getElementById('finance-total');if(el)el.textContent=sum+'%';if(box)box.className='finance-total '+(sum===100?'ok':'err');},
+  _buildMissions:function(){var self=this;var list=document.getElementById('missions-list');if(!list)return;list.innerHTML='';this._data.tasks.forEach(function(t,i){var card=document.createElement('div');card.className='mission-card-ob'+(t.active?' active-m':'');card.innerHTML='<div style="font-size:1.4rem;flex-shrink:0;width:36px;text-align:center">'+t.icon+'</div><div style="flex:1"><div style="font-weight:700;font-size:.88rem;margin-bottom:2px">'+t.label+'</div><div style="font-size:.72rem;color:var(--muted);font-weight:600">'+t.pts+' pts · máx '+t.limit+' por día</div></div><button class="mission-toggle '+(t.active?'on':'off')+'" onclick="OB.toggleM('+i+',this,event)"></button>';list.appendChild(card);});},
+  toggleM:function(idx,btn,e){e.stopPropagation();this._data.tasks[idx].active=!this._data.tasks[idx].active;btn.className='mission-toggle '+(this._data.tasks[idx].active?'on':'off');btn.closest('.mission-card-ob').className='mission-card-ob'+(this._data.tasks[idx].active?' active-m':'');},
+  checkDisclaimer:function(){var checked=document.getElementById('disclaimer-check').checked;var btn=document.getElementById('btn-create-world');if(btn)btn.disabled=!checked;},
+  _buildSummary:function(){var d=this._data;document.getElementById('sum-name').textContent=d.childName||'—';document.getElementById('sum-title').textContent=d.childTitle||'—';document.getElementById('sum-currency').textContent=(d.currencySymbol||'$')+' '+d.currencyName;document.getElementById('sum-point').textContent=(d.currencySymbol||'$')+d.pointValue+' por punto';document.getElementById('sum-missions').textContent=d.tasks.filter(function(t){return t.active;}).length+' de '+d.tasks.length+' activas';document.getElementById('sum-bg').textContent=d.bg.type==='custom'?'Imagen personalizada':d.bg.id.charAt(0).toUpperCase()+d.bg.id.slice(1);var pn=document.getElementById('preview-app-name');var ps=document.getElementById('preview-app-sub');if(pn)pn.textContent='El mundo de '+d.childName;if(ps)ps.textContent=d.childTitle||'Tu app personalizada';var pb=document.getElementById('theme-preview-box');if(pb){pb.style.background=d.bg.type==='custom'?'url('+d.bgBase64+') center/cover':d.bg.value;pb.style.boxShadow='0 0 30px '+d.color+'44';}},
+  createWorld:function(){
+    if(!this._validate(4))return;var self=this;var d=this._data;var uid=this._user.uid;var db=DOCH._db;
+    var btn=document.getElementById('btn-create-world');if(btn){btn.classList.add('loading');btn.disabled=true;}
+    var childId='child_'+Date.now();var tz=Intl.DateTimeFormat().resolvedOptions().timeZone;
+    var childData={childId:childId,name:d.childName,title:d.childTitle,theme:{primaryColor:d.color,bgType:d.bg.type,bgId:d.bg.id,bgValue:d.bg.type==='preset'?d.bg.value:null,bgBase64:d.bgBase64||null},currency:{symbol:d.currencySymbol,name:d.currencyName},pointValue:d.pointValue,finance:d.finance,tasks:d.tasks,weeklyPrizes:[{label:'Premio Semanal 1',pts:100},{label:'Premio Semanal 2',pts:180}],monthlyPrizes:[{label:'Premio Mensual 1',pts:400},{label:'Premio Mensual 2',pts:800}],gameData:emptyGameData(),createdAt:firebase.firestore.FieldValue.serverTimestamp()};
+    var batch=db.batch();
+    batch.update(db.collection('families').doc(uid),{setupComplete:true,childCount:1,activeChildId:childId,timezone:tz,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+    batch.set(db.collection('families').doc(uid).collection('children').doc(childId),childData);
+    batch.commit().then(function(){showToast('¡El mundo de '+d.childName+' está listo! 🌟','','reward');setTimeout(function(){GAME.init(self._user,db,childData,{timezone:tz});DOCH._show('game');},1200);}).catch(function(e){console.error(e);if(btn){btn.classList.remove('loading');btn.disabled=false;}showToast('Error al guardar. Intenta de nuevo.','','bad');});
   }
 };
 
-/* ══ ONBOARDING ══ */
-var OB={
-  _user:null,_step:1,
-  _data:{
-    childName:'',childTitle:'',color:'#ff2d78',
-    bg:{type:'preset',id:'galaxia',value:'linear-gradient(135deg,#0d0d1a 0%,#1a0040 50%,#0d1a2e 100%)'},
-    bgBase64:null,currencySymbol:'$',currencyName:'Pesos',pointValue:10,
-    finance:DEFAULT_FINANCE.map(function(f){return Object.assign({},f);}),
-    tasks:DEFAULT_TASKS.map(function(t){return Object.assign({},t);})
+/* GAME ENGINE */
+var GAME={
+  d:null,_child:null,_family:null,_user:null,_db:null,_ref:null,_saveTimer:null,_pendingSaves:0,_unsub:null,_engCollapsed:false,
+  TZ:'America/Santiago',TASKS:[],WEEKLY:[],MONTHLY:[],FINANCE:[],MEDALLAS:[],HISTORIAS:[],POINT_VALUE:10,
+
+  init:function(user,db,childData,famData){
+    var self=this;this._user=user;this._db=db;this._child=childData;this._family=famData;
+    this.TZ=famData&&famData.timezone?famData.timezone:(Intl.DateTimeFormat().resolvedOptions().timeZone||'America/Santiago');
+    this.POINT_VALUE=childData.pointValue||10;
+    this.TASKS=(childData.tasks||DEFAULT_TASKS).filter(function(t){return t.active!==false;});
+    this.WEEKLY=childData.weeklyPrizes||[{label:'Premio Semanal 1',pts:100},{label:'Premio Semanal 2',pts:180}];
+    this.MONTHLY=childData.monthlyPrizes||[{label:'Premio Mensual 1',pts:400},{label:'Premio Mensual 2',pts:800}];
+    this.FINANCE=childData.finance||DEFAULT_FINANCE;
+    this.MEDALLAS=MEDALLAS_BASE;this.HISTORIAS=HISTORIAS_BASE;
+    this._applyTheme();this._updateHeader();FX.init();this._loadLocal();this._checkResets();this.d.activeTab='tasks';this._render();
+    try{
+      var ref=db.collection('families').doc(user.uid).collection('children').doc(childData.childId);this._ref=ref;
+      ref.get().then(function(snap){
+        if(snap.exists&&snap.data().gameData){var cloud=snap.data().gameData;if((cloud.lastSyncMs||0)>(self.d.lastSync||0)){self.d=Object.assign(emptyGameData(),cloud);}}
+        self._checkResets();self._saveLocal();self._render();syncBar('sb-ok','☁️ Sincronizado');
+        self._unsub=ref.onSnapshot(function(snap){if(self._pendingSaves>0){self._pendingSaves--;return;}if(!snap.exists||!snap.data().gameData)return;var cloud=snap.data().gameData;if((cloud.lastSyncMs||0)>=(self.d.lastSync||0)){self.d=Object.assign(emptyGameData(),cloud);self._checkResets();self._saveLocal();self._render();syncBar('sb-ok','☁️ Sincronizado');}});
+      }).catch(function(e){console.error(e);syncBar('sb-ok','☁️ Local');});
+    }catch(e){console.error(e);}
+    setInterval(function(){if(GAME._checkResets()){GAME._saveLocal();GAME._cloudSave();GAME._render();}},60000);
   },
 
-  init:function(user){
-    this._user=user;this._step=1;
-    this._buildColors();this._buildBgs();this._buildFinance();this._buildMissions();this._updateProgress();
+  _applyTheme:function(){
+    var c=this._child;if(!c||!c.theme)return;
+    var pink=c.theme.primaryColor||'#ff2d78';document.documentElement.style.setProperty('--pink',pink);document.documentElement.style.setProperty('--pink-dk',pink+'cc');
+    if(c.theme.bgType==='custom'&&c.theme.bgBase64){document.body.style.backgroundImage='url('+c.theme.bgBase64+')';document.body.style.backgroundSize='cover';document.body.style.backgroundPosition='center top';document.body.style.backgroundRepeat='no-repeat';document.body.style.backgroundAttachment='fixed';}
+    else if(c.theme.bgValue){document.body.style.background=c.theme.bgValue;}
   },
 
-  next:function(from){
-    if(!this._validate(from))return;
-    this._step=from+1;this._showStep();
-    if(this._step===4)this._buildSummary();
-    window.scrollTo(0,0);
-  },
-  back:function(from){this._step=from-1;this._showStep();window.scrollTo(0,0);},
-  _showStep:function(){
-    document.querySelectorAll('.ob-step').forEach(function(s){s.classList.remove('active');});
-    var s=document.getElementById('ob-step-'+this._step);if(s)s.classList.add('active');
-    this._updateProgress();
-  },
-  _updateProgress:function(){
-    var b=document.getElementById('ob-progress');if(b)b.style.width=(this._step/4*100)+'%';
-    var l=document.getElementById('ob-step-label');if(l)l.textContent='Paso '+this._step+' de 4';
+  _updateHeader:function(){
+    var c=this._child;if(!c)return;
+    var title=document.getElementById('game-app-title');if(title)title.textContent='El mundo de '+c.name;
+    var marquee=document.getElementById('marquee-text');if(marquee)marquee.textContent='DOCH · El mundo de '+c.name+' · ¡Sigue adelante '+c.name+'! · Cada misión cuenta · ¡Tú puedes! · ';
   },
 
-  _validate:function(step){
-    var d=this._data;
-    if(step===1){
-      var name=document.getElementById('ob-child-name').value.trim();
-      var title=document.getElementById('ob-child-title').value.trim();
-      if(!name){DOCH._toast('Ingresa el nombre del niño/a','error');return false;}
-      if(!title){DOCH._toast('Ingresa un título para su mundo','error');return false;}
-      d.childName=name;d.childTitle=title;return true;
+  _hoy:function(){return new Date().toLocaleDateString('en-CA',{timeZone:this.TZ});},
+  _mes:function(){return this._hoy().slice(0,7);},
+  _mesLabel:function(){var s=new Date().toLocaleDateString('es',{timeZone:this.TZ,month:'long',year:'numeric'});return s.charAt(0).toUpperCase()+s.slice(1);},
+  _semanaId:function(){var now=new Date(new Date().toLocaleString('en-US',{timeZone:this.TZ}));var dow=now.getDay();var diff=dow===6?0:(dow+1);var sab=new Date(now);sab.setDate(now.getDate()-diff);return sab.toLocaleDateString('en-CA',{timeZone:this.TZ});},
+  _esSabado:function(){return new Date(new Date().toLocaleString('en-US',{timeZone:this.TZ})).getDay()===6;},
+
+  _localKey:function(){return'doch_game_'+(this._child&&this._child.childId||'default');},
+  _loadLocal:function(){try{var raw=localStorage.getItem(this._localKey());if(raw)this.d=Object.assign(emptyGameData(),JSON.parse(raw));else this.d=emptyGameData();}catch(e){this.d=emptyGameData();}},
+  _saveLocal:function(){this.d.lastSync=Date.now();try{localStorage.setItem(this._localKey(),JSON.stringify(this.d));}catch(e){}},
+  _save:function(){this._saveLocal();this._cloudSave();this._render();},
+  _cloudSave:function(){
+    if(!this._ref)return;var self=this;clearTimeout(this._saveTimer);syncBar('sb-busy','⏳ Guardando...');
+    this._saveTimer=setTimeout(function(){try{self._pendingSaves++;self._ref.update({gameData:Object.assign({},self.d,{lastSyncMs:Date.now()})}).then(function(){syncBar('sb-ok','☁️ Guardado');}).catch(function(){self._pendingSaves=Math.max(0,self._pendingSaves-1);syncBar('sb-err','❌ Error');});}catch(e){syncBar('sb-err','❌ Error');}},700);
+  },
+
+  _checkResets:function(){
+    var h=this._hoy();var m=this._mes();var s=this._semanaId();var changed=false;
+    if(this.d.today.date!==h){
+      if(this.d.today.date){this.d.history.push(JSON.parse(JSON.stringify(this.d.today)));if(this.d.history.length>180)this.d.history=this.d.history.slice(-180);if(this.d.today.totalDay>0){this.d.racha=(this.d.racha||0)+1;if(this.d.racha>(this.d.rachaMax||0))this.d.rachaMax=this.d.racha;}else{this.d.racha=0;}}
+      this.d.today={date:h,points:{},totalDay:0,basePoints:0,perfectDay:false};if(this.d.historiaLeida!==h){this.d.historiaLeida='';this.d.historiaEleccion=null;}changed=true;
     }
-    if(step===2){
-      var sym=document.getElementById('ob-currency-symbol').value.trim();
-      var cur=document.getElementById('ob-currency-name').value.trim();
-      var pv=parseFloat(document.getElementById('ob-point-value').value);
-      if(!sym){DOCH._toast('Ingresa el símbolo de la moneda','error');return false;}
-      if(!cur){DOCH._toast('Ingresa el nombre de la moneda','error');return false;}
-      if(!pv||pv<1){DOCH._toast('El valor del punto debe ser al menos 1','error');return false;}
-      var sum=d.finance.reduce(function(s,f){return s+Number(f.pct);},0);
-      if(sum!==100){DOCH._toast('Las alcancías deben sumar exactamente 100%','error');return false;}
-      d.currencySymbol=sym;d.currencyName=cur;d.pointValue=pv;return true;
+    if(!this.d.week||this.d.week.id!==s){this.d.week={id:s,pts:0,claimed:[]};changed=true;}
+    if(!this.d.month||this.d.month.id!==m){
+      if(this.d.month&&this.d.month.id&&this.d.month.pts>0){if(!this.d.historialMeses)this.d.historialMeses=[];var anioActual=new Date().getFullYear();this.d.historialMeses=this.d.historialMeses.filter(function(hm){return hm.id.slice(0,4)>=String(anioActual-1);});var yaExiste=this.d.historialMeses.some(function(hm){return hm.id===GAME.d.month.id;});if(!yaExiste)this.d.historialMeses.push({id:this.d.month.id,pts:this.d.month.pts,claimed:this.d.month.claimed.slice()});}
+      this.d.month={id:m,pts:0,claimed:[]};changed=true;
     }
-    if(step===3){
-      var activas=d.tasks.filter(function(t){return t.active;}).length;
-      if(activas===0){DOCH._toast('Activa al menos una misión','error');return false;}
-      return true;
+    return changed;
+  },
+
+  _checkMilestones:function(){
+    var self=this;var d=this.d;
+    var baseTasks=this.TASKS.filter(function(t){return(d.hiddenTasks||[]).indexOf(t.id)===-1;});
+    var maxBase=baseTasks.reduce(function(s,t){return s+t.pts*t.limit;},0);
+    if(d.today.basePoints>=maxBase&&maxBase>0&&!d.today.perfectDay){d.today.perfectDay=true;d.total+=20;d.today.totalDay+=20;d.week.pts+=20;d.month.pts+=20;FX.burst();SFX.perfect();showToast('¡DÍA PERFECTO! 🌟','¡Completaste todo! +20 Puntos','perfect');}
+    var wClaimed=[];this.WEEKLY.forEach(function(g,i){var alcanza=d.week.pts>=g.pts;if(alcanza){wClaimed.push(i);if(d.week.claimed.indexOf(i)===-1){if(self._esSabado()){FX.burst();SFX.win();showToast('¡PREMIO DESBLOQUEADO! 🎁',g.label,'reward');}else{showToast('¡META SEMANAL! 🌟',g.label+' — listo para el sábado','reward');}}}});d.week.claimed=wClaimed;
+    var mClaimed=[];this.MONTHLY.forEach(function(g,i){var alcanza=d.month.pts>=g.pts;if(alcanza){mClaimed.push(i);if(d.month.claimed.indexOf(i)===-1){FX.burst();SFX.win();showToast('¡PREMIO DEL MES! 🎁',g.label,'reward');}}});d.month.claimed=mClaimed;
+    var nuevas=[];this.MEDALLAS.forEach(function(m){if(m.check(d))nuevas.push(m.id);});
+    var ganadas=nuevas.filter(function(id){return d.medallas.indexOf(id)===-1;});
+    ganadas.forEach(function(id){var m=self.MEDALLAS.find(function(x){return x.id===id;});if(m){SFX.unlock();FX.burst();showToast(m.icon+' '+m.label,m.desc,'reward');}});
+    d.medallas=nuevas;
+  },
+
+  tap:function(taskId,dir){
+    var task=this.TASKS.find(function(t){return t.id===taskId;});if(!task)return;
+    var cur=this.d.today.points[taskId]||0;if(dir>0&&cur>=task.limit)return;if(dir<0&&cur<=0)return;
+    this.d.today.points[taskId]=(cur+dir);var delta=task.pts*dir;
+    this.d.total=Math.max(0,this.d.total+delta);this.d.today.totalDay=Math.max(0,this.d.today.totalDay+delta);this.d.today.basePoints=Math.max(0,this.d.today.basePoints+delta);this.d.week.pts=Math.max(0,this.d.week.pts+delta);this.d.month.pts=Math.max(0,this.d.month.pts+delta);
+    if(dir>0)SFX.coin();else SFX.error();this._checkMilestones();this._save();
+  },
+
+  bonus:function(pts){SFX.unlock();if(pts>0){SFX.coin();showToast('¡BONO EXTRA!','+'+pts+' Puntos');}else{SFX.error();showToast('PENALIZACIÓN',pts+' Puntos','bad');}this.d.total+=pts;this.d.today.totalDay+=pts;this.d.week.pts=Math.max(0,this.d.week.pts+pts);this.d.month.pts=Math.max(0,this.d.month.pts+pts);this._checkMilestones();this._save();},
+
+  elegirHistoria:function(val,feedback,leccion){
+    if(this.d.historiaEleccion)return;this.d.historiaEleccion={val:val,feedback:feedback,leccion:leccion};this.d.historiaLeida=this._hoy();this.d.total+=2;this.d.today.totalDay+=2;this.d.week.pts+=2;this.d.month.pts+=2;SFX.coin();showToast('Historia completada ✨','+2 puntos','reward');this._checkMilestones();this._save();
+  },
+
+  guardarDiario:function(){var inp=document.getElementById('diario-input');if(!inp)return;var txt=inp.value.trim();if(!txt)return;if(!this.d.diario)this.d.diario=[];this.d.diario.unshift({fecha:this._hoy(),texto:txt});if(this.d.diario.length>90)this.d.diario=this.d.diario.slice(0,90);SFX.coin();showToast('Guardado en tu diario 📖','');this._save();},
+
+  showMedalla:function(idx){var ganadas=this.MEDALLAS.filter(function(m){return(GAME.d.medallas||[]).indexOf(m.id)!==-1;});var bloqueadas=this.MEDALLAS.filter(function(m){return(GAME.d.medallas||[]).indexOf(m.id)===-1;});var orden=ganadas.concat(bloqueadas);var m=orden[idx];if(!m)return;var ganada=(this.d.medallas||[]).indexOf(m.id)!==-1;showToast(m.icon+' '+m.label,ganada?m.desc:'Aún no la has ganado 💪',ganada?'reward':'normal');},
+
+  tab:function(t){this.d.activeTab=t;this._render();},
+  goConfig:function(){this.d.activeTab='history';this._render();},
+  goRules:function(){this.d.activeTab='rules';this._render();},
+  toggleEng:function(){this._engCollapsed=!this._engCollapsed;var panel=document.getElementById('eng-panel');var arrow=document.getElementById('eng-arrow');if(panel)panel.style.display=this._engCollapsed?'none':'block';if(arrow)arrow.textContent=this._engCollapsed?'▼':'▲';},
+
+  askReset:function(){document.getElementById('modal-reset').classList.add('show');},
+  cancelReset:function(){document.getElementById('modal-reset').classList.remove('show');},
+  confirmReset:function(){
+    document.getElementById('modal-reset').classList.remove('show');
+    if(this.d.today.date){this.d.history.push(JSON.parse(JSON.stringify(this.d.today)));if(this.d.history.length>180)this.d.history=this.d.history.slice(-180);}
+    var ptsHoy=this.d.today.totalDay;this.d.total=Math.max(0,this.d.total-ptsHoy);this.d.week.pts=Math.max(0,this.d.week.pts-ptsHoy);this.d.month.pts=Math.max(0,this.d.month.pts-ptsHoy);
+    this.d.today={date:this._hoy(),points:{},totalDay:0,basePoints:0,perfectDay:false};this.d.historiaLeida='';this.d.historiaEleccion=null;
+    SFX.coin();showToast('Día Reiniciado 🔄','Misiones listas para empezar');this.d.activeTab='tasks';this._save();
+  },
+  askResetAll:function(){document.getElementById('modal-resetall').classList.add('show');},
+  cancelResetAll:function(){document.getElementById('modal-resetall').classList.remove('show');},
+  confirmResetAll:function(){
+    document.getElementById('modal-resetall').classList.remove('show');this.d=emptyGameData();this.d.today.date=this._hoy();this.d.week.id=this._semanaId();this.d.month.id=this._mes();
+    try{localStorage.removeItem(this._localKey());}catch(e){}
+    if(this._ref){try{this._pendingSaves++;this._ref.update({gameData:Object.assign({},this.d,{lastSyncMs:Date.now()})}).then(function(){syncBar('sb-ok','☁️ Reinicio guardado');}).catch(function(){syncBar('sb-err','❌ Error');});}catch(e){}}
+    SFX.coin();showToast('¡Todo Reiniciado! 🔄','Empezando desde cero');this._render();
+  },
+
+  _round10:function(v){var resto=v%10;return resto<=5?Math.floor(v/10)*10:Math.ceil(v/10)*10;},
+  _clp:function(v){var sym=this._child&&this._child.currency?this._child.currency.symbol:'$';return sym+new Intl.NumberFormat('es-CL',{minimumFractionDigits:0}).format(this._round10(v));},
+
+  _render:function(){
+    var inputEl=document.getElementById('diario-input');var savedDraft=inputEl?inputEl.value:'';
+    var ptEl=document.getElementById('total-pts');if(ptEl)ptEl.textContent=this.d.total;
+    var dateEl=document.getElementById('game-date-label');
+    if(dateEl){var hoy=this._hoy();var d=new Date(hoy+'T12:00:00');dateEl.textContent=d.toLocaleDateString('es',{weekday:'long',day:'numeric',month:'long'}).replace(/^\w/,function(c){return c.toUpperCase();});}
+    ['tasks','rewards','historia','rules','history'].forEach(function(t){var b=document.getElementById('tab-'+t);if(b)b.className='tab-btn'+(GAME.d.activeTab===t?' active':'');});
+    var c=document.getElementById('content');if(!c)return;
+    if(this.d.activeTab==='tasks')c.innerHTML=this._buildTasks();
+    else if(this.d.activeTab==='rewards')c.innerHTML=this._buildRewards();
+    else if(this.d.activeTab==='historia')c.innerHTML=this._buildHistoria();
+    else if(this.d.activeTab==='history')c.innerHTML=this._buildHistory();
+    else if(this.d.activeTab==='rules')c.innerHTML=this._buildRules();
+    var newInput=document.getElementById('diario-input');if(newInput&&savedDraft)newInput.value=savedDraft;
+    this._attachDiarioCounter();this._attachHistoryClicks();
+  },
+  _attachDiarioCounter:function(){var inp=document.getElementById('diario-input');var counter=document.getElementById('diario-counter');if(!inp||!counter)return;counter.textContent=inp.value.length+' / 500';inp.addEventListener('input',function(){counter.textContent=inp.value.length+' / 500';});},
+  _attachHistoryClicks:function(){document.querySelectorAll('.hist-row[data-date]').forEach(function(row){row.addEventListener('click',function(){GAME.openEditDay(this.dataset.date);});});},
+
+  _buildEngagement:function(){
+    var d=this.d;var self=this;var mesPts=d.month&&d.month.pts?d.month.pts:0;var hoyPts=d.today.totalDay||0;var semPts=d.week&&d.week.pts?d.week.pts:0;
+    var baseTasks=this.TASKS.filter(function(t){return(d.hiddenTasks||[]).indexOf(t.id)===-1;});
+    var maxBase=baseTasks.reduce(function(s,t){return s+t.pts*t.limit;},0);var baseHoy=d.today.basePoints||0;var pctDia=maxBase>0?Math.min(100,Math.round(baseHoy/maxBase*100)):0;
+    var misionesHechas=baseTasks.filter(function(t){return(d.today.points[t.id]||0)>=t.limit;}).length;
+    var allPremios=this.WEEKLY.map(function(g){return{label:g.label,pts:g.pts,tipo:'semanal',actual:semPts};}).concat(this.MONTHLY.map(function(g){return{label:g.label,pts:g.pts,tipo:'mensual',actual:mesPts};}));
+    var next=null;allPremios.forEach(function(p){if(p.actual<p.pts&&(!next||p.pts-p.actual<next.pts-next.actual))next=p;});
+    var hist7=[];var today=this._hoy();
+    for(var i=6;i>=0;i--){var d2=new Date(today+'T12:00:00');d2.setDate(d2.getDate()-i);var ds=d2.toLocaleDateString('en-CA',{timeZone:this.TZ});if(ds===today){hist7.push({date:ds,pts:d.today.totalDay,isToday:true});}else{var h=d.history&&d.history.find(function(x){return x.date===ds;});hist7.push({date:ds,pts:h?h.totalDay:0,isToday:false});}}
+    var maxPts=Math.max.apply(null,hist7.map(function(x){return x.pts;}));if(maxPts<1)maxPts=1;
+    var svgBars='';hist7.forEach(function(day,i){var pct=day.pts/maxPts;var h2=Math.max(4,Math.round(56*pct));var col=day.isToday?'var(--pink)':day.pts>=maxBase?'#22d3a0':day.pts>0?'var(--purple)':'rgba(255,255,255,.1)';var dayLabel=['D','L','M','Mi','J','V','S'][new Date(day.date+'T12:00:00').getDay()];svgBars+='<g><rect x="'+(i*26+4)+'" y="'+(60-h2)+'" width="18" height="'+h2+'" rx="4" fill="'+col+'"/><text x="'+(i*26+13)+'" y="76" text-anchor="middle" font-size="8" fill="rgba(255,255,255,.5)" font-family="Archivo">'+dayLabel+'</text>'+(day.pts>0?'<text x="'+(i*26+13)+'" y="'+(60-h2-4)+'" text-anchor="middle" font-size="7" fill="rgba(255,255,255,.7)">'+day.pts+'</text>':'')+'</g>';});
+    var ganadosMedallas=this.MEDALLAS.filter(function(m){return(d.medallas||[]).indexOf(m.id)!==-1;});var bloqueadosMedallas=this.MEDALLAS.filter(function(m){return(d.medallas||[]).indexOf(m.id)===-1;});var ordenMedallas=ganadosMedallas.concat(bloqueadosMedallas);
+    var medalGrid=ordenMedallas.map(function(m,i){var g=(d.medallas||[]).indexOf(m.id)!==-1;return'<div class="medal-item '+(g?'earned':'locked')+'" onclick="GAME.showMedalla('+i+')"><div class="medal-icon">'+(g?m.icon:'🔒')+'</div><div class="medal-label">'+m.label+'</div></div>';}).join('');
+    return '<div class="glass-card" style="margin-bottom:12px">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="GAME.toggleEng()"><div style="font-family:\'Syne\',sans-serif;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)">Panel de Progreso</div><span id="eng-arrow" style="color:var(--pink);font-weight:900">'+(this._engCollapsed?'▼':'▲')+'</span></div>'+
+      '<div id="eng-panel" style="display:'+(this._engCollapsed?'none':'block')+'">'+
+        '<div style="text-align:center;padding:20px 0 14px;border-bottom:1px solid rgba(255,255,255,.08)"><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-weight:700;margin-bottom:4px">'+this._mesLabel()+'</div><div style="font-family:\'Syne\',sans-serif;font-size:3rem;font-weight:800;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1">'+mesPts+'</div><div style="font-size:.72rem;color:var(--muted);font-weight:600">puntos este mes</div></div>'+
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)"><div style="text-align:center"><div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700">Hoy</div><div style="font-family:\'Syne\',sans-serif;font-size:1.6rem;font-weight:800;color:var(--pink)">'+hoyPts+'</div><div style="font-size:.65rem;color:var(--muted)">pts</div></div><div style="text-align:center"><div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700">Esta semana</div><div style="font-family:\'Syne\',sans-serif;font-size:1.6rem;font-weight:800;color:var(--purple)">'+semPts+'</div><div style="font-size:.65rem;color:var(--muted)">pts</div></div></div>'+
+        '<div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,.08)"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:.72rem;color:var(--muted);font-weight:700">Día perfecto</span><span style="font-size:.72rem;color:var(--pink);font-weight:700">'+misionesHechas+'/'+baseTasks.length+' misiones</span></div><div class="prog-track"><div class="prog-fill" style="width:'+pctDia+'%;background:linear-gradient(90deg,var(--pink),var(--purple))"></div></div>'+(d.today.perfectDay?'<div style="text-align:center;margin-top:6px;font-size:.78rem;font-weight:700;color:#facc15">🌟 ¡Día Perfecto! +20 pts bonus</div>':'')+'</div>'+
+        '<div style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)"><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:8px">Medallas ('+ganadosMedallas.length+'/'+this.MEDALLAS.length+')</div><div class="medal-grid">'+medalGrid+'</div></div>'+
+        '<div style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08)"><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:8px">Últimos 7 días</div><svg viewBox="0 0 186 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:80px">'+svgBars+'</svg></div>'+
+        (next?'<div style="padding:14px 0"><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:6px">Próximo premio</div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:.85rem;font-weight:700">'+next.label+'</span><span style="font-size:.75rem;color:var(--pink);font-weight:700">'+(next.pts-next.actual)+' pts más</span></div><div class="prog-track"><div class="prog-fill" style="width:'+Math.min(100,Math.round(next.actual/next.pts*100))+'%;background:linear-gradient(90deg,var(--pink),var(--purple))"></div></div></div>':'<div style="padding:14px 0;text-align:center;font-size:.82rem;color:var(--success);font-weight:700">🎉 ¡Todos los premios alcanzados!</div>')+
+      '</div></div>';
+  },
+
+  _buildTasks:function(){
+    var d=this.d;var self=this;var html=this._buildEngagement();
+    html+='<div style="font-family:\'Syne\',sans-serif;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:16px 0 10px">Misiones de Hoy</div>';
+    this.TASKS.forEach(function(task){
+      if((d.hiddenTasks||[]).indexOf(task.id)!==-1)return;var cur=d.today.points[task.id]||0;var done=cur>=task.limit;
+      html+='<div class="task-card'+(done?' done':'')+'"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:1.5rem">'+task.icon+'</span><div style="flex:1"><div style="font-weight:700;font-size:.9rem">'+task.label+'</div><div style="font-size:.72rem;color:var(--muted);margin-top:2px">'+task.pts+' pts × '+task.limit+' vez'+(task.limit>1?'es':'')+'</div></div><div style="font-family:\'Syne\',sans-serif;font-size:1.1rem;font-weight:800;color:var(--pink)">'+cur+'/'+task.limit+'</div></div>';
+      if(task.limit>1){html+='<div style="display:flex;gap:4px">';for(var i=0;i<task.limit;i++)html+='<div class="seg'+(i<cur?' on':'')+'"></div>';html+='</div>';}
+      html+='<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn-m" onclick="GAME.tap(\''+task.id+'\',-1)">−</button><button class="btn-p'+(cur>=task.limit?' off':'')+'" onclick="GAME.tap(\''+task.id+'\',1)">+</button></div></div>';
+    });
+    if(d.racha>0||d.rachaMax>0){html+='<div class="glass-card" style="margin-top:16px;display:flex;justify-content:space-around;text-align:center"><div><div style="font-size:1.6rem">🔥</div><div style="font-family:\'Syne\',sans-serif;font-size:1.4rem;font-weight:800;color:var(--pink)">'+(d.racha||0)+'</div><div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Racha actual</div></div><div><div style="font-size:1.6rem">🏆</div><div style="font-family:\'Syne\',sans-serif;font-size:1.4rem;font-weight:800;color:var(--purple)">'+(d.rachaMax||0)+'</div><div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em">Récord</div></div></div>';}
+    return html;
+  },
+
+  _buildRewards:function(){
+    var d=this.d;var self=this;var html='<div style="font-family:\'Syne\',sans-serif;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px">Premios Semanales</div>';
+    var semPts=d.week&&d.week.pts?d.week.pts:0;
+    this.WEEKLY.forEach(function(g,i){var alcanza=semPts>=g.pts;var claimed=(d.week.claimed||[]).indexOf(i)!==-1;var falta=g.pts-semPts;html+='<div class="reward-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px"><div><div style="font-weight:700;font-size:.95rem">'+g.label+'</div><div style="font-size:.75rem;color:var(--muted);margin-top:2px">'+g.pts+' puntos semanales</div></div><div style="font-size:1.5rem">'+(alcanza?'🎁':'🔒')+'</div></div><div class="prog-track" style="margin-bottom:8px"><div class="prog-fill" style="width:'+Math.min(100,Math.round(semPts/g.pts*100))+'%;background:linear-gradient(90deg,var(--pink),var(--purple))"></div></div>'+(alcanza?(self._esSabado()&&!claimed?'<button onclick="GAME.cobrarSemana('+i+')" style="width:100%;padding:12px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-bottom:3px solid var(--pink-dk);border-radius:12px;color:white;font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.85rem;cursor:pointer">¡Cobrar Premio!</button>':(claimed?'<div style="text-align:center;color:var(--success);font-weight:700;font-size:.82rem">✅ Premio cobrado esta semana</div>':'<div style="text-align:center;color:var(--warn);font-weight:700;font-size:.82rem">🎯 Meta alcanzada — se cobra el sábado</div>')):('<div style="text-align:center;color:var(--muted);font-size:.78rem">Faltan '+falta+' puntos</div>'))+'</div>';});
+    var mesPts=d.month&&d.month.pts?d.month.pts:0;
+    html+='<div style="font-family:\'Syne\',sans-serif;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:20px 0 10px">Premios Mensuales</div>';
+    this.MONTHLY.forEach(function(g,i){var alcanza=mesPts>=g.pts;var claimed=(d.month.claimed||[]).indexOf(i)!==-1;var falta=g.pts-mesPts;html+='<div class="reward-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px"><div><div style="font-weight:700;font-size:.95rem">'+g.label+'</div><div style="font-size:.75rem;color:var(--muted);margin-top:2px">'+g.pts+' puntos del mes</div></div><div style="font-size:1.5rem">'+(alcanza?'🎁':'🔒')+'</div></div><div class="prog-track" style="margin-bottom:8px"><div class="prog-fill" style="width:'+Math.min(100,Math.round(mesPts/g.pts*100))+'%;background:linear-gradient(90deg,#facc15,#ea580c)"></div></div>'+(alcanza&&!claimed?'<div style="text-align:center;color:var(--success);font-weight:700;font-size:.82rem">🎉 ¡Premio del mes desbloqueado! Habla con mamá/papá</div>':claimed?'<div style="text-align:center;color:var(--success);font-weight:700;font-size:.82rem">✅ Premio cobrado este mes</div>':'<div style="text-align:center;color:var(--muted);font-size:.78rem">Faltan '+falta+' puntos</div>')+'</div>';});
+    html+='<div style="font-family:\'Syne\',sans-serif;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:20px 0 10px">Mis Ganancias del Mes</div>';
+    html+='<div class="glass-card">';var totalDinero=mesPts*this.POINT_VALUE;
+    html+='<div style="text-align:center;padding:12px 0 16px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:12px"><div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:4px">Total ganado este mes</div><div style="font-family:\'Syne\',sans-serif;font-size:2rem;font-weight:800;color:var(--pink)">'+this._clp(totalDinero)+'</div></div>';
+    this.FINANCE.forEach(function(f){var monto=totalDinero*(f.pct/100);html+='<div class="finance-row-disp"><div style="display:flex;align-items:center;gap:8px"><div style="width:10px;height:10px;border-radius:50%;background:'+f.color+'"></div><div><div style="font-weight:700;font-size:.88rem">'+f.label+'</div><div style="font-size:.68rem;color:var(--muted)">'+f.pct+'% — '+f.desc+'</div></div></div><div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:.95rem;color:'+f.color+'">'+self._clp(monto)+'</div></div>';});html+='</div>';
+    if(d.historialMeses&&d.historialMeses.length){html+='<div style="font-family:\'Syne\',sans-serif;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:20px 0 10px">Resumen del Año</div><div class="glass-card">';var totalAnual=d.historialMeses.reduce(function(s,m){return s+m.pts;},0);d.historialMeses.slice().reverse().forEach(function(m){var fecha=new Date(m.id+'-15');var label=fecha.toLocaleDateString('es',{month:'long',year:'numeric'});label=label.charAt(0).toUpperCase()+label.slice(1);html+='<div class="finance-row-disp"><span style="font-size:.85rem;font-weight:600">'+label+'</span><div style="text-align:right"><span style="font-weight:700;font-size:.88rem;color:var(--pink)">'+m.pts+' pts</span><div style="font-size:.68rem;color:var(--muted)">'+self._clp(m.pts*self.POINT_VALUE)+'</div></div></div>';});html+='<div class="finance-row-disp" style="border-top:1px solid rgba(255,255,255,.1);margin-top:8px;padding-top:12px"><span style="font-weight:700">Total anual</span><span style="font-family:\'Syne\',sans-serif;font-weight:800;color:var(--success)">'+self._clp(totalAnual*self.POINT_VALUE)+'</span></div></div>';}
+    return html;
+  },
+  cobrarSemana:function(i){if(!this._esSabado())return;var g=this.WEEKLY[i];if(!g)return;if(this.d.week.pts<g.pts)return;if((this.d.week.claimed||[]).indexOf(i)!==-1)return;this.d.week.claimed.push(i);FX.burst();SFX.win();showToast('¡PREMIO COBRADO! 🎉',g.label,'reward');this._save();},
+
+  _buildHistoria:function(){
+    var d=this.d;var hoy=this._hoy();var dayOfYear=Math.floor((new Date(hoy)-new Date(new Date(hoy).getFullYear(),0,0))/(1000*60*60*24));var idx=dayOfYear%this.HISTORIAS.length;var h=this.HISTORIAS[idx];var html='';
+    html+='<div style="background:linear-gradient(135deg,rgba(255,45,120,.3),rgba(124,58,237,.3));border:1px solid rgba(255,45,120,.3);border-radius:18px;padding:20px;margin-bottom:14px;text-align:center"><div style="font-size:2.5rem;margin-bottom:8px">'+h.emoji+'</div><div style="font-family:\'Syne\',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:10px">'+h.titulo+'</div><div style="font-size:.85rem;color:rgba(255,255,255,.8);line-height:1.7">'+h.intro+'</div></div>';
+    if(!d.historiaEleccion){html+='<div style="font-size:.8rem;color:var(--muted);text-align:center;margin-bottom:12px;font-weight:600">¿Qué harías tú?</div>';h.opciones.forEach(function(op,i){html+='<button class="btn-historia" onclick="GAME.elegirHistoria(\''+op.valor+'\',\''+op.feedback.replace(/'/g,"\\'").replace(/"/g,'&quot;')+'\',\''+op.leccion.replace(/'/g,"\\'").replace(/"/g,'&quot;')+'\')"><span style="font-size:1.3rem;flex-shrink:0">'+(i===0?'💙':'💜')+'</span><span>'+op.texto+'</span></button>';});}
+    else{html+='<div class="glass-card" style="border-left:4px solid var(--pink);margin-bottom:14px"><div style="font-size:.82rem;line-height:1.7;margin-bottom:12px">'+d.historiaEleccion.feedback+'</div><div style="font-size:.75rem;font-weight:700;color:var(--pink);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Lección del día</div><div style="font-size:.82rem;font-style:italic;color:rgba(255,255,255,.85)">'+d.historiaEleccion.leccion+'</div><div style="margin-top:12px;font-size:.75rem;color:var(--success);font-weight:700">✅ +2 puntos ganados</div></div>';}
+    html+='<div style="font-family:\'Syne\',sans-serif;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:20px 0 10px">Mi Diario Personal 📖</div>';
+    html+='<div class="glass-card"><div style="font-size:.78rem;color:var(--muted);margin-bottom:10px;line-height:1.5">Este es tu espacio. Escribe lo que piensas, lo que sentiste hoy. Solo lo ves tú.</div><textarea id="diario-input" class="diario-textarea" placeholder="¿Qué fue lo mejor de hoy?..." maxlength="500"></textarea><div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px"><span id="diario-counter" style="font-size:.72rem;color:var(--muted)">0 / 500</span></div><button onclick="GAME.guardarDiario()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-bottom:4px solid var(--pink-dk);border-radius:14px;color:white;font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;font-size:.92rem;text-transform:uppercase;cursor:pointer;margin-top:10px;box-shadow:0 0 18px rgba(255,45,120,.3)">Guardar en mi diario</button></div>';
+    if(d.diario&&d.diario.length){html+='<div style="font-family:\'Syne\',sans-serif;font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:16px 0 8px">Entradas anteriores</div>';d.diario.slice(0,5).forEach(function(e){var fecha=new Date(e.fecha+'T12:00:00').toLocaleDateString('es',{weekday:'short',day:'numeric',month:'short'});html+='<div style="background:rgba(10,0,25,.80);border:1px solid rgba(255,255,255,.1);border-left:3px solid var(--pink);border-radius:12px;padding:13px 15px;margin-bottom:8px"><div style="font-size:.68rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">'+fecha+'</div><div style="font-size:.85rem;line-height:1.6">'+e.texto+'</div></div>';});}
+    return html;
+  },
+
+  _buildRules:function(){
+    var childName=this._child&&this._child.name?this._child.name:'';var childTitle=this._child&&this._child.title?this._child.title:'';
+    var html='<div class="glass-card" style="text-align:center;margin-bottom:14px"><div style="font-size:2rem;margin-bottom:8px">📋</div><div style="font-family:\'Syne\',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:4px">Las Reglas del Juego</div><div style="font-size:.8rem;color:var(--muted)">El mundo de '+childTitle+' '+childName+'</div></div>';
+    var reglas=[{icon:'⭐',titulo:'Las misiones dan puntos',desc:'Cada misión completada suma puntos a tu total.'},{icon:'🔥',titulo:'La racha es tu superpoder',desc:'Cada día con misiones completas, tu racha crece.'},{icon:'🎁',titulo:'Los premios son reales',desc:'Los puntos se convierten en premios y dinero real.'},{icon:'😇',titulo:'La honestidad suma más',desc:'Ser honesto/a es la misión que más puntos da.'},{icon:'💰',titulo:'Tu dinero tiene propósito',desc:'Los puntos se distribuyen en tus 5 alcancías.'},{icon:'📖',titulo:'La historia del día te enseña',desc:'Cada día hay una historia nueva. Elegís y ganás +2 puntos.'}];
+    reglas.forEach(function(r){html+='<div class="glass-card" style="display:flex;align-items:flex-start;gap:14px;margin-bottom:10px"><div style="font-size:1.8rem;flex-shrink:0">'+r.icon+'</div><div><div style="font-weight:700;font-size:.9rem;margin-bottom:4px">'+r.titulo+'</div><div style="font-size:.82rem;color:var(--muted);line-height:1.6">'+r.desc+'</div></div></div>';});
+    html+='<div style="margin-top:24px;text-align:center"><button onclick="GAME.goConfig()" style="padding:12px 24px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:12px;color:var(--muted);font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.78rem;cursor:pointer;letter-spacing:.06em">⚙️ Configuración</button><div style="margin-top:12px"><button onclick="DOCH.logout()" style="padding:8px 16px;background:transparent;border:none;color:rgba(255,255,255,.25);font-size:.72rem;cursor:pointer;font-family:\'Archivo\',sans-serif">Cerrar sesión</button></div></div>';
+    return html;
+  },
+
+  _buildHistory:function(){
+    var d=this.d;var self=this;
+    var html='<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px"><button onclick="GAME.goRules()" style="padding:10px 16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:var(--text);font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.78rem;cursor:pointer">← Volver</button><div style="font-family:\'Syne\',sans-serif;font-size:1rem;font-weight:800">Configuración</div></div>';
+    html+='<div style="font-family:\'Syne\',sans-serif;font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px">Días Editables (Mes Actual)</div>';
+    var mesActual=this._mes();var hoy=this._hoy();
+    for(var i=1;i<=parseInt(hoy.slice(8,10));i++){
+      var fecha=mesActual+'-'+(i<10?'0':'')+i;var histEntry=d.history&&d.history.find(function(x){return x.date===fecha;});var esHoy=fecha===hoy;var pts=esHoy?d.today.totalDay:(histEntry?histEntry.totalDay:0);
+      var d2=new Date(fecha+'T12:00:00');var label=d2.toLocaleDateString('es',{weekday:'short',day:'numeric',month:'short'});
+      html+='<div class="hist-row" data-date="'+fecha+'"><div><div style="font-weight:700;font-size:.88rem">'+label+(esHoy?' <span style="color:var(--pink);font-size:.72rem">(hoy)</span>':'')+'</div></div><div style="text-align:right"><div style="font-family:\'Syne\',sans-serif;font-weight:800;color:var(--pink)">'+pts+'</div><div style="font-size:.65rem;color:var(--muted)">pts</div></div></div>';
     }
-    if(step===4){
-      if(!document.getElementById('disclaimer-check').checked){DOCH._toast('Debes aceptar el compromiso parental','error');return false;}
-      return true;
-    }
-    return true;
+    html+='<div style="font-family:\'Syne\',sans-serif;font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:20px 0 10px">Bonus / Corrección Manual</div>';
+    html+='<div class="glass-card"><div style="font-size:.8rem;color:var(--muted);margin-bottom:12px">Agrega o quita puntos. Úsalo para corregir días sin conectividad o reconocer logros especiales.</div><div style="display:flex;gap:10px;margin-bottom:10px"><input type="number" id="bonus-input" placeholder="Ej: 5 o -3" style="flex:1;padding:12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:\'Archivo\',sans-serif;font-size:.95rem;outline:none;-webkit-appearance:none"><button onclick="GAME._applyBonus()" style="padding:12px 16px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-radius:10px;color:white;font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.8rem;cursor:pointer;flex-shrink:0">Aplicar</button></div></div>';
+    html+='<div style="font-family:\'Syne\',sans-serif;font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#f87171;margin:20px 0 10px">Zona de Peligro</div>';
+    html+='<div class="glass-card" style="border-color:rgba(248,113,113,.3)"><div style="font-size:.82rem;color:var(--muted);margin-bottom:14px">Reiniciar borra todos los puntos e historial. No se puede deshacer.</div><div style="display:flex;gap:10px"><button onclick="GAME.askReset()" style="flex:1;padding:12px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:10px;color:#fbbf24;font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.78rem;cursor:pointer">Reiniciar Día</button><button onclick="GAME.askResetAll()" style="flex:1;padding:12px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;color:#f87171;font-family:\'Archivo\',sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.78rem;cursor:pointer">Reiniciar Todo</button></div></div>';
+    return html;
   },
 
-  fillInput:function(id,el){
-    var inp=document.getElementById(id);if(inp)inp.value=el.textContent.trim();
-    if(id==='ob-point-value')this.updateCurrencyPreview();
-  },
-  fillCurrency:function(sym,name){
-    document.getElementById('ob-currency-symbol').value=sym;
-    document.getElementById('ob-currency-name').value=name;
-    this.updateCurrencyPreview();
-  },
-  updateCurrencyPreview:function(){
-    var sym=document.getElementById('ob-currency-symbol');
-    var el=document.getElementById('ob-currency-preview');
-    if(sym&&el)el.textContent=sym.value||'$';
-  },
+  _applyBonus:function(){var inp=document.getElementById('bonus-input');if(!inp)return;var pts=parseInt(inp.value);if(isNaN(pts)||pts===0){showToast('Ingresa un número válido','','bad');return;}this.bonus(pts);inp.value='';},
 
-  _buildColors:function(){
-    var self=this;var grid=document.getElementById('color-grid');if(!grid)return;
-    grid.innerHTML='';
-    COLORS.forEach(function(c){
-      var sw=document.createElement('div');sw.className='color-swatch'+(c.hex===self._data.color?' selected':'');
-      sw.style.background=c.hex;sw.title=c.name;
-      sw.onclick=function(){
-        self._data.color=c.hex;
-        document.querySelectorAll('.color-swatch').forEach(function(s){s.classList.remove('selected');});
-        sw.classList.add('selected');
-      };
-      grid.appendChild(sw);
-    });
-  },
-
-  _buildBgs:function(){
-    var self=this;var grid=document.getElementById('bg-grid');if(!grid)return;
-    grid.innerHTML='';
-    BG_PRESETS.forEach(function(p){
-      var div=document.createElement('div');div.className='bg-preset'+(self._data.bg.id===p.id?' selected':'');
-      div.style.background=p.bg;
-      div.innerHTML='<span class="bg-preset-label">'+p.label+'</span>';
-      div.onclick=function(){
-        self._data.bg={type:'preset',id:p.id,value:p.bg};self._data.bgBase64=null;
-        document.querySelectorAll('.bg-preset').forEach(function(s){s.classList.remove('selected');});
-        div.classList.add('selected');
-        document.getElementById('bg-preview-img').style.display='none';
-        document.getElementById('bg-upload-btn').style.display='flex';
-      };
-      grid.appendChild(div);
-    });
-  },
-
-  handleBgUpload:function(input){
-    var self=this;var file=input.files[0];if(!file)return;
-    if(file.size>2*1024*1024){DOCH._toast('La imagen no puede superar 2MB','error');return;}
-    var reader=new FileReader();
-    reader.onload=function(e){
-      var img=new Image();
-      img.onload=function(){
-        var canvas=document.createElement('canvas');var maxW=800;
-        var ratio=Math.min(maxW/img.width,maxW/img.height,1);
-        canvas.width=img.width*ratio;canvas.height=img.height*ratio;
-        canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
-        var b64=canvas.toDataURL('image/jpeg',0.70);
-        self._data.bgBase64=b64;self._data.bg={type:'custom',id:'custom',value:b64};
-        document.querySelectorAll('.bg-preset').forEach(function(s){s.classList.remove('selected');});
-        var prev=document.getElementById('bg-preview-img');prev.src=b64;prev.style.display='block';
-        document.getElementById('bg-upload-btn').style.display='none';
-        DOCH._toast('Imagen cargada y optimizada ✅','success');
-      };
-      img.src=e.target.result;
-    };
-    reader.readAsDataURL(file);
-  },
-
-  _buildFinance:function(){
-    var self=this;var container=document.getElementById('finance-rows');if(!container)return;
-    container.innerHTML='';
-    this._data.finance.forEach(function(f,i){
-      var row=document.createElement('div');row.className='finance-row';
-      row.innerHTML='<div class="finance-color-dot" style="background:'+f.color+'"></div>'+
-        '<div class="finance-label-col"><div style="font-weight:700;font-size:.88rem">'+f.label+'</div>'+
-        '<div style="font-size:.72rem;color:var(--muted)">'+f.desc+'</div></div>'+
-        '<input type="number" class="finance-pct-input" data-idx="'+i+'" value="'+f.pct+'" min="0" max="100">'+
-        '<span style="font-size:.85rem;font-weight:700;color:var(--muted)">%</span>';
-      container.appendChild(row);
-    });
-    container.addEventListener('input',function(e){
-      if(e.target.classList.contains('finance-pct-input')){
-        self._data.finance[parseInt(e.target.dataset.idx)].pct=Number(e.target.value)||0;
-        self._updateFinanceTotal();
-      }
-    });
-    this._updateFinanceTotal();
-  },
-  _updateFinanceTotal:function(){
-    var sum=this._data.finance.reduce(function(s,f){return s+Number(f.pct);},0);
-    var el=document.getElementById('finance-sum');var box=document.getElementById('finance-total');
-    if(el)el.textContent=sum+'%';if(box)box.className='finance-total '+(sum===100?'ok':'err');
-  },
-
-  _buildMissions:function(){
-    var self=this;var list=document.getElementById('missions-list');if(!list)return;
-    list.innerHTML='';
-    this._data.tasks.forEach(function(t,i){
-      var card=document.createElement('div');card.className='mission-card'+(t.active?' active-m':'');
-      card.innerHTML='<div class="mission-icon">'+t.icon+'</div>'+
-        '<div class="mission-info"><div class="mission-name">'+t.label+'</div>'+
-        '<div class="mission-pts">'+t.pts+' pts · máx '+t.limit+' por día</div></div>'+
-        '<button class="mission-toggle '+(t.active?'on':'off')+'" onclick="OB.toggleM('+i+',this,event)"></button>';
-      list.appendChild(card);
-    });
-  },
-  toggleM:function(idx,btn,e){
-    e.stopPropagation();this._data.tasks[idx].active=!this._data.tasks[idx].active;
-    btn.className='mission-toggle '+(this._data.tasks[idx].active?'on':'off');
-    btn.closest('.mission-card').className='mission-card'+(this._data.tasks[idx].active?' active-m':'');
-  },
-
-  checkDisclaimer:function(){
-    var checked=document.getElementById('disclaimer-check').checked;
-    var btn=document.getElementById('btn-create-world');if(btn)btn.disabled=!checked;
-  },
-
-  _buildSummary:function(){
-    var d=this._data;
-    document.getElementById('sum-name').textContent=d.childName||'—';
-    document.getElementById('sum-title').textContent=d.childTitle||'—';
-    document.getElementById('sum-currency').textContent=(d.currencySymbol||'$')+' '+d.currencyName;
-    document.getElementById('sum-point').textContent=(d.currencySymbol||'$')+d.pointValue+' por punto';
-    document.getElementById('sum-missions').textContent=d.tasks.filter(function(t){return t.active;}).length+' de 12 activas';
-    document.getElementById('sum-bg').textContent=d.bg.type==='custom'?'Imagen personalizada':d.bg.id.charAt(0).toUpperCase()+d.bg.id.slice(1);
-    var pn=document.getElementById('preview-app-name');var ps=document.getElementById('preview-app-sub');
-    if(pn)pn.textContent='El mundo de '+d.childName;if(ps)ps.textContent=d.childTitle||'Tu app personalizada';
-    var pb=document.getElementById('theme-preview-box');
-    if(pb){pb.style.background=d.bg.type==='custom'?'url('+d.bgBase64+') center/cover':d.bg.value;pb.style.boxShadow='0 0 30px '+d.color+'44';}
-  },
-
-  createWorld:function(){
-    if(!this._validate(4))return;
-    var self=this;var d=this._data;var uid=this._user.uid;var db=DOCH._db;
-    var btn=document.getElementById('btn-create-world');if(btn){btn.classList.add('loading');btn.disabled=true;}
-    var childId='child_'+Date.now();
-    var childData={
-      childId:childId,name:d.childName,title:d.childTitle,
-      theme:{primaryColor:d.color,bgType:d.bg.type,bgId:d.bg.id,bgValue:d.bg.type==='preset'?d.bg.value:null,bgBase64:d.bgBase64||null},
-      currency:{symbol:d.currencySymbol,name:d.currencyName},pointValue:d.pointValue,
-      finance:d.finance,tasks:d.tasks,
-      weeklyPrizes:[{label:'Premio Semanal 1',pts:100},{label:'Premio Semanal 2',pts:180}],
-      monthlyPrizes:[{label:'Premio Mensual 1',pts:400},{label:'Premio Mensual 2',pts:800}],
-      gameData:{total:0,today:{date:'',points:{},totalDay:0,basePoints:0,perfectDay:false},week:{id:'',pts:0,claimed:[]},month:{id:'',pts:0,claimed:[]},history:[],historialMeses:[],racha:0,rachaMax:0,medallas:[],diario:[],hiddenTasks:[],historiaLeida:'',historiaEleccion:null},
-      createdAt:firebase.firestore.FieldValue.serverTimestamp()
-    };
-    var batch=db.batch();
-    batch.update(db.collection('families').doc(uid),{setupComplete:true,childCount:1,activeChildId:childId,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
-    batch.set(db.collection('families').doc(uid).collection('children').doc(childId),childData);
-    batch.commit().then(function(){
-      DOCH._toast('¡El mundo de '+d.childName+' está listo! 🌟','success');
-      setTimeout(function(){DOCH._showHome(self._user,{childName:d.childName});},1200);
-    }).catch(function(e){
-      console.error(e);if(btn){btn.classList.remove('loading');btn.disabled=false;}
-      DOCH._toast('Error al guardar. Intenta de nuevo.','error');
-    });
+  openEditDay:function(fecha){
+    var isHoy=fecha===this._hoy();var pts=isHoy?this.d.today.totalDay:0;var h=this.d.history&&this.d.history.find(function(x){return x.date===fecha;});if(h)pts=h.totalDay;
+    var nuevos=prompt('Puntos para '+fecha+' (actual: '+pts+'):');if(nuevos===null)return;var n=parseInt(nuevos);if(isNaN(n)||n<0){alert('Número inválido');return;}
+    if(isHoy){var diff=n-this.d.today.totalDay;this.d.total=Math.max(0,this.d.total+diff);this.d.today.totalDay=n;this.d.week.pts=Math.max(0,this.d.week.pts+diff);this.d.month.pts=Math.max(0,this.d.month.pts+diff);}
+    else if(h){var diff2=n-h.totalDay;h.totalDay=n;this.d.total=Math.max(0,this.d.total+diff2);this.d.month.pts=Math.max(0,this.d.month.pts+diff2);}
+    showToast('Día actualizado ✅','');this._save();
   }
 };
 
