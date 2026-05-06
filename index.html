@@ -180,9 +180,9 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
 .game-content{flex:1;overflow-y:auto;padding:10px 12px 12px;-webkit-overflow-scrolling:touch;min-height:0;}
 
 /* Tabs neon */
-.game-tabs{flex-shrink:0;background:linear-gradient(180deg,rgba(8,0,20,.99),rgba(12,0,28,1));border-top:2px solid rgba(255,45,120,.5);padding:10px 8px calc(10px + env(safe-area-inset-bottom));display:flex;gap:6px;box-shadow:0 -12px 50px rgba(255,0,127,.4),0 -2px 0 rgba(255,45,120,.3);}
-.tab-btn{flex:1;padding:12px 4px 10px;border-radius:14px;font-family:'Archivo',sans-serif;font-style:italic;text-transform:uppercase;font-size:9px;font-weight:700;cursor:pointer;transition:all .25s;opacity:.38;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);color:var(--text);letter-spacing:.04em;line-height:1.5;}
-.tab-btn.active{background:linear-gradient(135deg,var(--pink),var(--purple));color:white;opacity:1;box-shadow:0 0 30px rgba(255,45,120,.9),0 -4px 20px rgba(255,45,120,.4),0 4px 0 var(--pink-dk),inset 0 1px 0 rgba(255,255,255,.2);border-color:rgba(255,200,220,.4);transform:translateY(-3px);}
+.game-tabs{flex-shrink:0;background:linear-gradient(180deg,rgba(5,0,15,.99),rgba(8,0,20,1));border-top:2px solid rgba(255,45,120,.55);padding:10px 8px calc(10px + env(safe-area-inset-bottom));display:flex;gap:5px;box-shadow:0 -16px 60px rgba(255,0,127,.45),inset 0 1px 0 rgba(255,45,120,.2);}
+.tab-btn{flex:1;padding:10px 4px 8px;border-radius:14px;font-family:'Archivo',sans-serif;font-style:italic;text-transform:uppercase;font-size:8.5px;font-weight:700;cursor:pointer;transition:all .25s;opacity:.35;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);color:var(--muted);letter-spacing:.04em;line-height:1.4;}
+.tab-btn.active{background:linear-gradient(160deg,var(--pink),var(--purple));color:white !important;opacity:1 !important;box-shadow:0 0 24px rgba(255,45,120,.8),0 -6px 24px rgba(255,45,120,.35),inset 0 1px 0 rgba(255,255,255,.25);border-color:rgba(255,180,220,.5);transform:translateY(-4px) scale(1.04);}
 .tab-btn:hover:not(.active){opacity:.7;border-color:rgba(255,45,120,.2);}
 
 /* ── TASK CARDS VIBRANTES ── */
@@ -262,7 +262,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
 #fx-canvas{position:fixed;inset:0;pointer-events:none;z-index:8000;}
 
 /* Sync bar */
-#sync-bar{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateX(min(0px,calc((100vw - 480px)/-2)));z-index:500;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.12em;padding:5px 14px;border-radius:999px;transition:all .3s;white-space:nowrap;pointer-events:none;backdrop-filter:blur(10px);}
+#sync-bar{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;padding:3px 10px;border-radius:999px;transition:all .3s;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;}
 .sb-ok{background:rgba(0,180,60,.2);color:#00ff70;border:1px solid rgba(0,220,80,.35);}
 .sb-busy{background:rgba(255,200,0,.15);color:#ffc800;border:1px solid rgba(255,200,0,.3);}
 .sb-err{background:rgba(255,60,60,.15);color:#ff6060;border:1px solid rgba(255,80,80,.3);}
@@ -279,7 +279,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
 <body>
 <canvas id="fx-canvas"></canvas>
 <div id="toasts"></div>
-<div id="sync-bar" class="sb-busy">⏳ Conectando...</div>
+
 
 <!-- MODALES -->
 <div class="modal-overlay" id="modal-reset">
@@ -532,20 +532,23 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
       <div class="game-title" id="game-app-title">DOCH</div>
       <div style="font-size:.65rem;color:var(--muted);font-weight:600;margin-top:1px" id="game-date-label"></div>
     </div>
-    <div class="pts-badge"><div class="pts-num" id="total-pts">0</div><div class="pts-label">pts</div></div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+      <div class="pts-badge"><div class="pts-num" id="total-pts">0</div><div class="pts-label">pts</div></div>
+      <div id="sync-bar" class="sb-busy">⏳ Conectando...</div>
+    </div>
   </div>
-  <div id="game-banner" style="width:100%;height:90px;overflow:hidden;flex-shrink:0;position:relative;border-bottom:2px solid rgba(255,45,120,.3);">
-  <div id="game-banner-bg" style="width:100%;height:100%;background:linear-gradient(135deg,#1a0040,#0d1a2e);background-size:cover;background-position:center;filter:brightness(.8) saturate(1.3);"></div>
-  <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.5) 100%);display:flex;align-items:flex-end;padding:10px 14px;">
-    <span id="game-banner-label" style="font-family:'Syne',sans-serif;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.6);text-shadow:0 0 10px rgba(0,0,0,.8)"></span>
+  <div id="game-banner" style="width:100%;height:80px;overflow:hidden;flex-shrink:0;position:relative;border-bottom:2px solid rgba(255,45,120,.4);box-shadow:0 4px 20px rgba(0,0,0,.4);">
+  <div id="game-banner-bg" style="position:absolute;inset:0;background:linear-gradient(135deg,#1a0040,#7c3aed,#0d1a2e);background-size:cover;background-position:center top;"></div>
+  <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.2) 0%,rgba(0,0,0,.55) 100%);display:flex;align-items:center;padding:0 16px;gap:12px;">
+    <span id="game-banner-label" style="font-family:'Syne',sans-serif;font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.9);text-shadow:0 2px 12px rgba(0,0,0,.8)"></span>
   </div>
 </div>
 <div class="game-content" id="content"></div>
   <div class="game-tabs">
-    <button class="tab-btn active" id="tab-tasks" onclick="GAME.tab('tasks')">🎯<br>Misiones</button>
-    <button class="tab-btn" id="tab-rewards" onclick="GAME.tab('rewards')">🎁<br>Premios</button>
-    <button class="tab-btn" id="tab-historia" onclick="GAME.tab('historia')">📖<br>Espacio</button>
-    <button class="tab-btn" id="tab-rules" onclick="GAME.tab('rules')">📋<br>Reglas</button>
+    <button class="tab-btn active" id="tab-tasks" onclick="GAME.tab('tasks')"><div style="font-size:1.3rem">🎯</div>Misiones</button>
+    <button class="tab-btn" id="tab-rewards" onclick="GAME.tab('rewards')"><div style="font-size:1.3rem">🎁</div>Premios</button>
+    <button class="tab-btn" id="tab-historia" onclick="GAME.tab('historia')"><div style="font-size:1.3rem">📖</div>Espacio</button>
+    <button class="tab-btn" id="tab-rules" onclick="GAME.tab('rules')"><div style="font-size:1.3rem">📋</div>Reglas</button>
   </div>
 </div>
 
@@ -753,11 +756,19 @@ var GAME={
   },
 
   _applyBanner:function(){
-    var bn=document.getElementById('game-banner-bg');var bl=document.getElementById('game-banner-label');
-    var ch=this._child;if(!bn||!ch||!ch.theme)return;
-    if(ch.theme.bgType==='custom'&&ch.theme.bgBase64){bn.style.backgroundImage='url('+ch.theme.bgBase64+')';bn.style.backgroundSize='cover';}
-    else if(ch.theme.bgValue){bn.style.background=ch.theme.bgValue;bn.style.backgroundSize='cover';}
-    if(bl)bl.textContent=(ch.title&&ch.name)?ch.title+' '+ch.name:'';
+    var self=this;
+    setTimeout(function(){
+      var bn=document.getElementById('game-banner-bg');var bl=document.getElementById('game-banner-label');
+      var ch=self._child;if(!bn||!ch)return;
+      if(ch.theme&&ch.theme.bgType==='custom'&&ch.theme.bgBase64){
+        bn.style.backgroundImage='url('+ch.theme.bgBase64+')';bn.style.backgroundSize='cover';bn.style.backgroundPosition='center top';
+      }else if(ch.theme&&ch.theme.bgValue){
+        bn.style.background=ch.theme.bgValue;
+      }else{
+        bn.style.background='linear-gradient(135deg,#1a0040,'+(ch.theme&&ch.theme.primaryColor||'#7c3aed')+',#0d1a2e)';
+      }
+      if(bl)bl.textContent=(ch.title&&ch.name)?'✦ '+ch.title+' '+ch.name+' ✦':'';
+    },100);
   },
   _updateHeader:function(){
     var c=this._child;if(!c)return;
