@@ -1105,7 +1105,7 @@ var GAME={
       '<div style="font-size:.78rem;color:var(--muted);margin-bottom:12px;line-height:1.5">Foto de portada que aparece debajo del título, distinta al fondo.</div>'+
       bannerPreview+
       '<div style="display:flex;gap:8px">'+
-        '<button onclick="document.getElementById('cfg-banner-file').click()" style="flex:1;padding:10px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-radius:10px;color:white;font-family:Archivo,sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.78rem;cursor:pointer">📷 Subir foto</button>'+
+        '<button onclick="GAME._clickBannerFile()" style="flex:1;padding:10px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-radius:10px;color:white;font-family:Archivo,sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.78rem;cursor:pointer">📷 Subir foto</button>'+
         bannerClearBtn+
       '</div>'+
       '<input type="file" id="cfg-banner-file" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="GAME._saveBanner(this)">'+
@@ -1114,12 +1114,18 @@ var GAME={
     /* ── TIPOGRAFÍA ── */
     html+='<div class="section-title-game">✦ Tipografía</div>';
     var curFont=this._child&&this._child.fontStyle||'moderna';
-    var fonts=[{id:'moderna',label:'Moderna',sample:'DOCH',style:'font-family:Syne,sans-serif'},{id:'juguetona',label:'Juguetona',sample:'DOCH',style:'font-family:Fredoka One,cursive'},{id:'elegante',label:'Elegante',sample:'DOCH',style:'font-family:Playfair Display,serif'}];
+    var fontOpts=[['moderna','Moderna','Syne,sans-serif'],['juguetona','Juguetona','Fredoka One,cursive'],['elegante','Elegante','Playfair Display,serif']];
     html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:4px">';
-    fonts.forEach(function(f){html+='<div onclick="GAME._saveFont(''+f.id+'')" style="padding:14px 8px;background:'+(curFont===f.id?'linear-gradient(135deg,rgba(255,45,120,.2),rgba(124,58,237,.2))':'rgba(255,255,255,.04)')+';border:2px solid '+(curFont===f.id?'rgba(255,45,120,.5)':'rgba(255,255,255,.08)')+';border-radius:12px;text-align:center;cursor:pointer;transition:all .2s">'+
-      '<div style="'+f.style+';font-size:1.3rem;font-weight:700;color:'+(curFont===f.id?'var(--pink)':'var(--text)')+';margin-bottom:4px">'+f.sample+'</div>'+
-      '<div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700">'+f.label+'</div>'+
-    '</div>';});
+    fontOpts.forEach(function(f){
+      var isActive=curFont===f[0];
+      var bg=isActive?'linear-gradient(135deg,rgba(255,45,120,.2),rgba(124,58,237,.2))':'rgba(255,255,255,.04)';
+      var border=isActive?'rgba(255,45,120,.5)':'rgba(255,255,255,.08)';
+      var col=isActive?'var(--pink)':'var(--text)';
+      html+='<div onclick="GAME._saveFont(this.dataset.fid)" data-fid="'+f[0]+'" style="padding:14px 8px;background:'+bg+';border:2px solid '+border+';border-radius:12px;text-align:center;cursor:pointer;transition:all .2s">'+
+        '<div style="font-family:'+f[2]+';font-size:1.3rem;font-weight:700;color:'+col+';margin-bottom:4px">DOCH</div>'+
+        '<div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700">'+f[1]+'</div>'+
+      '</div>';
+    });
     html+='</div>';
 
     /* ── TEMA VISUAL ── */
@@ -1257,6 +1263,7 @@ var GAME={
     var pvEl=document.getElementById('cfg-point-value');var pv=pvEl?Math.max(1,parseInt(pvEl.value)||1):this.POINT_VALUE;
     this.FINANCE=newFin;this.POINT_VALUE=pv;if(this._child){this._child.finance=newFin;this._child.pointValue=pv;}
     var self=this;if(this._ref){this._ref.update({finance:newFin,pointValue:pv}).then(function(){showToast('Finanzas guardadas ✅','','reward');self._render();}).catch(function(){showToast('Error al guardar','','bad');});}},
+  _clickBannerFile:function(){var el=document.getElementById('cfg-banner-file');if(el)el.click();},
   _saveBanner:function(input){
     var self=this;var file=input.files[0];if(!file)return;
     if(file.size>3*1024*1024){showToast('La foto no puede superar 3MB','','bad');return;}
