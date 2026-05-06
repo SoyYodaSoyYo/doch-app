@@ -10,7 +10,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Archivo:ital,wght@0,400;0,600;0,700;0,900;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Archivo:ital,wght@0,400;0,600;0,700;0,900;1,700&family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,700;1,700&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 :root{
@@ -274,6 +274,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;
 
 /* Racha display */
 .racha-card{display:flex;justify-content:space-around;align-items:center;padding:16px;background:linear-gradient(135deg,rgba(255,45,120,.08),rgba(124,58,237,.08));border:1px solid rgba(255,45,120,.2);border-radius:16px;margin-top:14px;box-shadow:0 0 20px rgba(255,45,120,.08);}
+
+/* ══ TIPOGRAFÍAS ══ */
+body.font-juguetona{font-family:'Nunito',sans-serif !important;}
+body.font-juguetona .font-display, body.font-juguetona .game-title, body.font-juguetona .auth-logo,
+body.font-juguetona .pts-num, body.font-juguetona .loader-logo, body.font-juguetona .ob-step-title{font-family:'Fredoka One',cursive !important;}
+body.font-elegante{font-family:'Lato',sans-serif !important;}
+body.font-elegante .font-display, body.font-elegante .game-title, body.font-elegante .auth-logo,
+body.font-elegante .pts-num, body.font-elegante .loader-logo, body.font-elegante .ob-step-title{font-family:'Playfair Display',serif !important;}
 
 /* ══ MODO CLARO / DAYLIGHT ══ */
 body.daylight{--bg:#f0e8ff;--bg2:#e8deff;--bg3:#ddd0ff;--text:#1a0040;--muted:rgba(26,0,64,0.5);--border:rgba(124,58,237,0.18);--glass:rgba(255,255,255,0.8);--pink-dk:#a80050;background:#f0e8ff !important;}
@@ -607,7 +615,20 @@ var DEFAULT_FINANCE=[
   {label:'Donar',pct:2,color:'#86efac',desc:'Ayudar y regalar'}
 ];
 var COLORS=[{hex:'#ff2d78',name:'Rosa'},{hex:'#7c3aed',name:'Púrpura'},{hex:'#2563eb',name:'Azul'},{hex:'#06b6d4',name:'Cyan'},{hex:'#16a34a',name:'Verde'},{hex:'#ca8a04',name:'Dorado'},{hex:'#ea580c',name:'Naranja'},{hex:'#dc2626',name:'Rojo'},{hex:'#a21caf',name:'Fucsia'},{hex:'#0d9488',name:'Teal'},{hex:'#4f46e5',name:'Índigo'},{hex:'#be185d',name:'Rosa Oscuro'}];
-var BG_PRESETS=[{id:'galaxia',label:'Galaxia',bg:'linear-gradient(135deg,#0d0d1a 0%,#1a0040 50%,#0d1a2e 100%)'},{id:'aurora',label:'Aurora',bg:'linear-gradient(135deg,#0d1a0d 0%,#001a1a 50%,#0d0d26 100%)'},{id:'atardecer',label:'Atardecer',bg:'linear-gradient(135deg,#1a0d00 0%,#261000 50%,#1a001a 100%)'},{id:'oceano',label:'Océano',bg:'linear-gradient(135deg,#001a26 0%,#000d1a 50%,#001a1a 100%)'},{id:'fuego',label:'Fuego',bg:'linear-gradient(135deg,#1a0000 0%,#260d00 50%,#1a1a00 100%)'},{id:'noche',label:'Noche',bg:'linear-gradient(135deg,#000d1a 0%,#0d0d26 50%,#1a001a 100%)'}];
+var BG_PRESETS=[
+  {id:'galaxia',  label:'Galaxia',   bg:'linear-gradient(135deg,#0d0d1a 0%,#1a0040 50%,#0d1a2e 100%)'},
+  {id:'aurora',   label:'Aurora',    bg:'linear-gradient(135deg,#0d1a0d 0%,#001a1a 50%,#0d0d26 100%)'},
+  {id:'atardecer',label:'Atardecer', bg:'linear-gradient(135deg,#1a0d00 0%,#261000 50%,#1a001a 100%)'},
+  {id:'oceano',   label:'Océano',    bg:'linear-gradient(135deg,#001a26 0%,#000d1a 50%,#001a1a 100%)'},
+  {id:'fuego',    label:'Fuego',     bg:'linear-gradient(135deg,#1a0000 0%,#260d00 50%,#1a1a00 100%)'},
+  {id:'noche',    label:'Noche',     bg:'linear-gradient(135deg,#000d1a 0%,#0d0d26 50%,#1a001a 100%)'},
+  {id:'candy',    label:'Candy',     bg:'linear-gradient(135deg,#2d0020 0%,#4a0040 50%,#200030 100%)'},
+  {id:'primavera',label:'Primavera', bg:'linear-gradient(135deg,#001a0d 0%,#0d2600 50%,#1a1a00 100%)'},
+  {id:'cielo',    label:'Cielo',     bg:'linear-gradient(135deg,#001433 0%,#003366 50%,#001a33 100%)'},
+  {id:'rosa',     label:'Rosa',      bg:'linear-gradient(135deg,#2a0015 0%,#3d0025 50%,#1a000d 100%)'},
+  {id:'dorado',   label:'Dorado',    bg:'linear-gradient(135deg,#1a1000 0%,#2d1f00 50%,#1a0d00 100%)'},
+  {id:'helado',   label:'Helado',    bg:'linear-gradient(135deg,#001a1a 0%,#00262d 50%,#001a26 100%)'}
+];
 
 var MEDALLAS_BASE=[
   {id:'primera',icon:'⭐',label:'Primera Misión',desc:'Completaste tu primera misión',check:function(d){return d.total>0;}},
@@ -763,7 +784,7 @@ var GAME={
     this.WEEKLY=childData.weeklyPrizes||[{label:'Premio Semanal 1',pts:100},{label:'Premio Semanal 2',pts:180}];
     this.MONTHLY=childData.monthlyPrizes||[{label:'Premio Mensual 1',pts:400},{label:'Premio Mensual 2',pts:800}];
     this.FINANCE=childData.finance||DEFAULT_FINANCE;
-    this._applyTheme();this._updateHeader();this._applyBanner();this._loadDaylight();FX.init();this._loadLocal();this._checkResets();this.d.activeTab='tasks';this._render();
+    this._applyTheme();this._updateHeader();this._applyBanner();this._loadDaylight();this._loadFont();FX.init();this._loadLocal();this._checkResets();this.d.activeTab='tasks';this._render();
     try{
       var ref=db.collection('families').doc(user.uid).collection('children').doc(childData.childId);this._ref=ref;
       ref.get().then(function(snap){
@@ -790,7 +811,10 @@ var GAME={
     setTimeout(function(){
       var bn=document.getElementById('game-banner-bg');var bl=document.getElementById('game-banner-label');
       var ch=self._child;if(!bn||!ch)return;
-      if(ch.theme&&ch.theme.bgType==='custom'&&ch.theme.bgBase64){
+      // Banner usa foto propia si existe, si no usa el fondo de la app
+      if(ch.bannerBase64){
+        bn.style.backgroundImage='url('+ch.bannerBase64+')';bn.style.backgroundSize='cover';bn.style.backgroundPosition='center';
+      }else if(ch.theme&&ch.theme.bgType==='custom'&&ch.theme.bgBase64){
         bn.style.backgroundImage='url('+ch.theme.bgBase64+')';bn.style.backgroundSize='cover';bn.style.backgroundPosition='center top';
       }else if(ch.theme&&ch.theme.bgValue){
         bn.style.background=ch.theme.bgValue;
@@ -1070,6 +1094,31 @@ var GAME={
       '<div style="font-family:\'Syne\',sans-serif;font-size:1rem;font-weight:800;color:var(--text)">⚙️ Configuración</div>'+
     '</div>';
 
+    /* ── BANNER ── */
+    html+='<div class="section-title-game">✦ Banner de portada</div>';
+    var bannerSrc=this._child&&this._child.bannerBase64?this._child.bannerBase64:null;
+    html+='<div class="edit-card">'+
+      '<div style="font-size:.78rem;color:var(--muted);margin-bottom:12px;line-height:1.5">Foto que aparece como franja debajo del título. Puede ser distinta al fondo de la app — la foto del niño/a, su personaje favorito, etc.</div>'+
+      (bannerSrc?'<img src="'+bannerSrc+'" style="width:100%;height:80px;object-fit:cover;border-radius:10px;border:2px solid rgba(255,45,120,.3);margin-bottom:10px">':
+        '<div style="width:100%;height:80px;background:linear-gradient(135deg,rgba(255,45,120,.1),rgba(124,58,237,.1));border:2px dashed rgba(255,45,120,.3);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:.8rem;color:var(--muted)">Sin banner — se usa el fondo</div>')+
+      '<div style="display:flex;gap:8px">'+
+        '<button onclick="document.getElementById('cfg-banner-file').click()" style="flex:1;padding:10px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-radius:10px;color:white;font-family:Archivo,sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.78rem;cursor:pointer">📷 Subir foto</button>'+
+        (bannerSrc?'<button onclick="GAME._clearBanner()" style="padding:10px 14px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:10px;color:#f87171;font-family:Archivo,sans-serif;font-weight:700;font-style:italic;text-transform:uppercase;font-size:.78rem;cursor:pointer">✕ Quitar</button>':'')+
+      '</div>'+
+      '<input type="file" id="cfg-banner-file" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="GAME._saveBanner(this)">'+
+    '</div>';
+
+    /* ── TIPOGRAFÍA ── */
+    html+='<div class="section-title-game">✦ Tipografía</div>';
+    var curFont=this._child&&this._child.fontStyle||'moderna';
+    var fonts=[{id:'moderna',label:'Moderna',sample:'DOCH',style:'font-family:Syne,sans-serif'},{id:'juguetona',label:'Juguetona',sample:'DOCH',style:'font-family:Fredoka One,cursive'},{id:'elegante',label:'Elegante',sample:'DOCH',style:'font-family:Playfair Display,serif'}];
+    html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:4px">';
+    fonts.forEach(function(f){html+='<div onclick="GAME._saveFont(''+f.id+'')" style="padding:14px 8px;background:'+(curFont===f.id?'linear-gradient(135deg,rgba(255,45,120,.2),rgba(124,58,237,.2))':'rgba(255,255,255,.04)')+';border:2px solid '+(curFont===f.id?'rgba(255,45,120,.5)':'rgba(255,255,255,.08)')+';border-radius:12px;text-align:center;cursor:pointer;transition:all .2s">'+
+      '<div style="'+f.style+';font-size:1.3rem;font-weight:700;color:'+(curFont===f.id?'var(--pink)':'var(--text)')+';margin-bottom:4px">'+f.sample+'</div>'+
+      '<div style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700">'+f.label+'</div>'+
+    '</div>';});
+    html+='</div>';
+
     /* ── TEMA VISUAL ── */
     html+='<div class="section-title-game">✦ Tema Visual</div>';
     html+='<div class="edit-card">'+
@@ -1205,6 +1254,44 @@ var GAME={
     var pvEl=document.getElementById('cfg-point-value');var pv=pvEl?Math.max(1,parseInt(pvEl.value)||1):this.POINT_VALUE;
     this.FINANCE=newFin;this.POINT_VALUE=pv;if(this._child){this._child.finance=newFin;this._child.pointValue=pv;}
     var self=this;if(this._ref){this._ref.update({finance:newFin,pointValue:pv}).then(function(){showToast('Finanzas guardadas ✅','','reward');self._render();}).catch(function(){showToast('Error al guardar','','bad');});}},
+  _saveBanner:function(input){
+    var self=this;var file=input.files[0];if(!file)return;
+    if(file.size>3*1024*1024){showToast('La foto no puede superar 3MB','','bad');return;}
+    var reader=new FileReader();
+    reader.onload=function(e){
+      var img=new Image();img.onload=function(){
+        var canvas=document.createElement('canvas');var maxW=900;
+        var ratio=Math.min(maxW/img.width,1);canvas.width=img.width*ratio;canvas.height=img.height*ratio;
+        canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+        var b64=canvas.toDataURL('image/jpeg',0.75);
+        if(self._child)self._child.bannerBase64=b64;
+        if(self._ref){self._ref.update({bannerBase64:b64}).then(function(){
+          showToast('Banner guardado ✅','','reward');self._applyBanner();self._render();
+        }).catch(function(){showToast('Error al guardar','','bad');});}
+      };img.src=e.target.result;
+    };reader.readAsDataURL(file);
+  },
+  _clearBanner:function(){
+    if(this._child)this._child.bannerBase64=null;
+    if(this._ref){this._ref.update({bannerBase64:null}).then(function(){
+      showToast('Banner eliminado','','reward');GAME._applyBanner();GAME._render();
+    });}
+  },
+  _saveFont:function(fontId){
+    document.body.classList.remove('font-juguetona','font-elegante');
+    if(fontId==='juguetona')document.body.classList.add('font-juguetona');
+    else if(fontId==='elegante')document.body.classList.add('font-elegante');
+    if(this._child)this._child.fontStyle=fontId;
+    if(this._ref){this._ref.update({fontStyle:fontId}).then(function(){
+      showToast('Tipografía guardada ✅','','reward');GAME._render();
+    });}
+    try{localStorage.setItem('doch_font_'+(this._child&&this._child.childId||'x'),fontId);}catch(e){}
+  },
+  _loadFont:function(){
+    var ch=this._child;var fontId=ch&&ch.fontStyle||null;
+    if(!fontId)try{fontId=localStorage.getItem('doch_font_'+(ch&&ch.childId||'x'));}catch(e){}
+    if(fontId)this._saveFont(fontId);
+  },
   toggleDaylight:function(){
     var isDL=document.body.classList.toggle('daylight');
     var btn=document.getElementById('btn-daylight');if(btn)btn.textContent=isDL?'🌙 Modo oscuro':'☀️ Modo claro';
